@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Winning Statics Weekly Drops</title>
+<meta name="description" content="Build plan for Weekly Drops: niche and competitor intel, weekly ads, video, and a free monthly ad check, starting from the product as it is today.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050505;--card:#0D0D0D;--card2:#141414;--line:#232323;--ink:#FCFCFC;--mute:#A3A3A3;--dim:#6B6B6B;
+  --mint:#71D793;--mint-2:#41B983;--mint-soft:rgba(113,215,147,.12);
+  --amber:#F2C265;--amber-soft:rgba(242,194,101,.12);--red:#F08A8A;--red-soft:rgba(240,138,138,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:880px;margin:0 auto;padding:56px 16px 96px}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.1;letter-spacing:-.02em;margin:0 0 14px}
+h2{font-size:22px;letter-spacing:-.01em;margin:56px 0 14px;padding-top:24px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:22px 0 8px}
+p{margin:0 0 14px;color:#E4E4E4}
+.lede{font-size:18px;color:var(--mute);max-width:680px}
+.eyebrow{font:500 12px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mint);margin-bottom:18px}
+.meta{font-size:13px;color:var(--dim);margin-top:18px}
+code,.mono{font-family:'JetBrains Mono',monospace;font-size:.88em}
+code{background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+ul,ol{padding-left:20px;margin:0 0 14px}
+li{margin:0 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:14px 0}
+.tldr{border-color:rgba(113,215,147,.35);background:linear-gradient(180deg,var(--mint-soft),var(--card) 70%)}
+.tldr strong{color:var(--mint)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:680px){.grid2{grid-template-columns:1fr}}
+.flow{counter-reset:s;list-style:none;padding:0}
+.flow li{counter-increment:s;position:relative;padding:14px 16px 14px 58px;background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:8px}
+.flow li::before{content:counter(s);position:absolute;left:16px;top:14px;width:28px;height:28px;border-radius:50%;background:var(--mint-soft);color:var(--mint);font:600 13px/28px Inter;text-align:center}
+.who{display:inline-block;font:500 11px/1 'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em;padding:4px 7px;border-radius:5px;margin-right:6px;vertical-align:1px}
+.us{background:var(--mint-soft);color:var(--mint)}
+.gpt{background:var(--card2);color:var(--mute);border:1px solid var(--line)}
+.user{background:var(--amber-soft);color:var(--amber)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0 16px}
+th,td{text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.wrap{overflow-x:auto}
+.gate{display:flex;gap:14px;align-items:flex-start}
+.gate b{flex:0 0 auto;font:600 12px/1 'JetBrains Mono',monospace;color:var(--bg);background:var(--mint);border-radius:6px;padding:6px 8px;margin-top:2px}
+.phase{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.pill{font:500 12px/1 'JetBrains Mono',monospace;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:6px 10px;white-space:nowrap}
+.warn{border-color:rgba(242,194,101,.35);background:linear-gradient(180deg,var(--amber-soft),var(--card) 70%)}
+.warn h3{color:var(--amber);margin-top:0}
+.no{color:var(--red)}
+.yes{color:var(--mint)}
+.small{font-size:14px;color:var(--mute)}
+a{color:var(--mint)}
+</style>
+</head>
+<body>
+<main>
+<div class="eyebrow">Winning Statics · build plan · 2 Oct 2026</div>
+<h1>Weekly Drops: the monthly plan worth keeping</h1>
+<p class="lede">Every Monday, new ads built from what is winning in the merchant's niche and with their competitors, a video or two, and a free monthly check of their own ad results. Everything needed to ship it before BFCM outreach, phased, starting from what the product does today.</p>
+<p class="meta">Owner: Farooq · Backend, data, copy and infra: Claude · Landing and dashboard UI: Replit (per the UI-authority rule, Claude ships copy, data and API wiring only)</p>
+
+<div class="card tldr">
+<p><strong>The offer.</strong> Free: 10 BFCM ads from their store. Paid monthly: a weekly drop of statics built on the formats and angles their niche and competitors keep spending on, 2 videos a month on the cheapest plan and 4 on the next, a weekly niche report, and a free monthly ad check from their own Ads Manager export. One-time packs stay as the library-led offer.</p>
+<p><strong>The build.</strong> Phase 0 fixes what is broken today (renewals give no new ads, Studio add-ons, UGC without the product image, stubs, legal). Phase 1 adds the free pack and the weekly intel and drop engine. Phase 2 adds the ad check. Phase 3 rebuilds video. Partner access to their ad account waits for Meta business verification.</p>
+<p><strong>Target.</strong> Free pack and Phase 0 live by <b>12 Oct</b>, weekly drops by <b>19 Oct</b>, ad check by <b>26 Oct</b>, video by <b>2 Nov</b>. Outreach starts once the free pack is live.</p>
+</div>
+
+<h2>1. Where the product is today</h2>
+<p class="small">From a code audit of <code>wsrepo</code> (main, last commit 17 Sep, clean) and the live sites (landing, app, /terms, /privacy all return 200).</p>
+<div class="wrap"><table>
+<tr><th>Area</th><th>Status</th><th>Detail</th></tr>
+<tr><td>Pricing and entitlements</td><td class="yes">Built</td><td>4 packs (50/120/240/600) one-time, monthly at half, yearly at 10 months. <code>packSpec</code> is the authority; landing and dashboard agree on numbers.</td></tr>
+<tr><td>Static generation and QA</td><td class="yes">Built</td><td>Supabase <code>templates</code>, 15 styles, gpt-image-2, vision QA. <span class="no">QA passes an ad when the QA call itself fails.</span></td></tr>
+<tr><td>Monthly renewals</td><td class="no">Broken</td><td>A plan renewal writes a fresh order but never tops up the subscriber's products. The old refresh path only runs for the retired $39 product.</td></tr>
+<tr><td>Weekly or monthly drops</td><td class="no">Missing</td><td>No scheduled drop job. <code>/admin/drop</code> is manual marketing teasers only.</td></tr>
+<tr><td>UGC video</td><td class="no">Partial</td><td>Seedance 1 Pro text-to-video, 5 s, no product image, no QA, no cost tracking. Landing promises burned-in captions and template choice; the Worker forbids captions and uses 3 fixed recipes.</td></tr>
+<tr><td>Niche and competitor intel</td><td class="no">Missing</td><td>Nothing reads the Meta Ad Library. The separate <code>meta-sweep</code> Worker already does, and is reusable.</td></tr>
+<tr><td>Free sample and lead capture</td><td class="no">Missing</td><td>No free offer, no email capture. Teasers exist only for paying customers.</td></tr>
+<tr><td>Dashboard</td><td class="yes">Built</td><td>Library, product tabs, downloads, add-ons, billing. Stubs: add-on catalog and bonuses from mock, "Download all" buttons, account deletion, cancel repeat.</td></tr>
+<tr><td>Landing and legal</td><td class="no">Partial</td><td>Hero leads on the 1,169 library. <code>terms.tsx</code> still has <code>[Jurisdiction]</code> and <code>[Company Address]</code>. "Priority queue" is advertised and not built.</td></tr>
+<tr><td>Studio tier</td><td class="no">Bug</td><td>Standalone add-ons and the refresh fallback filter <code>pack in (test,growth,volume,scale)</code>, so Studio buyers are skipped.</td></tr>
+<tr><td>Email</td><td class="yes">Built</td><td>Transactional and lifecycle via Brevo free plan (300 a day cap), magic links via a Supabase send hook.</td></tr>
+<tr><td>Infra</td><td class="yes">Built</td><td>Worker <code>winningstatics-api</code> (cron every minute), Pages <code>winning-statics</code> and <code>winning-statics-app</code>, Supabase, Dodo live and test ids. Docs and <code>schema.sql</code> are stale.</td></tr>
+</table></div>
+
+<h2>2. The product we are building</h2>
+<div class="grid2">
+<div class="card"><h3>Free (the hook)</h3><ul>
+<li>10 BFCM statics from their store URL</li>
+<li>A one-page niche snapshot: 3 ads competitors keep running</li>
+<li>Rest of the plan shown locked in the dashboard</li>
+<li>One per store domain, email-verified</li></ul></div>
+<div class="card"><h3>Weekly Drops (monthly)</h3><ul>
+<li>Every Monday: statics built on what their niche and 3 to 5 competitors keep spending on</li>
+<li>Videos: 2 a month on the cheapest plan, 4 on the next</li>
+<li>Weekly niche report email</li>
+<li>Free monthly ad check from their Ads Manager export</li>
+<li>Cancel in one click, keep everything, replace any ad</li></ul></div>
+</div>
+<p><b>Claims line.</b> We say "running longest", "what competitors keep spending on", "new this week". Never "highest ROAS" or "best performing" for niche ads: we cannot see others' results. The ad check talks performance only because it reads the merchant's own numbers.</p>
+<p><b>Library claim.</b> The 1,169-template library stops being the headline. It stays as the engine and leads the one-time pack section only.</p>
+
+<h3>Plans (proposal, to confirm)</h3>
+<div class="wrap"><table>
+<tr><th>Plan</th><th>Statics a month</th><th>Videos</th><th>Products</th><th>Monthly</th><th>Status</th></tr>
+<tr><td><b>Starter</b> (new)</td><td>24 (6 a week)</td><td>2</td><td>2</td><td>$29 to $39</td><td>New tier</td></tr>
+<tr><td>Test</td><td>50</td><td>4</td><td>4</td><td>$34 now, $39 to $49 with video</td><td>Reprice after the video cost test</td></tr>
+<tr><td>Growth</td><td>120</td><td>4</td><td>8</td><td>$64</td><td>Keep</td></tr>
+<tr><td>Scale</td><td>240</td><td>8</td><td>16</td><td>$119</td><td>Keep</td></tr>
+<tr><td>Studio</td><td>600</td><td>12</td><td>40</td><td>$299</td><td>Keep</td></tr>
+</table></div>
+<p class="small">Video quotas above Growth are a proposal. Final Starter and Test prices depend on the measured cost per video in Phase 3 (estimated $1 to $4 per video including retries).</p>
+
+<h2>3. Build plan</h2>
+
+<div class="phase"><h3>Phase 0: fix what is broken</h3><span class="pill">3 to 4 days · by 9 Oct</span></div>
+<ol class="flow">
+<li><b>Renewals deliver ads.</b> On every <code>payment.succeeded</code> for a plan renewal, top up the subscriber's existing products through <code>packSpec</code>, not a new empty order. Test monthly and yearly paths on staging with Dodo test events.</li>
+<li><b>Studio is a first-class pack.</b> Replace the hardcoded <code>pack in (...)</code> filters (standalone add-ons, refresh fallback) with one helper that reads <code>PACKS</code>.</li>
+<li><b>QA fails closed.</b> If the QA call errors, retry, then hold the ad for review instead of passing it.</li>
+<li><b>Honest landing copy.</b> Remove "Priority queue" and "inside 48 hours" until built. Make the UGC promise match what ships (fixed in Phase 3).</li>
+<li><b>Stubs.</b> Wire "Download all" buttons to the existing zip builder, move the add-on catalog to the Worker's real list, build account deletion (GDPR) and cancel repeat.</li>
+<li><b>Legal.</b> Fill <code>terms.tsx</code> placeholders with Millionth Mile Marketing, its registered address and jurisdiction; add the legal name to the footer, privacy and refund pages (also required for Meta business verification).</li>
+<li><b>Docs.</b> Regenerate <code>schema.sql</code> from the live database; update <code>OPERATIONS.md</code> (Dodo live state, Worker comments).</li>
+</ol>
+
+<div class="phase"><h3>Phase 1a: the free BFCM pack</h3><span class="pill">4 days · by 12 Oct</span></div>
+<p><b>Backend (Worker).</b></p>
+<ul>
+<li><code>POST /free/claim {url, email, ref}</code>: Cloudflare Turnstile check, one claim per store domain and per email, a daily global cap and cost cap, enqueue enrichment.</li>
+<li>Enrichment reuses <code>enrichProduct</code>; plan 10 statics through the existing pipeline with a BFCM theme and fail-closed QA.</li>
+<li>Account created with a <code>free</code> order (no Dodo), magic link emailed when ads are ready.</li>
+<li><code>ref</code> parameter carries the outreach token so each Instantly lead lands pre-filled (<code>?s=&lt;store&gt;&amp;t=&lt;token&gt;</code>) and attribution is exact.</li>
+</ul>
+<p><b>Dashboard (Replit UI, Claude wires data).</b> Free pack view; the next 20 ads shown as locked cards; one upgrade card showing a single recommended plan, monthly by default; expiry countdown to the BFCM deadline.</p>
+<p><b>Landing (Replit UI, Claude copy).</b> Hero form (store URL + email); outreach landing variant that reads <code>?s=</code> and shows "Your 10 free BFCM ads are being built".</p>
+
+<div class="phase"><h3>Phase 1b: weekly intel and drop engine</h3><span class="pill">7 days · by 19 Oct</span></div>
+<p><b>Data (Supabase, new tables).</b></p>
+<ul>
+<li><code>competitors</code>: account, brand domain, Meta page id, source (suggested or user), active.</li>
+<li><code>niche_ads</code>: page id, ad archive id, first seen, last seen, start date, days running, format, platforms, copy, landing host, thumbnail path. Deduplicated by archive id; days running updated each pull.</li>
+<li><code>patterns</code>: per account per week, the classified winning patterns (format, hook type, angle, offer, visual style mapped onto our 15 styles).</li>
+<li><code>drops</code>: account, week, brief, quota, status, ads linked.</li>
+</ul>
+<p><b>Intel Worker (new <code>ws-intel</code>, reusing meta-sweep code).</b></p>
+<ol class="flow">
+<li><b>Competitor discovery at signup.</b> From the store's category and copy, Luna proposes 5 competitor brands; each is resolved to a Meta page with the meta-sweep identity logic (landing-domain proof first). The merchant can edit the list in the dashboard.</li>
+<li><b>Weekly pull (Sunday).</b> For the merchant's own page and each competitor: ACTIVE ads with the 30-ad sample and total count. Plus one niche keyword search per account. Queue-fed (the cron did not fire for meta-sweep; the queue self-feeds), treg spend capped per account (about $0.03 to $0.06 a week).</li>
+<li><b>Thumbnails cached.</b> Ad Library image URLs expire, so thumbnails go to R2 or Supabase storage at pull time.</li>
+<li><b>Rank.</b> Winning signals without performance data: days running, number of near-duplicate variants (spend signal), still active this week, new this week.</li>
+<li><b>Classify.</b> Luna labels copy (hook, angle, offer); a vision model labels format and visual style; both map to our 15 styles and template ids.</li>
+</ol>
+<p><b>Drop engine (in <code>winningstatics-api</code>).</b> Monday job per active subscriber: brief = top patterns plus the merchant's own longest-running ads plus a format gap, quota = plan per week, products rotated. It feeds <code>planProduct</code> with a template pick biased to the mapped styles. Copy is inspired by the patterns, never copying a competitor's words or images.</p>
+<p><b>Weekly email.</b> "This week in your niche": 3 competitor ads with days running and an Ad Library link, the 3 patterns, the merchant's new ads and video. Sent from Winning Statics only.</p>
+<p><b>Dashboard.</b> New "This week" tab (the drop and the niche board), Competitors settings, drop history.</p>
+<p><b>Landing.</b> New hero for the monthly offer ("Every Monday, new ads built from what is winning in your niche"); a how-it-works strip; a sample niche report; pricing with monthly as the default toggle and one recommended plan; risk reversal on the pricing card; FAQ on what "winning" means.</p>
+
+<div class="phase"><h3>Phase 2: the free monthly ad check</h3><span class="pill">5 days · by 26 Oct</span></div>
+<ul>
+<li>Dashboard upload: an Ads Manager CSV export (ad level, daily breakdown, last 30 days), with a 3-step how-to and a screenshot.</li>
+<li>Parser tolerant to column names and languages; minimum spend threshold per ad before any verdict.</li>
+<li>Verdicts per ad: scale (cost per purchase below their median and still steady), pause (spend with no purchases, or cost far above median), fatigue (CTR falling over the window while frequency rises). Every verdict shows its numbers.</li>
+<li>Report page plus email; the next drop's brief adds the merchant's own winners.</li>
+<li>Service touch: an optional human note on the report (Farooq or a strategist), so it sells as an expert check, not a widget.</li>
+<li>Included in every paid plan monthly; one free check for free-pack users.</li>
+</ul>
+
+<div class="phase"><h3>Phase 3: video that matches the product</h3><span class="pill">6 days · by 2 Nov</span></div>
+<ul>
+<li>Switch to image-to-video with the merchant's real product photo (the current text-to-video path cannot show their product).</li>
+<li>UGC format library: 6 to 8 recipes (hands-on demo, unboxing, before and after, problem and fix, testimonial-style voiceover, close-up texture) with per-format prompts and negative prompts.</li>
+<li>Captions: either burned in after generation (a captioning step outside the Worker) or drop the promise; decide after the test.</li>
+<li>QA: frame sampling against the product photo for product fidelity; a failed video is replaced by a second static set, never shipped.</li>
+<li>Cost tracking per video and per account; quotas from <code>packSpec</code> (2 on Starter, 4 on Test and Growth).</li>
+<li><b>Gate before pricing:</b> 10 stores from the outreach list, measured cost per finished video and pass rate.</li>
+</ul>
+
+<div class="phase"><h3>Phase 4: partner access (later)</h3><span class="pill">after Meta verification</span></div>
+<p>Merchant grants our Business portfolio view-only partner access to their ad account; a system user reads insights weekly, replacing the CSV upload. Needs Meta business verification of Millionth Mile Marketing (Codex task drafted) and a test on one real account before it is promised. A Meta app with <code>ads_read</code> review is only needed if partner access proves insufficient.</p>
+
+<h2>4. Infra and operations</h2>
+<div class="wrap"><table>
+<tr><th>Piece</th><th>Choice</th></tr>
+<tr><td>Compute</td><td>Cloudflare Workers: <code>winningstatics-api</code> (existing) and new <code>ws-intel</code>. Cloud only; the Mac only deploys.</td></tr>
+<tr><td>Queues</td><td>Cloudflare Queues for intel pulls and drop jobs; self-feeding, concurrency capped at 20 for treg.</td></tr>
+<tr><td>Data</td><td>Supabase (existing) for accounts, orders, drops, intel tables; bulk inserts only (50-subrequest rule).</td></tr>
+<tr><td>Media</td><td>Supabase storage for ads; R2 for cached competitor thumbnails.</td></tr>
+<tr><td>External</td><td>treg (Ad Library), OpenRouter Luna (classification, discovery), Replicate (images, video), Dodo (billing), Brevo free plan (email, 300 a day: upgrade before outreach volume).</td></tr>
+<tr><td>Bot protection</td><td>Cloudflare Turnstile on the free claim.</td></tr>
+<tr><td>Cost guards</td><td>Per-account weekly treg cap, daily free-pack cap, per-video cost log, a global kill switch.</td></tr>
+<tr><td>Analytics</td><td>PostHog funnel: free_claimed, free_delivered, locked_viewed, upgrade_clicked, paid, drop_opened, check_uploaded, cancel_started, cancel_saved, churned.</td></tr>
+</table></div>
+
+<h2>5. Outreach dependencies</h2>
+<ul>
+<li>Lists ready: 6,591 named contacts (two files), outreach token per lead to add for <code>?s=&amp;t=</code>.</li>
+<li>Instantly: warmed proxy domains, no inbox shared with other engines, separate campaigns per source, open tracking off, a verifier pass on older contacts.</li>
+<li>Sender identity is Winning Statics only; no PushOwl or Brevo mention in copy or sending.</li>
+<li>Brevo plan for transactional email must cover the free-pack volume (300 a day free cap will not).</li>
+</ul>
+
+<h2>6. Risks</h2>
+<div class="card warn"><h3>What could go wrong</h3><ul>
+<li><b>Ad Library coverage.</b> Some competitors resolve to no page. Mitigation: niche keyword search fills the board; never show an empty report.</li>
+<li><b>"Winning" without performance data.</b> Longevity is a proxy. Mitigation: the claims line above, and the merchant's own check in Phase 2.</li>
+<li><b>Copying competitors.</b> Briefs use patterns, never their images, words or brand. Thumbnails shown for reference with a link to the public Ad Library.</li>
+<li><b>Video quality.</b> Gate on the 10-store test; replace failures with statics.</li>
+<li><b>Free-pack abuse and cost.</b> Turnstile, one per domain, daily cap.</li>
+<li><b>Email deliverability</b> for magic links at outreach volume: upgrade the Brevo plan and use a dedicated sending domain.</li>
+</ul></div>
+
+<h2>7. Decisions needed from Farooq</h2>
+<ol>
+<li>Starter price ($29 to $39) and whether Test moves to $39 to $49 once it carries 4 videos.</li>
+<li>Video quotas above Growth (8 and 12 proposed).</li>
+<li>Who writes the optional human note on ad checks.</li>
+<li>BFCM free-pack deadline date.</li>
+<li>Replit builds the new UI screens (free pack, locked cards, This week, Competitors, ad check upload) from this spec; confirm Claude wires the data and copy.</li>
+</ol>
+</main>
+
+</body>
+</html>
