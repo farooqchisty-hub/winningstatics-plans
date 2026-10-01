@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Landing Design System</title>
+<meta name="description" content="Design tokens, section-by-section visual language and copy style for the Winning Statics landing page, grounded in WCAG 2.2, NN/g, Copyhackers and FTC rules.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050505;--card:#0D0D0D;--card2:#141414;--line:#232323;--ink:#FCFCFC;--mute:#A3A3A3;--dim:#6B6B6B;
+  --mint:#71D793;--mint-2:#41B983;--mint-soft:rgba(113,215,147,.12);
+  --amber:#F2C265;--amber-soft:rgba(242,194,101,.12);--red:#F08A8A;--red-soft:rgba(240,138,138,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:880px;margin:0 auto;padding:56px 16px 96px}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.1;letter-spacing:-.02em;margin:0 0 14px}
+h2{font-size:22px;letter-spacing:-.01em;margin:56px 0 14px;padding-top:24px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:22px 0 8px}
+p{margin:0 0 14px;color:#E4E4E4}
+.lede{font-size:18px;color:var(--mute);max-width:680px}
+.eyebrow{font:500 12px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mint);margin-bottom:18px}
+.meta{font-size:13px;color:var(--dim);margin-top:18px}
+code,.mono{font-family:'JetBrains Mono',monospace;font-size:.88em}
+code{background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+ul,ol{padding-left:20px;margin:0 0 14px}
+li{margin:0 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:14px 0}
+.tldr{border-color:rgba(113,215,147,.35);background:linear-gradient(180deg,var(--mint-soft),var(--card) 70%)}
+.tldr strong{color:var(--mint)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:680px){.grid2{grid-template-columns:1fr}}
+.flow{counter-reset:s;list-style:none;padding:0}
+.flow li{counter-increment:s;position:relative;padding:14px 16px 14px 58px;background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:8px}
+.flow li::before{content:counter(s);position:absolute;left:16px;top:14px;width:28px;height:28px;border-radius:50%;background:var(--mint-soft);color:var(--mint);font:600 13px/28px Inter;text-align:center}
+.who{display:inline-block;font:500 11px/1 'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em;padding:4px 7px;border-radius:5px;margin-right:6px;vertical-align:1px}
+.us{background:var(--mint-soft);color:var(--mint)}
+.gpt{background:var(--card2);color:var(--mute);border:1px solid var(--line)}
+.user{background:var(--amber-soft);color:var(--amber)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0 16px}
+th,td{text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.wrap{overflow-x:auto}
+.gate{display:flex;gap:14px;align-items:flex-start}
+.gate b{flex:0 0 auto;font:600 12px/1 'JetBrains Mono',monospace;color:var(--bg);background:var(--mint);border-radius:6px;padding:6px 8px;margin-top:2px}
+.phase{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.pill{font:500 12px/1 'JetBrains Mono',monospace;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:6px 10px;white-space:nowrap}
+.warn{border-color:rgba(242,194,101,.35);background:linear-gradient(180deg,var(--amber-soft),var(--card) 70%)}
+.warn h3{color:var(--amber);margin-top:0}
+.no{color:var(--red)}
+.yes{color:var(--mint)}
+.small{font-size:14px;color:var(--mute)}
+a{color:var(--mint)}
+</style>
+</head>
+<body>
+<main>
+<div class="eyebrow">Winning Statics · landing design system · 2 Oct 2026</div>
+<h1>Design system, visual language and copy style</h1>
+<p class="lede">The rules the landing page is built and rewritten against. Evolves the current look (near-black ground, mint accent, Geist) rather than replacing it, fixes the accessibility and consistency gaps an audit found, and sets the copy rules for cold-email traffic.</p>
+<p class="meta">Staging: <a href="https://ws-landing-staging.pages.dev">ws-landing-staging.pages.dev</a> (noindex) · Production untouched · Sources are linked inline.</p>
+
+<div class="card tldr">
+<p><strong>Visual idea:</strong> a calm, dark instrument panel where the only bright things are the merchant's ads and the one action we want. Mint means "act" or "proof", never decoration.</p>
+<p><strong>Copy idea:</strong> a founder talking to a founder who already runs Meta ads. Mechanism and offer first, every claim sourced, nothing invented.</p>
+<p><strong>Page logic:</strong> the visitor is solution-aware but has never heard of us (Schwartz), so the top of the page repeats the email's promise and the offer, and the rest earns belief in this order: how it works, a sample, the product, the price, the objections.</p>
+</div>
+
+<h2>1. Principles</h2>
+<ol>
+<li><b>One job per screen.</b> Each section answers one question a buyer has, in the order they have it. If a section answers two, split it or cut one.</li>
+<li><b>The ads are the colour.</b> The interface stays neutral so example ads carry the visual energy. Mint is reserved for the primary action, proof numbers and the one highlighted phrase per heading.</li>
+<li><b>Show the source.</b> Every "winning" claim names where it comes from (the public Meta Ad Library, days running). Our honesty is the differentiator; no competitor dates or sources its claims.</li>
+<li><b>Accessible by default.</b> WCAG 2.2 AA everywhere: 4.5:1 body text, 3:1 large text and controls, visible focus, 24px targets (<a href="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html">1.4.3</a>, <a href="https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html">1.4.11</a>, <a href="https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html">2.5.8</a>).</li>
+<li><b>Fast on a phone from an email.</b> The cold click lands on mobile more often than not; the form must be visible at 375px without scrolling, and LCP stays under 2.5s (<a href="https://web.dev/articles/vitals">Core Web Vitals</a>).</li>
+</ol>
+
+<h2>2. Tokens</h2>
+<p class="small">Three tiers, after the <a href="https://www.designtokens.org/">W3C Design Tokens</a> format and the Material 3 and Carbon models: primitives (raw values), semantic tokens (meaning), component tokens. Components only ever read semantic tokens. Today's names (<code>electric-indigo</code>, <code>verdant</code>, <code>iris</code>) are purple-era names holding mint values; they become aliases of <code>accent.*</code> for one release, then retire.</p>
+
+<h3>Colour (contrast measured on #050505)</h3>
+<div class="wrap"><table>
+<tr><th>Semantic token</th><th>Value</th><th>Contrast</th><th>Use</th></tr>
+<tr><td><code>bg.canvas</code></td><td>#050505</td><td>n/a</td><td>Page ground. Near-black, not pure black.</td></tr>
+<tr><td><code>bg.surface.1</code></td><td>#0D0D0D</td><td>n/a</td><td>Cards</td></tr>
+<tr><td><code>bg.surface.2</code></td><td>#111311</td><td>n/a</td><td>Raised card, hover</td></tr>
+<tr><td><code>bg.surface.3</code></td><td>#171A18</td><td>n/a</td><td>Inputs, popovers</td></tr>
+<tr><td><code>text.primary</code></td><td>#F2F5F3</td><td>18.3:1</td><td>Headings and body (softer than #FCFCFC to reduce halation on dark)</td></tr>
+<tr><td><code>text.secondary</code></td><td>#D5E1DA</td><td>15.2:1</td><td>Subheads, body on cards</td></tr>
+<tr><td><code>text.tertiary</code></td><td>white at 62% (#A0A0A0)</td><td>7.8:1</td><td>Captions, meta lines</td></tr>
+<tr><td><code>text.quiet</code></td><td>white at 50% (#828282)</td><td>5.3:1</td><td><b>The lowest text step allowed.</b> white/45 (4.49:1) and below fail and are banned for text.</td></tr>
+<tr><td><code>border.subtle</code> / <code>border.default</code></td><td>white 5% / 10%</td><td>1.1 / 1.2:1</td><td>Decorative dividers and card edges only</td></tr>
+<tr><td><code>border.control</code></td><td>#66706A</td><td>3.8:1</td><td>Inputs, checkboxes, secondary buttons (must reach 3:1)</td></tr>
+<tr><td><code>accent.primary</code></td><td>#71D793</td><td>11.5:1</td><td>Primary CTA fill, focus ring, highlighted phrase</td></tr>
+<tr><td><code>accent.primary.hover</code></td><td>#8EDCB0</td><td>12.6:1</td><td>CTA hover</td></tr>
+<tr><td><code>accent.on</code></td><td>#06120B</td><td>10.8:1 on mint</td><td>CTA label. White on mint is 1.77:1 and is banned.</td></tr>
+<tr><td><code>accent.strong</code></td><td>#41B983</td><td>8.2:1</td><td>Bars, charts, secondary emphasis</td></tr>
+<tr><td><code>accent.deep</code></td><td>#267E53</td><td>4.1:1</td><td>Fills only, never text</td></tr>
+<tr><td><code>accent.tint</code></td><td>mint at 10%</td><td>mint text 10:1</td><td>Selected pills, step icons</td></tr>
+<tr><td><code>status.danger</code></td><td>#F87171</td><td>7.3:1</td><td>Form errors (replaces raw #ef4444)</td></tr>
+<tr><td><code>status.notice</code></td><td>#FBBF24</td><td>12.1:1</td><td>"Illustrative sample" labels, order bump</td></tr>
+</table></div>
+
+<h3>Type</h3>
+<p class="small">Geist only (it is loaded twice today; load once). Fluid sizes with <code>clamp()</code> per <a href="https://utopia.fyi/type/calculator/">Utopia</a>. Body never under 16px, line length 45 to 75 characters (<a href="https://baymard.com/blog/line-length-readability">Baymard</a>). Weights: 500 UI, 600 buttons and labels, 700 headings, 900 only for prices.</p>
+<div class="wrap"><table>
+<tr><th>Step</th><th>Size</th><th>Line height</th><th>Tracking</th></tr>
+<tr><td>h1</td><td>clamp(2.375rem, 2.0rem + 2.3vw, 4.25rem)</td><td>1.05</td><td>-0.025em</td></tr>
+<tr><td>h2</td><td>clamp(2.25rem, 1.74rem + 2.27vw, 3.5rem)</td><td>1.1</td><td>-0.02em</td></tr>
+<tr><td>h3</td><td>clamp(1.125rem, 1rem + 0.5vw, 1.5rem)</td><td>1.25</td><td>-0.01em</td></tr>
+<tr><td>lead</td><td>clamp(1rem, 0.95rem + 0.4vw, 1.25rem)</td><td>1.55</td><td>0</td></tr>
+<tr><td>body</td><td>1rem to 1.125rem</td><td>1.6</td><td>0</td></tr>
+<tr><td>caption</td><td>0.875rem (minimum 0.75rem; the 7 to 9px text in Steps, Dashboard and Bonuses goes)</td><td>1.4</td><td>0</td></tr>
+<tr><td>eyebrow</td><td>0.75rem, uppercase, 600</td><td>1</td><td>0.14em (one value, replaces four)</td></tr>
+<tr><td>data</td><td>Geist Mono, tabular numerals</td><td>1.3</td><td>0</td></tr>
+</table></div>
+
+<h3>Space, radius, elevation, motion</h3>
+<div class="grid2">
+<div class="card"><h3>Spacing (8pt, 4pt half steps)</h3><p class="small">4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 80 · 96. Section padding <code>py-14 md:py-20</code> (56 / 80). One container, 1180px; prose 720px. (<a href="https://carbondesignsystem.com/elements/spacing/overview/">Carbon</a>, <a href="https://atlassian.design/foundations/spacing">Atlassian</a>)</p></div>
+<div class="card"><h3>Radius</h3><p class="small">xs 4 (checkbox) · sm 9 (button, input; today's hero value) · md 12 (small card, ad thumb) · lg 16 (ad frame) · xl 24 (section panel) · full (pill). The 22 one-off radii retire.</p></div>
+<div class="card"><h3>Elevation (dark: lighter surface first, shadow second)</h3><p class="small">e1 surface.1 + border.default · e2 surface.2 + 0 8px 24px rgba(0,0,0,.45) · e3 surface.3 + 0 24px 64px -24px rgba(0,0,0,.8) · glow.cta 0 0 32px -10px mint/60, 80 on hover (two glows replace six). (<a href="https://m2.material.io/design/color/dark-theme.html">Material dark theme</a>)</p></div>
+<div class="card"><h3>Motion</h3><p class="small">fast 150ms (hover, press) · base 250ms (state) · slow 400ms (reveal) · ambient 26 to 92s. Easing out <code>cubic-bezier(0.22,1,0.36,1)</code>, enter <code>(0.05,0.7,0.1,1)</code>. Press scale 0.98. Reduced motion: one global setting, opacity-only fallbacks; marquees get a pause control (<a href="https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html">2.2.2</a>). (<a href="https://www.nngroup.com/articles/animation-duration/">NN/g</a>, <a href="https://m3.material.io/styles/motion/easing-and-duration/tokens-specs">M3</a>)</p></div>
+</div>
+
+<h3>Components</h3>
+<div class="wrap"><table>
+<tr><th>Component</th><th>Spec</th></tr>
+<tr><td>Primary button</td><td>Height 56 in the hero, 48 elsewhere · radius sm · accent.primary fill · accent.on label, 600 · glow.cta · focus ring 2px mint + 2px offset · label states the outcome in first person ("Get my 10 free BFCM ads"). One primary per screen. Solid fill because flat, low-signifier buttons get less attention (<a href="https://www.nngroup.com/articles/flat-ui-less-attention-cause-uncertainty/">NN/g</a>).</td></tr>
+<tr><td>Secondary button</td><td>Transparent, border.control, text.primary · or a text link for "see the plans". Never mint fill.</td></tr>
+<tr><td>Email capture</td><td>2 fields only (store, email) · visible labels above fields, never placeholder-only (<a href="https://www.nngroup.com/articles/form-design-placeholders/">NN/g</a>) · <code>type=email</code>, <code>autocomplete</code>, <code>inputmode=url</code> · surface.3 fill · border.control · inline error in status.danger after submit · friction remover under the button ("No card...").</td></tr>
+<tr><td>Eyebrow pill</td><td>Eyebrow type · white 5% fill · border.default · one per section, above the h2.</td></tr>
+<tr><td>Section panel</td><td>radius xl · surface white 3% · border.default · p-5 / p-7.</td></tr>
+<tr><td>Ad frame</td><td>radius md to lg · border.default · fixed aspect and width/height attributes (no layout shift) · <b>EXAMPLE AD pill</b> on every sample ad, top left, black 75% with white text.</td></tr>
+<tr><td>Data row</td><td>Label left, Geist Mono value right in mint, 6px progress bar in accent.strong on white 10%, source line in text.tertiary.</td></tr>
+<tr><td>Notice label</td><td>status.notice at 10% fill, 30% border, amber text: "Illustrative sample", never hidden.</td></tr>
+</table></div>
+
+<h2>3. Visual language by section</h2>
+<p class="small">Order follows the Copyhackers message hierarchy with StoryBrand's "plan" and "stakes" beats inside it: offer, plan, sample, product, price, objections. Problem, Provenance, Steps, Case studies and Bonuses are out of the staging flow.</p>
+
+<div class="card"><h3>Nav</h3><p class="small"><b>Job:</b> orient and offer the action. <b>Visual:</b> floating glass bar, wordmark left, 5 anchors (How it works, Weekly report, Examples, Pricing, FAQ), one primary "Get 10 free ads". <b>Rule:</b> must not hide a focused element (<a href="https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html">2.4.11</a>).</p></div>
+<div class="card"><h3>1. Hero: the promise and the form</h3><p class="small"><b>Job:</b> repeat the cold email's promise word for word, make the offer, take the claim. <b>Visual:</b> centred column on the ambient ground; ad rails on xl screens as moving proof; the h1 is the only large element, with the second line in mint. Form directly under a one-line subhead. A niche marquee replaces fictional brand logos. <b>Personalised:</b> <code>?s=store.com</code> rewrites the h1 to "Ads for store.com, new every Monday." and pre-fills the field. <b>Mobile:</b> h1, subhead, both fields, CTA and the friction line inside 812px. <b>Motion:</b> reveal on load, rails at ambient speed, paused on hover and reduced motion.</p></div>
+<div class="card"><h3>2. How Weekly Drops work</h3><p class="small"><b>Job:</b> the plan, in four steps the visitor can repeat back. <b>Visual:</b> four equal cards, mint-tint icon circle, mono "Step N", short title, two-line body. A one-line "why longevity" argument under the h2. A small disclaimer line under the cards. <b>Rule:</b> each step names its source (the public Ad Library).</p></div>
+<div class="card"><h3>3. Sample weekly report</h3><p class="small"><b>Job:</b> process proof, the "labour illusion" (<a href="https://www.hbs.edu/faculty/Pages/item.aspx?num=40158">Buell and Norton</a>): show the work. Replaces the fictional case studies. <b>Visual:</b> one panel styled like the real email: header with niche and date stamp, amber "Illustrative sample" label, left column data rows (days running bars, variants, source), pattern pills, right column example ads with EXAMPLE AD pills and a video tile. <b>Rule:</b> competitor names hidden, no performance numbers.</p></div>
+<div class="card"><h3>4. Before and after</h3><p class="small"><b>Job:</b> "picture your product in these". Keep as is: drag handle comparison, EXAMPLE AD treatment.</p></div>
+<div class="card"><h3>5. Styles and formats</h3><p class="small"><b>Job:</b> range. StyleExplorer tabs and the three-ratio diagram stay; copy shifts from "library" to "the formats your niche runs".</p></div>
+<div class="card"><h3>6. Dashboard</h3><p class="small"><b>Job:</b> what it is like to receive the ads. Keep the recorded library; future: add the "This week" tab once it exists.</p></div>
+<div class="card"><h3>7. Comparison</h3><p class="small"><b>Job:</b> anchor against agency, freelancer and tools. Only cite costs with a source on file (<a href="https://www.ftc.gov/legal-library/browse/ftc-policy-statement-regarding-advertising-substantiation">FTC substantiation</a>).</p></div>
+<div class="card"><h3>8. Pricing</h3><p class="small"><b>Job:</b> make monthly the obvious choice. <b>Visual:</b> Starter strip above the four cards, monthly pre-selected on every card (default effect, <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1324774">Johnson and Goldstein</a>), one-time visible beside it as the plainer option (decoy, Ariely), Growth raised with the single glow. Cancel terms in plain view (ROSCA). <b>Open issue:</b> struck-through "compare at" prices ($135 for $69) need a real former price on record, or they go.</p></div>
+<div class="card"><h3>9. The offer in six lines</h3><p class="small"><b>Job:</b> skim summary after the price. Six icon blocks, monthly framing.</p></div>
+<div class="card"><h3>10. Guarantee</h3><p class="small"><b>Job:</b> risk reversal we can keep: rebuilt free, no limit. Only time promises the pipeline meets.</p></div>
+<div class="card"><h3>11. FAQ</h3><p class="small"><b>Job:</b> objections in the order they arrive: what "winning" means, how competitors are picked, copying, what you get, cancelling, quality, the free pack, paying once, ownership. Answer in the first sentence.</p></div>
+<div class="card"><h3>Sticky mobile bar</h3><p class="small">"Get 10 free ads", scrolls to the form. Hide it while the hero form is on screen (next pass).</p></div>
+
+<h2>4. Copy style</h2>
+<h3>Voice</h3>
+<ul>
+<li>A founder talking to a founder. Contractions always. Sentences under 15 words, often under 8. Short paragraphs.</li>
+<li>Concrete nouns: ad, Monday, your store, Ad Library, 90 days. Numerals, not words ("10", not "ten"), because digits catch scanning eyes (<a href="https://www.nngroup.com/articles/web-writing-show-numbers-as-numerals/">NN/g</a>).</li>
+<li>Answer in the first line of every section and every FAQ.</li>
+<li>Grade 5 to 7 reading level: Unbounce's benchmark of 41,000 pages found 11.1% median conversion at that level against 5.3% for college level (<a href="https://unbounce.com/landing-pages/whats-a-good-conversion-rate/">Unbounce</a>).</li>
+<li>Plain language: short words, active voice, "you" (<a href="https://www.plainlanguage.gov/guidelines/">plainlanguage.gov</a>).</li>
+</ul>
+<h3>Headlines</h3>
+<ul>
+<li>Mechanism plus outcome, front-loaded for F-pattern scanning (<a href="https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/">NN/g</a>): "New ads every Monday. Built from what's winning in your niche."</li>
+<li>Two-part h2: plain statement, then the mint payoff. One highlighted phrase per section, maximum.</li>
+<li>The hero repeats the cold email's promise in the same words (message match).</li>
+</ul>
+<h3>CTAs</h3>
+<ul>
+<li>First person and outcome: "Get my 10 free BFCM ads". Test "my" against "your"; the classic lift does not hold everywhere.</li>
+<li>Friction remover directly under the button: "No card. Ads in your inbox within the hour. One free pack per store."</li>
+</ul>
+<h3>Claims ledger</h3>
+<div class="wrap"><table>
+<tr><th>Allowed</th><th>Not allowed</th></tr>
+<tr><td>"Running longest", "ran 143 days", "your competitors kept paying to run"</td><td>"Highest ROAS", "best performing", "will win" for niche ads</td></tr>
+<tr><td>Real counts we can prove: styles, ratios, copy options, ads per plan</td><td>Invented CTR, ROAS, CPA, revenue, "+40%"</td></tr>
+<tr><td>"Illustrative sample" with names hidden</td><td>Fictional brands with metrics or quotes; fictional logos in a "trusted by" strip</td></tr>
+<tr><td>A real deadline (the BFCM free pack ends on a date)</td><td>Fake countdown timers</td></tr>
+<tr><td>Reference prices that were really charged</td><td>Struck-through prices never charged</td></tr>
+</table></div>
+<p class="small">Grounded in the FTC final rule on fake reviews and testimonials (<a href="https://www.ftc.gov/news-events/news/press-releases/2024/08/federal-trade-commission-announces-final-rule-banning-fake-reviews-testimonials">16 CFR 465, 2024</a>), the Endorsement Guides (<a href="https://www.federalregister.gov/documents/2023/07/26/2023-14795/guides-concerning-the-use-of-endorsements-and-testimonials-in-advertising">16 CFR 255</a>) and ROSCA for subscriptions.</p>
+<h3>Banned words and patterns</h3>
+<p class="small">unlock, elevate, supercharge, game-changer, seamless, cutting-edge, revolutionize, harness, empower, effortless, robust, "in today's fast-paced", "take it to the next level", "not just X, it's Y", rhythmic lists of three, em and en dashes.</p>
+
+<h2>5. Pre-ship checklist</h2>
+<ol>
+<li>Every text colour at or above white 50% (5.3:1); every control border at or above 3:1.</li>
+<li>One primary CTA per screen; mint used only for action, proof or the highlighted phrase.</li>
+<li>Every sample ad wears EXAMPLE AD; every sample report wears "Illustrative sample".</li>
+<li>No fictional brand shown as a customer; no invented metric anywhere.</li>
+<li>Hero form visible at 375 x 812 without scrolling; no horizontal scroll.</li>
+<li>Images carry width and height; LCP image prioritised; below-fold images lazy.</li>
+<li>Reduced motion respected; marquees pausable.</li>
+<li>Copy passes the banned list and the claims ledger.</li>
+</ol>
+
+<h2>6. What changed on staging</h2>
+<ul>
+<li>Hero: new h1 and subhead, two-field claim form with visible labels, personalisation from <code>?s=</code>, monthly USPs, niche marquee instead of fictional logos, library claim removed.</li>
+<li>New: How Weekly Drops work; Sample weekly report (replaces the fictional case studies).</li>
+<li>Pricing: monthly-first heading, Starter strip ($29 placeholder), weekly drops, niche report, ad check and video counts on every monthly plan; "Priority queue" and "48 hours" removed; UGC copy matches what ships.</li>
+<li>Offer band, FAQ (9 new answers), guarantee line, nav anchors and CTA, sticky bar, footer legal name (Millionth Mile Marketing), page title and meta.</li>
+<li>Removed from the flow: Problem, Provenance, Steps, Case studies, Bonuses.</li>
+</ul>
+<h3>Still open</h3>
+<ul>
+<li>Free-claim endpoint: the form shows its success state without sending until <code>VITE_CLAIM_URL</code> is set.</li>
+<li>Starter price and checkout; Test price once it carries 4 videos.</li>
+<li>Compare-at prices on pricing cards (keep only with a real former price).</li>
+<li>Token rename and the global type, radius and colour cleanup (this document is the spec).</li>
+<li>Founder note section (name and photo) for trust without testimonials.</li>
+</ul>
+</main>
+
+</body>
+</html>
