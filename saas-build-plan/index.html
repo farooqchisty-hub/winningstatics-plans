@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly Drops Build Plan</title>
+<meta name="description" content="The full SaaS build for Winning Statics Weekly Drops: business, product, architecture, engines, design surfaces, roadmap, risks and decisions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050505;--card:#0D0D0D;--card2:#141414;--line:#232323;--ink:#FCFCFC;--mute:#A3A3A3;--dim:#6B6B6B;
+  --mint:#71D793;--mint-2:#41B983;--mint-soft:rgba(113,215,147,.12);
+  --amber:#F2C265;--amber-soft:rgba(242,194,101,.12);--red:#F08A8A;--red-soft:rgba(240,138,138,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:880px;margin:0 auto;padding:56px 16px 96px}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.1;letter-spacing:-.02em;margin:0 0 14px}
+h2{font-size:22px;letter-spacing:-.01em;margin:56px 0 14px;padding-top:24px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:22px 0 8px}
+p{margin:0 0 14px;color:#E4E4E4}
+.lede{font-size:18px;color:var(--mute);max-width:680px}
+.eyebrow{font:500 12px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mint);margin-bottom:18px}
+.meta{font-size:13px;color:var(--dim);margin-top:18px}
+code,.mono{font-family:'JetBrains Mono',monospace;font-size:.88em}
+code{background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+ul,ol{padding-left:20px;margin:0 0 14px}
+li{margin:0 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:14px 0}
+.tldr{border-color:rgba(113,215,147,.35);background:linear-gradient(180deg,var(--mint-soft),var(--card) 70%)}
+.tldr strong{color:var(--mint)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:680px){.grid2{grid-template-columns:1fr}}
+.flow{counter-reset:s;list-style:none;padding:0}
+.flow li{counter-increment:s;position:relative;padding:14px 16px 14px 58px;background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:8px}
+.flow li::before{content:counter(s);position:absolute;left:16px;top:14px;width:28px;height:28px;border-radius:50%;background:var(--mint-soft);color:var(--mint);font:600 13px/28px Inter;text-align:center}
+.who{display:inline-block;font:500 11px/1 'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em;padding:4px 7px;border-radius:5px;margin-right:6px;vertical-align:1px}
+.us{background:var(--mint-soft);color:var(--mint)}
+.gpt{background:var(--card2);color:var(--mute);border:1px solid var(--line)}
+.user{background:var(--amber-soft);color:var(--amber)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0 16px}
+th,td{text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.wrap{overflow-x:auto}
+.gate{display:flex;gap:14px;align-items:flex-start}
+.gate b{flex:0 0 auto;font:600 12px/1 'JetBrains Mono',monospace;color:var(--bg);background:var(--mint);border-radius:6px;padding:6px 8px;margin-top:2px}
+.phase{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.pill{font:500 12px/1 'JetBrains Mono',monospace;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:6px 10px;white-space:nowrap}
+.warn{border-color:rgba(242,194,101,.35);background:linear-gradient(180deg,var(--amber-soft),var(--card) 70%)}
+.warn h3{color:var(--amber);margin-top:0}
+.no{color:var(--red)}
+.yes{color:var(--mint)}
+.small{font-size:14px;color:var(--mute)}
+a{color:var(--mint)}
+</style>
+@media (max-width:760px){.grid2{grid-template-columns:1fr}table{font-size:13px}th,td{padding:8px 6px;overflow-wrap:anywhere}}
+.no{color:var(--amber)}
+img,svg{max-width:100%}
+</style></head><body>
+<main>
+<div class="eyebrow">Winning Statics · SaaS build plan · 4 Oct 2026</div>
+<h1>Weekly Drops: the full build, from landing page to a product people keep paying for</h1>
+<p class="lede">Everything we need to build so the product works the way the staging landing page says it does: a weekly drop of ads built from what is winning in each merchant's niche, a niche report, videos, a monthly check of their own ads, a free plan, and the plumbing that keeps it reliable and profitable. Written from four seats: founder, product, engineering and design.</p>
+<p class="meta">Staging landing page for review: <a href="https://ws-landing-staging.pages.dev">ws-landing-staging.pages.dev</a> · Personalised outreach view: <a href="https://ws-landing-staging.pages.dev/?s=gymshark.com">?s=gymshark.com</a> · Earlier plans: <a href="../weekly-drops/">Weekly Drops v1</a>, <a href="../landing-design-system/">design system</a></p>
+
+<div class="card tldr">
+<p><strong>What we are building.</strong> A done-for-you ad subscription. Every Monday each merchant gets new static ads (and monthly videos) built from three inputs: their store, the ads their competitors keep paying to run, and our ranked library of winning templates. A free plan (5 ads a month) is the hook; four paid plans convert it.</p>
+<p><strong>Where we are.</strong> Ad generation, QA, dashboard, billing and email exist. The free plan is live end to end (claim, account, generation, delivery email, verified 4 Oct). Missing: the weekly engine (competitor intel, pattern matching, scheduled drops), renewals that actually deliver, the dashboard surfaces the page promises, the ad check, our own video renders.</p>
+<p><strong>The plan.</strong> Seven phases over about 9 weeks. Outreach can start after Phase 0 (about one week). Paying customers must have the weekly engine before their first renewal, which Phase 1 delivers by 24 Oct.</p>
+<p><strong>Unit economics.</strong> Estimated gross margin 62 to 76% on paid plans; a free store costs about $0.60 a month. Numbers to be confirmed by cost logging in Phase 0.</p>
+</div>
+
+<h2>1. Founder view: the business we are building</h2>
+<div class="grid2">
+<div class="card"><h3>Who it is for</h3><p class="small">Shopify and DTC stores already running Meta ads, 30 to 3,000 orders a month, founder or a one-person marketing team, no in-house designer. 6,591 named contacts are already ready for outreach.</p></div>
+<div class="card"><h3>The promise</h3><p class="small">"New ads every Monday, built from what is winning in your niche." Proof is provenance (days running, public Ad Library), never invented ROAS.</p></div>
+<div class="card"><h3>Why we win</h3><p class="small">Cheaper than Magritte ($99 to $349 a month) for more ads, done for you unlike AdBreezy, sourced and dated unlike every competitor, plus a free monthly check of the merchant's own results that no one else offers.</p></div>
+<div class="card"><h3>Moat over time</h3><p class="small">Every drop teaches us which patterns each merchant downloads, rebuilds and reports winning in their ad check. That data improves matching for the whole niche.</p></div>
+</div>
+
+<h3>Plans and entitlements (source of truth for every surface)</h3>
+<div class="wrap"><table>
+<tr><th>Plan</th><th>Price</th><th>Statics</th><th>Weekly cadence</th><th>Videos</th><th>Products</th><th>Competitors</th><th>Ad check</th></tr>
+<tr><td>Free</td><td>$0</td><td>5 a month</td><td>1 drop a month</td><td>0</td><td>1</td><td>3 (snapshot)</td><td>1 free, once</td></tr>
+<tr><td>Starter</td><td>$29</td><td>24 a month</td><td>6 a week</td><td>2 a month</td><td>2</td><td>3</td><td>Monthly</td></tr>
+<tr><td><b>Growth</b></td><td>$64</td><td>120 a month</td><td>about 28 a week</td><td>4</td><td>8</td><td>5</td><td>Monthly</td></tr>
+<tr><td>Scale</td><td>$119</td><td>240 a month</td><td>about 55 a week</td><td>8</td><td>16</td><td>5</td><td>Monthly</td></tr>
+<tr><td>Studio</td><td>$299</td><td>600 a month</td><td>about 140 a week</td><td>12</td><td>40</td><td>5 per brand</td><td>Monthly</td></tr>
+</table></div>
+<p class="small">Yearly is 10 months' price for 12. Monthly quota is delivered weekly (quota ÷ 4.33, rounded, remainder in the last week). Cancel keeps every ad. One free plan per store domain.</p>
+
+<h3>Unit economics (estimates, confirm in Phase 0)</h3>
+<div class="wrap"><table>
+<tr><th>Plan</th><th>Revenue</th><th>Statics cost</th><th>Video cost</th><th>Intel and LLM</th><th>Est. cost</th><th>Est. margin</th></tr>
+<tr><td>Free</td><td>$0</td><td>5 × $0.12</td><td>none</td><td>$0.05</td><td>about $0.65</td><td>acquisition cost</td></tr>
+<tr><td>Starter</td><td>$29</td><td>24 × $0.12</td><td>2 × $2</td><td>$0.30</td><td>about $7</td><td>about 76%</td></tr>
+<tr><td>Growth</td><td>$64</td><td>120 × $0.12</td><td>4 × $2</td><td>$0.40</td><td>about $23</td><td>about 64%</td></tr>
+<tr><td>Scale</td><td>$119</td><td>240 × $0.12</td><td>8 × $2</td><td>$0.40</td><td>about $45</td><td>about 62%</td></tr>
+<tr><td>Studio</td><td>$299</td><td>600 × $0.12</td><td>12 × $2</td><td>$1.50</td><td>about $98</td><td>about 67%</td></tr>
+</table></div>
+<p class="small">$0.12 a finished static assumes image generation, vision QA and an average 1.3 attempts per accepted ad (the 4 Oct live test needed 6 attempts for 5 ads). Payment fees (about 4 to 5%) not included. Phase 0 adds a per-ad cost ledger so these become measured numbers.</p>
+
+<h3>Metrics we run the business on</h3>
+<ul>
+<li><b>North star:</b> weekly active downloaders (accounts that download at least one ad from the latest drop).</li>
+<li><b>Funnel:</b> outreach click → free claim (target 3 to 6%) → first drop opened (80%) → paid within 30 days (10 to 20%).</li>
+<li><b>Retention:</b> paid accounts still active at week 4 and week 12; drop open rate; downloads per drop.</li>
+<li><b>Quality:</b> QA pass rate, rebuild requests per 100 ads, delivery on time (Monday by 09:00 local).</li>
+<li><b>Cost:</b> cost per accepted ad, cost per account per month, gross margin by plan.</li>
+</ul>
+
+<h2>2. Product view: what the merchant experiences</h2>
+<h3>Core loop</h3>
+<ol class="flow">
+<li><b>Start free.</b> Store URL and email. We read the store, propose 3 competitors and build the first 5 ads. Email when ready.</li>
+<li><b>First drop.</b> Dashboard opens on "This week": 5 ads with copy, a niche snapshot (3 competitor ads that are lasting), and next month's drop shown locked.</li>
+<li><b>Upgrade.</b> One recommended plan (Growth), monthly default, cancel in one click. Upgrade starts weekly drops the following Monday.</li>
+<li><b>Every Monday.</b> New drop in the dashboard and inbox, with the niche report: what competitors kept running, what is new, which patterns we used.</li>
+<li><b>Every month.</b> Videos land; the merchant uploads an Ads Manager export; we return scale, pause and fatigue calls, and the next drops lean on their winners.</li>
+</ol>
+
+<h3>Feature list by priority</h3>
+<div class="wrap"><table>
+<tr><th>Priority</th><th>Feature</th><th>Status</th></tr>
+<tr><td>P0</td><td>Free plan: claim, 5 ads a month, one per store</td><td class="yes">Live</td></tr>
+<tr><td>P0</td><td>Paid plans with weekly quota, renewals that deliver, Starter checkout</td><td class="no">Renewals broken, Starter not in Dodo</td></tr>
+<tr><td>P0</td><td>Onboarding: confirm products, competitors, brand kit</td><td class="no">Missing</td></tr>
+<tr><td>P0</td><td>Competitor and niche intel, weekly</td><td class="no">Missing (meta-sweep code reusable)</td></tr>
+<tr><td>P0</td><td>Drop planner: pattern × template × product, Monday batch</td><td class="no">Missing</td></tr>
+<tr><td>P0</td><td>Monday email with niche report</td><td class="no">Missing</td></tr>
+<tr><td>P1</td><td>Dashboard v2: This week, Library, Competitors, Winners, Ad check, Videos, Products</td><td class="no">Partial (library exists)</td></tr>
+<tr><td>P1</td><td>Ad detail: 4 copy options, why it wins, source pattern, downloads, rebuild</td><td class="no">Partial</td></tr>
+<tr><td>P1</td><td>Ad check from Ads Manager CSV</td><td class="no">Missing</td></tr>
+<tr><td>P1</td><td>Videos: our own renders from product photos, quotas, captions</td><td class="no">Partial (text-to-video, no QA)</td></tr>
+<tr><td>P2</td><td>Feedback loop: downloads, likes, rebuild reasons, ad check winners into the planner</td><td class="no">Missing</td></tr>
+<tr><td>P2</td><td>Studio workspaces: multiple brands, seats, client view</td><td class="no">Missing</td></tr>
+<tr><td>P3</td><td>Partner access to their ad account (after Meta verification)</td><td class="no">Blocked on verification</td></tr>
+</table></div>
+
+<h2>3. Engineering view: architecture</h2>
+<div class="wrap"><table>
+<tr><th>Layer</th><th>Component</th><th>Role</th><th>State</th></tr>
+<tr><td>Web</td><td>Landing (Pages <code>winning-statics</code>)</td><td>Marketing, free claim form, outreach personalisation <code>?s= &amp;t= &amp;th=</code></td><td>Staging ready</td></tr>
+<tr><td>Web</td><td>App (Pages <code>winning-statics-app</code>)</td><td>Dashboard SPA</td><td>Exists, v2 needed</td></tr>
+<tr><td>API</td><td>Worker <code>winningstatics-api</code></td><td>Auth hooks, checkout, webhooks, entitlements, generation pump (cron 1/min), email</td><td>Exists</td></tr>
+<tr><td>Intel</td><td>Worker <code>ws-intel</code> (new)</td><td>Competitor discovery, weekly Ad Library pulls, media caching, classification, pattern scoring</td><td>New, reuses meta-sweep</td></tr>
+<tr><td>Planner</td><td>Module in API, weekly cron</td><td>Builds each account's Monday drop briefs and queues generation</td><td>New</td></tr>
+<tr><td>Video</td><td>Async jobs via Replicate webhooks</td><td>Image-to-video, captions, QA</td><td>Rebuild</td></tr>
+<tr><td>Queues</td><td>Cloudflare Queues</td><td>Intel pulls, drop planning, video jobs; self-feeding, retry ceilings</td><td>New</td></tr>
+<tr><td>Data</td><td>Supabase Postgres + Auth + Storage</td><td>Accounts, orders, products, ads, intel, drops, ledger; RLS</td><td>Exists, extend</td></tr>
+<tr><td>Media</td><td>R2</td><td>Cached competitor ad media (Ad Library URLs expire)</td><td>New</td></tr>
+<tr><td>External</td><td>treg (ScrapeCreators), OpenRouter Luna, Replicate (gpt-image-2, Seedance), Dodo, Brevo, PostHog, Slack</td><td>Data, LLM, generation, billing, email, analytics, ops</td><td>Connected</td></tr>
+</table></div>
+
+<h3>Engineering principles (non-negotiable)</h3>
+<ul>
+<li><b>Durable async jobs.</b> Every expensive step (intel pull, plan, generate, QA, video, email) is a row with a state machine (queued, running, done, failed, retry_at, attempts) and a retry ceiling. No work lives only in memory. Proven necessary by the meta-sweep (stuck queues, 409 replays).</li>
+<li><b>Versioned context and lineage.</b> Each drop records the product-context version, the patterns, templates and competitor ads it came from. Every ad can answer "why does this exist".</li>
+<li><b>Entitlement ledger.</b> Quotas are a ledger (granted, reserved, consumed, refunded), not counters scattered across orders. Fixes the renewals bug class for good.</li>
+<li><b>Fail closed.</b> QA errors hold an ad; payment and claim paths are idempotent; kill switches for free claims, marketing, intel and video.</li>
+<li><b>One deploy path.</b> Merge main before any backend deploy (4 Oct lesson); staging Worker gets real secrets so full paths can be tested off production.</li>
+<li><b>Cost visible.</b> Every external call logs cost against account and drop.</li>
+</ul>
+
+<h3>Data model additions</h3>
+<div class="wrap"><table>
+<tr><th>Table</th><th>Purpose</th><th>Key fields</th></tr>
+<tr><td><code>plans</code> / <code>entitlements</code> / <code>usage_ledger</code></td><td>What each account may receive, and what it used</td><td>plan, period, statics_granted, videos_granted, reserved, consumed, refunded</td></tr>
+<tr><td><code>product_context</code></td><td>Versioned facts per product</td><td>version, claims, proof inventory (reviews, before and after, price edge), audience, tone, brand kit</td></tr>
+<tr><td><code>competitors</code></td><td>Who each account tracks</td><td>account, domain, meta_page_id, source (suggested or user), active</td></tr>
+<tr><td><code>intel_ads</code></td><td>Competitor and niche ads seen</td><td>page_id, archive_id, first_seen, last_seen, start_date, days_running, variant_group, format, copy, landing_host, media (R2), taxonomy labels</td></tr>
+<tr><td><code>patterns</code></td><td>Winning patterns per niche and week</td><td>niche, week, taxonomy key, score, evidence (ads, median days), mapped template styles</td></tr>
+<tr><td><code>drops</code> / <code>drop_items</code></td><td>The Monday batch</td><td>account, week, status, mix (competitor, library, test), brief per item, ad id, lineage</td></tr>
+<tr><td><code>video_jobs</code></td><td>Video generation</td><td>style, product photo, script, provider id, captions, qa, cost</td></tr>
+<tr><td><code>ad_checks</code> / <code>ad_check_rows</code></td><td>Uploaded Ads Manager exports and verdicts</td><td>period, rows, spend, cpa, ctr, frequency trend, verdict, reason</td></tr>
+<tr><td><code>feedback_events</code></td><td>Learning signal</td><td>download, like, rebuild reason, ad check verdict, per ad and pattern</td></tr>
+<tr><td><code>cost_ledger</code></td><td>Unit economics</td><td>account, drop, provider, call, cost_usd</td></tr>
+</table></div>
+
+<h3>The engines</h3>
+<div class="card"><h3>A. Store understanding (extend <code>enrichProduct</code>)</h3><p class="small">Read the store: products, photos, prices, claims, reviews, colours, fonts, logo. Output a versioned product context, including a proof inventory that decides which patterns are allowed (no review wall without reviews, no before and after without a visible change). Merchant confirms in onboarding.</p></div>
+<div class="card"><h3>B. Competitor and niche intel (<code>ws-intel</code>)</h3><p class="small">Discovery: Luna proposes competitors from the store's category and copy, resolved to Meta pages with the meta-sweep identity rules (landing-domain proof first, platform-link blocklist). Weekly pull per competitor plus one niche keyword search; media cached to R2; near-duplicate clustering (perceptual hash) counts variants; classification by Luna (copy: hook, angle, offer) and a vision model (format, visual style) into our 15-style taxonomy. Pattern score = days running × variants × still active × recency × niche relevance. Per-account cap about $0.05 a week. Shared cache: one niche pull serves every account in that niche.</p></div>
+<div class="card"><h3>C. Drop planner</h3><p class="small">For each account and week: quota from the ledger; mix about 50% competitor patterns that are lasting, 30% library winners for the category, 20% new angles; diversity rules (no more than 2 ads per pattern, rotate products, cover 1:1, 4:5, 9:16); ad check winners raise their patterns' weight. Output: one brief per ad (pattern, template id, product, angle, copy direction) queued for generation by Sunday night.</p></div>
+<div class="card"><h3>D. Generation and QA (existing, harden)</h3><p class="small">Template-led generation from the ranked library (never improvised prompts), product fidelity and OCR checks, claim check against product context, fail closed, auto-rebuild once, then hold for human review. First drop of every new account gets a human glance before release (sampling later).</p></div>
+<div class="card"><h3>E. Delivery and the niche report</h3><p class="small">Monday 06:00 in the merchant's timezone: drop published in the dashboard, email with 3 competitor ads that are lasting (dated, linked to the Ad Library), the patterns used, and the new ads. Late drop alert to Slack if not complete by Monday 09:00.</p></div>
+<div class="card"><h3>F. Videos</h3><p class="small">Style templates from the MagicFit video library (22 styles), image-to-video from the merchant's product photo, scripted from the winning pattern, captions burned in, frame-sampled QA against the product photo, quota from the ledger, replaced by statics if QA fails. Replaces the 13 placeholder clips (production deploy is blocked until then).</p></div>
+<div class="card"><h3>G. Ad check</h3><p class="small">Upload an Ads Manager CSV (ad level, daily breakdown). Tolerant parser (column names, languages, currencies). Verdicts with minimum-spend thresholds: scale, keep, fatigue (CTR falling while frequency rises), pause (spend, no purchases). Report page and email; winners feed the planner. Later: partner access to their ad account once Meta verifies Millionth Mile Marketing.</p></div>
+<div class="card"><h3>H. Billing and entitlements</h3><p class="small">Dodo products for Starter, Growth, Scale, Studio (monthly and yearly). Webhook grants a period in the ledger; renewals grant the next period (this fixes the renewals bug); upgrades take effect next Monday with proration; downgrades and cancels at period end; failed payment pauses drops after a 3 day grace; cancel keeps all ads.</p></div>
+<div class="card"><h3>I. Lifecycle and growth</h3><p class="small">Free: first drop email, day 3 niche snapshot, day 7 "your next drop is locked" with the upgrade, monthly free drop email. Paid: Monday drop email, monthly video and ad check prompts, inactivity nudge after 2 unopened drops, cancel save (pause a month or drop a plan). Outreach attribution via the <code>t</code> token on every claim.</p></div>
+<div class="card"><h3>J. Admin and ops console</h3><p class="small">Queues and job health, late drops, QA hold queue, cost per account and per plan, intel coverage (accounts with fewer than 3 resolvable competitors), free-claim abuse view, manual overrides (re-run drop, grant ads, swap competitor). Slack alerts for failures, late drops and cost spikes.</p></div>
+
+<h3>Security, legal and compliance</h3>
+<ul>
+<li>Supabase magic-link auth, RLS on every table (verified), rate limits and Turnstile on public endpoints, CORS tightened to our origins, signed URLs for private assets.</li>
+<li>GDPR: account deletion (currently mocked), data export, unsubscribe on every email, legal name Millionth Mile Marketing on terms and privacy (placeholders in <code>terms.tsx</code> still open).</li>
+<li>Claims policy: provenance only ("running 143 days"), no invented performance, competitor creative shown only from the public Ad Library with source and date.</li>
+<li>Placeholder videos: <code>PLACEHOLDER_VIDEOS.txt</code> blocks production landing deploys until our renders replace them.</li>
+</ul>
+
+<h2>4. Design view: the product surfaces</h2>
+<p class="small">Cues from the Magritte audit (36 screens): their dashboard mixes weekly concepts, proven ads and templates on one home; navigation is split between icons and a long profile menu (their own weak spot); concepts support This week / All, product filters, edit, download, variations. We keep the strengths and fix the weak spots with one visible left navigation.</p>
+<div class="wrap"><table>
+<tr><th>Surface</th><th>Purpose</th><th>Key elements</th></tr>
+<tr><td>Onboarding</td><td>From URL to first drop in under 3 minutes</td><td>Store read progress, confirm products, confirm or swap competitors (logos, live ad counts), brand kit check, "first drop building" with live preview</td></tr>
+<tr><td>This week</td><td>Home, every Monday</td><td>Drop grid, niche report strip, patterns used, videos this month, plan usage, next drop countdown</td></tr>
+<tr><td>Library</td><td>Every ad ever delivered</td><td>Filters: week, product, pattern, ratio, status; bulk download; rebuild</td></tr>
+<tr><td>Ad detail drawer</td><td>Everything about one ad</td><td>Ratios, 4 copy options per field, why it wins, source pattern and competitor examples, download, rebuild with reason, thumbs up or down</td></tr>
+<tr><td>Competitors</td><td>The niche board</td><td>Tracked brands with logos, longest running, new this week, most variants (the board on the landing page, live)</td></tr>
+<tr><td>Winners</td><td>Our template library</td><td>15 kinds of winners, request one for your product</td></tr>
+<tr><td>Ad check</td><td>Monthly review of their own ads</td><td>Upload with a 3-step export guide, report with verdict chips, history</td></tr>
+<tr><td>Videos</td><td>Monthly bonus</td><td>Quota, styles, delivered videos with captions on and off</td></tr>
+<tr><td>Products and Brand</td><td>Context the engine uses</td><td>Products, proof inventory, colours, fonts, logo, tone</td></tr>
+<tr><td>Billing</td><td>Plan and usage</td><td>Plan, usage this period, upgrade, pause, cancel (keep ads)</td></tr>
+</table></div>
+<p class="small">Visual system: the landing page tokens (near-black, mint for action and proof only, Geist, WCAG 2.2 AA). Every list has loading skeletons, empty states that say how to fill them, and error states. Built in Replit from these specs; Claude wires data, copy and API.</p>
+
+<h2>5. Roadmap</h2>
+<div class="phase"><h3>Phase 0: foundation and launch readiness</h3><span class="pill">6 to 10 Oct</span></div>
+<ul>
+<li>Entitlement ledger and renewals that deliver (fixes renewals bug); Studio filter fixes; QA fail closed.</li>
+<li>Dodo products for Starter (monthly, yearly); remove one-time packs from checkout; plan names aligned on all four surfaces (Worker, landing, dashboard, Dodo).</li>
+<li>Cost ledger on every external call; staging Worker with real secrets.</li>
+<li>Legal: Millionth Mile Marketing in terms, privacy, footer; account deletion built.</li>
+<li>Landing: staging reviewed and merged except placeholder videos (blocked by the guard).</li>
+<li><b>Exit:</b> a paid test checkout on Starter and Growth grants the right weekly quota; outreach can start.</li>
+</ul>
+<div class="phase"><h3>Phase 1: weekly engine v1</h3><span class="pill">13 to 24 Oct</span></div>
+<ul>
+<li><code>ws-intel</code>: discovery, weekly pull, R2 media, clustering, classification, pattern scores; shared niche cache.</li>
+<li>Planner and Monday batch; Monday email with niche report; late-drop alerts.</li>
+<li>Onboarding steps for competitors and products (API first; UI in Phase 2).</li>
+<li><b>Exit:</b> 10 test accounts across 5 niches receive correct Monday drops two weeks running, on time, with lineage.</li>
+</ul>
+<div class="phase"><h3>Phase 2: dashboard v2</h3><span class="pill">20 Oct to 31 Oct (parallel)</span></div>
+<ul>
+<li>Left navigation; This week, Library, Ad detail drawer, Competitors, Winners, Products, Billing; onboarding UI; skeleton, empty and error states.</li>
+<li><b>Exit:</b> a new free user goes from claim to first drop download without help; usability test with 5 merchants.</li>
+</ul>
+<div class="phase"><h3>Phase 3: ad check</h3><span class="pill">3 to 7 Nov</span></div>
+<ul><li>Upload, parser, verdicts, report, email, planner weighting. <b>Exit:</b> 5 real exports parsed with no manual fixes.</li></ul>
+<div class="phase"><h3>Phase 4: video v1</h3><span class="pill">3 to 14 Nov</span></div>
+<ul><li>Our renders for the 14 styles (replaces placeholders, unblocks production landing), image-to-video, captions, QA, quotas. <b>Exit:</b> 10 stores, pass rate at least 80%, cost per video measured.</li></ul>
+<div class="phase"><h3>Phase 5: growth loops and ops</h3><span class="pill">10 to 21 Nov</span></div>
+<ul><li>Lifecycle emails, upgrade mechanics (locked next drop, deadline), PostHog funnel, admin console, cancel save, feedback loop into the planner. <b>Exit:</b> funnel dashboard live; free to paid measured weekly.</li></ul>
+<div class="phase"><h3>Phase 6: scale</h3><span class="pill">December onward</span></div>
+<ul><li>Studio workspaces (multi-brand, seats), partner access to ad accounts after Meta verification, human curation queue for the template library, API for agencies.</li></ul>
+
+<h3>Ownership</h3>
+<div class="wrap"><table>
+<tr><th>Who</th><th>Owns</th></tr>
+<tr><td>Farooq</td><td>Decisions, pricing, brand, outreach, approvals for sends and spend, Replit UI direction</td></tr>
+<tr><td>Claude</td><td>Backend, data model, engines, infra, copy, API wiring, QA, docs, ops tooling</td></tr>
+<tr><td>Replit</td><td>Dashboard and landing UI components from the specs (UI authority rule)</td></tr>
+</table></div>
+
+<h2>6. Risks</h2>
+<div class="card warn"><h3>What could go wrong, and the guard</h3><ul>
+<li><b>Paid customers before the weekly engine.</b> Guard: sell paid plans only after Phase 0; Phase 1 lands before any first renewal week.</li>
+<li><b>Ad Library coverage gaps</b> (competitors without a resolvable page). Guard: niche keyword pulls and library patterns fill the mix; never show an empty report.</li>
+<li><b>Generation cost drift.</b> Guard: cost ledger, per-account caps, alerts.</li>
+<li><b>Quality complaints.</b> Guard: fail-closed QA, human check on first drops, rebuild free, feedback loop.</li>
+<li><b>Deploy regressions</b> (4 Oct). Guard: merge main first, diff check, staging with real secrets.</li>
+<li><b>Free plan abuse.</b> Guard: one per domain, rate limit, Turnstile, daily cap, kill switch.</li>
+<li><b>Compliance.</b> Guard: provenance-only claims, legal pages, unsubscribe, deletion, placeholder guard.</li>
+</ul></div>
+
+<h2>7. Decisions needed</h2>
+<ol>
+<li>Confirm the entitlements table (free 5 a month, weekly cadence per plan, competitors per plan).</li>
+<li>Monday delivery time: 06:00 merchant local time, or one global time?</li>
+<li>Human check on every new account's first drop (recommended for the first 100 accounts)?</li>
+<li>Turnstile on the free claim before outreach volume (recommended)?</li>
+<li>Upgrade Brevo plan before outreach (the free plan caps email at 300 a day)?</li>
+</ol>
+
+<h2>8. Review the staging landing page</h2>
+<p><a href="https://ws-landing-staging.pages.dev">ws-landing-staging.pages.dev</a> (noindex). The free claim form is live and creates real free accounts.</p>
+<ul>
+<li>Hero with live drop stack, claim form and outreach personalisation (<a href="https://ws-landing-staging.pages.dev/?s=gymshark.com">try ?s=gymshark.com</a>).</li>
+<li>How it works loop, pattern switcher, competitor board, video bonus row (14 styles), ad check, winners library, dashboard, comparison, pricing (Starter, Growth, Scale, Studio), FAQ.</li>
+<li>Still to rebuild from your notes: the 4-step loop with the matching engine, the build line (static frames, marching ants), the pattern section copy and layout, the Gymshark competitor board with real ads, the ad check as an Ads Manager mockup, the dashboard section, the tool comparison with real logos and pricing.</li>
+</ul>
+</main>
+</body></html>
