@@ -183,7 +183,7 @@ img,svg{max-width:100%}
 <div class="card"><h3>B. Competitor and niche intel (<code>ws-intel</code>)</h3><p class="small">Discovery: Luna proposes competitors from the store's category and copy, resolved to Meta pages with the meta-sweep identity rules (landing-domain proof first, platform-link blocklist). Weekly pull per competitor plus one niche keyword search; media cached to R2; near-duplicate clustering (perceptual hash) counts variants; classification by Luna (copy: hook, angle, offer) and a vision model (format, visual style) into our 15-style taxonomy. Pattern score = days running × variants × still active × recency × niche relevance. Per-account cap about $0.05 a week. Shared cache: one niche pull serves every account in that niche.</p></div>
 <div class="card"><h3>C. Drop planner</h3><p class="small">For each account and week: quota from the ledger; mix about 50% competitor patterns that are lasting, 30% library winners for the category, 20% new angles; diversity rules (no more than 2 ads per pattern, rotate products, cover 1:1, 4:5, 9:16); ad check winners raise their patterns' weight. Output: one brief per ad (pattern, template id, product, angle, copy direction) queued for generation by Sunday night.</p></div>
 <div class="card"><h3>D. Generation and QA (existing, harden)</h3><p class="small">Template-led generation from the ranked library (never improvised prompts), product fidelity and OCR checks, claim check against product context, fail closed, auto-rebuild once, then hold for human review. First drop of every new account gets a human glance before release (sampling later).</p></div>
-<div class="card"><h3>E. Delivery and the niche report</h3><p class="small">Monday 06:00 in the merchant's timezone: drop published in the dashboard, email with 3 competitor ads that are lasting (dated, linked to the Ad Library), the patterns used, and the new ads. Late drop alert to Slack if not complete by Monday 09:00.</p></div>
+<div class="card"><h3>E. Delivery and the niche report</h3><p class="small">Monday 10:00 UTC for every account (one global time, decided 4 Oct; it is Monday everywhere from Hawaii to New Zealand): drop published in the dashboard, email with 3 competitor ads that are lasting (dated, linked to the Ad Library), the patterns used, and the new ads. Late drop alert to Slack if any drop is not complete by 09:00 UTC, an hour before release.</p></div>
 <div class="card"><h3>F. Videos</h3><p class="small">Style templates from the MagicFit video library (22 styles), image-to-video from the merchant's product photo, scripted from the winning pattern, captions burned in, frame-sampled QA against the product photo, quota from the ledger, replaced by statics if QA fails. Replaces the 13 placeholder clips (production deploy is blocked until then).</p></div>
 <div class="card"><h3>G. Ad check</h3><p class="small">Upload an Ads Manager CSV (ad level, daily breakdown). Tolerant parser (column names, languages, currencies). Verdicts with minimum-spend thresholds: scale, keep, fatigue (CTR falling while frequency rises), pause (spend, no purchases). Report page and email; winners feed the planner. Later: partner access to their ad account once Meta verifies Millionth Mile Marketing.</p></div>
 <div class="card"><h3>H. Billing and entitlements</h3><p class="small">Dodo products for Starter, Growth, Scale, Studio (monthly and yearly). Webhook grants a period in the ledger; renewals grant the next period (this fixes the renewals bug); upgrades take effect next Monday with proration; downgrades and cancels at period end; failed payment pauses drops after a 3 day grace; cancel keeps all ads.</p></div>
@@ -192,7 +192,7 @@ img,svg{max-width:100%}
 
 <h3>Security, legal and compliance</h3>
 <ul>
-<li>Supabase magic-link auth, RLS on every table (verified), rate limits and Turnstile on public endpoints, CORS tightened to our origins, signed URLs for private assets.</li>
+<li>Supabase magic-link auth, RLS on every table (verified), rate limits and Turnstile on public endpoints (live on the free claim since 4 Oct), CORS tightened to our origins, signed URLs for private assets.</li>
 <li>GDPR: account deletion (currently mocked), data export, unsubscribe on every email, legal name Millionth Mile Marketing on terms and privacy (placeholders in <code>terms.tsx</code> still open).</li>
 <li>Claims policy: provenance only ("running 143 days"), no invented performance, competitor creative shown only from the public Ad Library with source and date.</li>
 <li>Placeholder videos: <code>PLACEHOLDER_VIDEOS.txt</code> blocks production landing deploys until our renders replace them.</li>
@@ -222,7 +222,10 @@ img,svg{max-width:100%}
 <li>Dodo products for Starter (monthly, yearly); remove one-time packs from checkout; plan names aligned on all four surfaces (Worker, landing, dashboard, Dodo).</li>
 <li>Cost ledger on every external call; staging Worker with real secrets.</li>
 <li>Legal: Millionth Mile Marketing in terms, privacy, footer; account deletion built.</li>
-<li>Landing: staging reviewed and merged except placeholder videos (blocked by the guard).</li>
+<li>Landing: staging reviewed and merged except placeholder videos (blocked by the guard). Speed and design pass done 4 Oct (section 9).</li>
+<li>First-drop human review: every new account's first drop waits in a review queue and a person releases it (decided 4 Oct, for now; revisit at 100 accounts). Slack ping on hold, release target 2 hours. When it ships, the claim confirmation changes from "usually within the hour" to "within a few hours".</li>
+<li>Monday release fixed at 10:00 UTC for all accounts (planner, email, dashboard countdown, landing copy).</li>
+<li class="yes">Done 4 Oct: Cloudflare Turnstile on the free claim (managed mode, invisible unless Cloudflare needs a click). Claims without a valid token are rejected before anything is written.</li>
 <li><b>Exit:</b> a paid test checkout on Starter and Growth grants the right weekly quota; outreach can start.</li>
 </ul>
 <div class="phase"><h3>Phase 1: weekly engine v1</h3><span class="pill">13 to 24 Oct</span></div>
@@ -261,25 +264,63 @@ img,svg{max-width:100%}
 <li><b>Generation cost drift.</b> Guard: cost ledger, per-account caps, alerts.</li>
 <li><b>Quality complaints.</b> Guard: fail-closed QA, human check on first drops, rebuild free, feedback loop.</li>
 <li><b>Deploy regressions</b> (4 Oct). Guard: merge main first, diff check, staging with real secrets.</li>
-<li><b>Free plan abuse.</b> Guard: one per domain, rate limit, Turnstile, daily cap, kill switch.</li>
+<li><b>Free plan abuse.</b> Guard: one per domain, rate limit, Turnstile (live 4 Oct), daily cap, kill switch.</li>
 <li><b>Compliance.</b> Guard: provenance-only claims, legal pages, unsubscribe, deletion, placeholder guard.</li>
 </ul></div>
 
-<h2>7. Decisions needed</h2>
-<ol>
-<li>Confirm the entitlements table (free 5 a month, weekly cadence per plan, competitors per plan).</li>
-<li>Monday delivery time: 06:00 merchant local time, or one global time?</li>
-<li>Human check on every new account's first drop (recommended for the first 100 accounts)?</li>
-<li>Turnstile on the free claim before outreach volume (recommended)?</li>
-<li>Upgrade Brevo plan before outreach (the free plan caps email at 300 a day)?</li>
-</ol>
+<h2>7. Decisions (answered 4 Oct)</h2>
+<div class="wrap"><table>
+<tr><th>Question</th><th>Decision</th><th>What changes</th></tr>
+<tr><td>Entitlements table</td><td class="yes">Approved as written</td><td>Free 5 a month; Starter 24, Growth 120, Scale 240, Studio 600; weekly cadence and competitors per plan as in section 1.</td></tr>
+<tr><td>Monday delivery time</td><td class="yes">One global time</td><td>Monday 10:00 UTC for every account. Landing and dashboard copy already say so.</td></tr>
+<tr><td>Human check on first drops</td><td class="yes">Yes, for now</td><td>Review queue in Phase 0; revisit at 100 accounts.</td></tr>
+<tr><td>Turnstile on the free claim</td><td class="yes">Yes, done 4 Oct</td><td>Widget live on staging; the API rejects claims without a valid token.</td></tr>
+<tr><td>Upgrade Brevo plan</td><td>Not now</td><td>Upgrade on the day Farooq says the product is live (the free plan caps email at 300 a day). Added to the go-live checklist below.</td></tr>
+</table></div>
+<h3>Go-live checklist (when Farooq says the product is live)</h3>
+<ul>
+<li>Upgrade the Brevo plan before the first outreach wave.</li>
+<li>Replace the 13 placeholder style videos and their posters with our renders, then delete <code>PLACEHOLDER_VIDEOS.txt</code> (production deploys refuse until then).</li>
+<li>Production landing build gets the same steps as staging: HTML minify, claim URL, Turnstile site key (already defaulted in code).</li>
+</ul>
 
 <h2>8. Review the staging landing page</h2>
-<p><a href="https://ws-landing-staging.pages.dev">ws-landing-staging.pages.dev</a> (noindex). The free claim form is live and creates real free accounts.</p>
+<p><a href="https://ws-landing-staging.pages.dev">ws-landing-staging.pages.dev</a> (noindex). The free claim form is live, creates real free accounts and is protected by Turnstile.</p>
 <ul>
 <li>Hero with live drop stack, claim form and outreach personalisation (<a href="https://ws-landing-staging.pages.dev/?s=gymshark.com">try ?s=gymshark.com</a>).</li>
 <li>How it works loop, pattern switcher, competitor board, video bonus row (14 styles), ad check, winners library, dashboard, comparison, pricing (Starter, Growth, Scale, Studio), FAQ.</li>
-<li>Still to rebuild from your notes: the 4-step loop with the matching engine, the build line (static frames, marching ants), the pattern section copy and layout, the Gymshark competitor board with real ads, the ad check as an Ads Manager mockup, the dashboard section, the tool comparison with real logos and pricing.</li>
+<li>All section notes from 3 to 4 Oct are built: the engine schematic (store, competitors and winners library into the planner, results looping back), the build line with still frames and dotted connectors, patterns taught as Concept, Mechanism, Evidence, Application, the activewear board with real ads from Gymshark, Alo Yoga, Vuori, Lululemon and Alphalete, the ad check as an Ads Manager table, the dashboard mock, and the tool comparison with logos and dated pricing.</li>
+</ul>
+
+<h2>9. Landing page speed and design pass (4 Oct)</h2>
+<p class="small">Reported problem: the page felt glitchy and shaky. Measured on staging before and after, same tools and settings (Lighthouse 12, mobile and desktop presets; a scripted scroll through the full page in headless Chrome).</p>
+<div class="wrap"><table>
+<tr><th>Metric</th><th>Before</th><th>After</th></tr>
+<tr><td>Scroll, desktop: average frame</td><td>33.7 ms (about 30 fps)</td><td class="yes">17.4 ms (about 57 fps)</td></tr>
+<tr><td>Scroll, desktop: worst frame</td><td>150 ms</td><td class="yes">33 ms</td></tr>
+<tr><td>Scroll, phone: slow frames (over 33 ms)</td><td>102</td><td class="yes">1</td></tr>
+<tr><td>Animations running at once (peak)</td><td>15</td><td class="yes">8 desktop, 2 phone</td></tr>
+<tr><td>Lighthouse, phone</td><td>76</td><td class="yes">83</td></tr>
+<tr><td>Lighthouse, desktop</td><td>98</td><td class="yes">99</td></tr>
+<tr><td>Page weight on load, phone</td><td>1,117 KB</td><td class="yes">572 KB</td></tr>
+<tr><td>JavaScript (minified)</td><td>793 KB in one file</td><td class="yes">562 KB in 3 files</td></tr>
+<tr><td>Main-thread work, phone</td><td>2.2 s</td><td class="yes">1.3 s</td></tr>
+<tr><td>Images on first load, phone</td><td>35 files, 726 KB</td><td class="yes">21 files, 288 KB</td></tr>
+</table></div>
+<h3>What changed</h3>
+<ul>
+<li><b>The shake:</b> the fixed background ran nine animated, masked layers behind every scroll frame. It is now one static layer that looks the same. Scroll reveals fade only (no sliding), and content already on screen is not faded at all.</li>
+<li><b>Less motion:</b> hero stack rotates every 5s with short tweens (was springs every 3.2s), pauses offscreen, no blur behind moving cards; section entrance animations removed; accordions that resized the page replaced by fixed layouts.</li>
+<li><b>Lighter load:</b> sections that are not on the page and the legal pages load only when needed; unused React Query, tooltip and toast providers removed; 11 decorative fonts no longer block first paint; Geist loads once.</li>
+<li><b>Media:</b> 320px copies of every library ad for small slots, competitor ads as WebP (975 KB to 264 KB), style videos recompressed (3.7 MB to 2.9 MB) with WebP posters, videos created only near the screen and at most 4 playing at once (2 on phones), long cache headers for videos, competitor ads and thumbs.</li>
+<li><b>Minified:</b> JS and CSS minified with no source maps, framework split into its own cached chunks, HTML shell minified at deploy.</li>
+<li><b>Design:</b> one shared instrument-panel kit (mono eyebrows, panel bars with live state, crop marks, data rows, segmented controls, hairline grids, Geist Mono for numbers) applied to every new section; the video row now sits inside the page column.</li>
+</ul>
+<h3>Next speed steps (not done yet)</h3>
+<ul>
+<li>Pre-render the landing HTML at build time so phones paint before JavaScript arrives (largest remaining win: first paint on a slow phone is 3.2 s). Needs care so the personalised hero (<code>?s=</code>) does not flash.</li>
+<li>Audit the 243 KB stylesheet (Tailwind plus custom CSS) and self-host the two fonts.</li>
+<li>framer-motion (135 KB) is still used by the nav, hero and pricing; replace with CSS where it only fades.</li>
 </ul>
 </main>
 </body></html>
