@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Winning Statics Go-Live Runbook</title>
+<meta name="description" content="What was done overnight on 6 to 7 Oct 2026, the ordered go-live flips with verify and rollback steps, and the ad-engine fix queue.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050505;--card:#0D0D0D;--card2:#141414;--line:#232323;--ink:#FCFCFC;--mute:#A3A3A3;--dim:#6B6B6B;
+  --mint:#71D793;--mint-soft:rgba(113,215,147,.12);
+  --amber:#F2C265;--amber-soft:rgba(242,194,101,.12);--red:#F08A8A;--red-soft:rgba(240,138,138,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:880px;margin:0 auto;padding:40px 16px 96px}
+h1{font-size:clamp(28px,6vw,42px);line-height:1.1;letter-spacing:-.02em;margin:0 0 12px}
+h2{font-size:21px;letter-spacing:-.01em;margin:48px 0 12px;padding-top:22px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:20px 0 8px}
+p{margin:0 0 12px;color:#E4E4E4}
+.lede{font-size:17px;color:var(--mute)}
+.eyebrow{font:500 12px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mint);margin-bottom:16px}
+code,.mono{font-family:'JetBrains Mono',monospace;font-size:.86em;overflow-wrap:anywhere}
+code{background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+pre{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow-x:auto;font:13px/1.5 'JetBrains Mono',monospace;margin:6px 0 12px}
+ul,ol{padding-left:20px;margin:0 0 12px}
+li{margin:0 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:12px 0}
+.tldr{border-color:rgba(113,215,147,.35);background:linear-gradient(180deg,var(--mint-soft),var(--card) 70%)}
+.warn{border-color:rgba(242,194,101,.35);background:linear-gradient(180deg,var(--amber-soft),var(--card) 70%)}
+.warn h3{color:var(--amber);margin-top:0}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0 14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.wrap{overflow-x:auto}
+.flip{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0}
+.flip h3{margin:0 0 8px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.flip dl{margin:0;display:grid;grid-template-columns:92px 1fr;gap:6px 12px;font-size:14px}
+.flip dt{color:var(--mute);font-weight:600}
+.flip dd{margin:0;color:#E4E4E4;min-width:0}
+@media (max-width:520px){.flip dl{grid-template-columns:1fr}.flip dt{margin-top:6px}}
+.n{font:600 12px/1 'JetBrains Mono',monospace;color:var(--bg);background:var(--mint);border-radius:6px;padding:5px 7px}
+.who{display:inline-block;font:500 11px/1 'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em;padding:4px 7px;border-radius:5px}
+.me{background:var(--mint-soft);color:var(--mint)}
+.owner{background:var(--amber-soft);color:var(--amber)}
+.ok{color:var(--mint)}.bad{color:var(--red)}.amb{color:var(--amber)}
+.small{font-size:14px;color:var(--mute)}
+a{color:var(--mint)}
+</style>
+</head>
+<body>
+<main>
+<div class="eyebrow">Winning Statics · go-live runbook · night of 6 to 7 Oct 2026</div>
+<h1>Go-live runbook</h1>
+<p class="lede">Everything that could not touch a real visitor was done overnight. Every switch that changes the public site, charges a card, sends an email or turns the new engine on for real visitors is listed below, in order, for your single "go live".</p>
+
+<div class="card tldr">
+<p><strong>Ready.</strong> Production now runs the full new code dark (version <code>ced460bc</code>, every new switch off), all six migrations are applied with the template library tagged and slotted, ws-intel exists dark, and the new landing is live on a preview only: <a href="https://golive.winning-statics.pages.dev">golive.winning-statics.pages.dev</a>. winningstatics.com, the app, Dodo and email are untouched. Nothing was charged or sent.</p>
+<p><strong>Not done: the production proof drop.</strong> blastvitality.com answered <b>HTTP 429</b> to all 15 reads the production Worker made over 2 hours of retries, while serving 200 to a normal browser. Nothing was spent; the phase was stopped and its switches reverted. This is the same block rounds 4 and 5 saw, now with its cause logged, and it is the main risk for flip 2 (fix 0 below).</p>
+<p><strong>Your "go live"</strong> is 7 flips (section b), plus your answers in section d. Spend tonight: $0.00 (pilot total stays $27.67).</p>
+</div>
+
+<h2>a. Done tonight, with evidence</h2>
+<div class="wrap"><table>
+<tr><th>Step</th><th>Status</th><th>Evidence</th></tr>
+<tr><td>1. Product reads across cron runs</td><td class="ok">Done</td><td>Commit <code>19ae8b0</code>. Migration <code>003d_product_reads.sql</code> (products.read_attempts, next_read_at). An empty page read parks the product and the cron reads it again after 2, 5, 15, 30 and 60 min (6 runs), never paying the enrichment model; after the 6th it fails with a clear reason and one alert. Each empty read now records its HTTP status. Live proof on staging: an unreachable probe URL was read at 00:03, 00:07, 00:13, 00:29, 01:01 and 02:03Z, then failed with "store page read empty on 6 cron runs over about 112 min (last HTTP 530, 3 tries each)". Applied to staging 22:48Z (APPLIED_STAGING.txt).</td></tr>
+<tr><td>Deploy gate fix</td><td class="ok">Done</td><td>Commit <code>f75ce8a</code>: deploy-prod.sh now requires the lettered migrations (003a to 003d) too; its old pattern skipped them.</td></tr>
+<tr><td>2. Merge main</td><td class="ok">Done</td><td><code>git fetch &amp;&amp; git merge origin/main</code>: already up to date (main <code>1f3288e</code> is in the branch). No conflict, no Replit file touched. Tests green, pushed.</td></tr>
+<tr><td>3. Production migrations</td><td class="ok">Done</td><td>Read-only PREFLIGHT first: no drift (every column, constraint and function of the 13 production tables matches the staging base), all 001 prerequisites met, none of the new objects present. Applied one at a time through the Management API, each with its verification queries: 001 (22:53:52Z), 002, 003a, 003b, 003c, 003d (22:55:41Z). Template tags and slot contracts loaded from the existing out/ files (offline dry runs: 0 templates needed a paid call): 739 of 739 active templates tagged and slotted, 3767 slots, md5 of all tags and slots identical to staging. The 13 existing tables kept their row counts. Commit <code>db5938f</code>, <code>backend/migrations/APPLIED_PRODUCTION.txt</code>.</td></tr>
+<tr><td>Switch scoping</td><td class="ok">Done</td><td>Commit <code>773c2c1</code>: <code>WORDS_FIRST</code> no longer changes a legacy rebuild, and a drop-managed product is always read with context v2, so the new engine can run for test accounts without touching any real account's path. Tests: backend 1973 pass, intel 137 pass.</td></tr>
+<tr><td>4. Production API dark</td><td class="ok">Done</td><td>Rollback target recorded first: <code>2424d95e</code> (the A0 hotfix), then <code>fb9c4902</code> after <code>OPENROUTER_API_KEY</code> was set (from ~/.openrouter_key, as staging). Staging soak of the same sha: 2.03 h, 0 cron errors, 0 high alerts (version <code>f6abf568</code>). deploy-prod.sh, every gate passed: live as <code>77cc6f9e-a764-4689-a836-6087fdbbb8ae</code> (02:05Z). Smoke: /health <code>{env: production, db_ref: nluwcxrbsiejitfmplfg, wiring: ok, dodo_mode: live}</code>, check-wiring production PASS, cron heartbeat 1 min, 3 min of tail with 0 exceptions, ops_runs clean. Legacy paths as before: free claim open (400 on a bad email), unknown pack 400 (no session), Starter 503 plan_unavailable, bad webhook signature 401, /me 401. Only <code>[vars]</code> entry: <code>WORDS_FIRST "false"</code>; every new switch unset. Commit <code>51fc674</code> (ROLLBACK_FLOOR.txt).</td></tr>
+<tr><td>5. Production intel infra, dark</td><td class="ok">Done</td><td>D1 <code>ws-intel</code> (schema applied, <code>settings.running '0'</code>), R2 <code>ws-intel-media</code> on intel-media.winningstatics.com (answers with <code>X-Robots-Tag: noindex, nofollow</code>) and <code>ws-intel-private</code>, queues <code>ws-intel-jobs</code> and <code>ws-intel-dlq</code>. Worker <code>ws-intel</code> version <code>e903f243</code>: <code>INTEL_ENABLED "false"</code>, no route, and no treg, OpenRouter or shared key, so it cannot spend. Commit <code>400e79f</code>.</td></tr>
+<tr><td>6. Production proof run</td><td><span class="amb">Stopped (blocked by the store)</span></td><td>Read the code paths first: <code>DROPS_ENABLED</code> with <code>DROPS_SCOPE test_only</code> only admits TEST_EMAILS accounts; after commit <code>773c2c1</code> every <code>WORDS_FIRST</code> read is drop-only; <code>CONTEXT_V2_ENABLED</code>, <code>REVIEW_FIRST_DROP</code> and <code>ENTITLEMENTS_MODE</code> change real accounts, so they were never set (a first drop is always held for review anyway). Set for the run, as vars on the same sha (02:12Z): <code>WORDS_FIRST</code>, <code>DROPS_ENABLED</code>, <code>DROPS_SCOPE test_only</code>, <code>COST_LEDGER_ENABLED</code> (ledger rows only). The test address was not in production TEST_EMAILS, so I added that one exact address (no prefix) for the run. Account <code>e2e+blastvitality-prod1@winningstatics.com</code> created (no email sent, marketing opt-in false), Starter granted (24 statics, videos 0), weekly mode paused, Blast product submitted 02:14Z. The production cron's reads of the product page got HTTP 429 on every try: runs at 02:16, 02:19, 02:26, 02:41 and 03:13Z (3 reads each), product parked between runs and the model never paid. The 6th and last try would have been 04:13Z, with about 40 minutes of drop after that, so at 03:15Z I failed the test product by hand, redeployed dark and restored TEST_EMAILS exactly. No drop opened, no ad, no email, no alert. Spend $0.00 (cost ledger 0 rows). No contact sheet: no ad was made. The account stays (paused, admin Starter period) for a re-run.</td></tr>
+<tr><td>7. Landing preview</td><td class="ok">Done</td><td>Built with <code>deploy-landing.sh --dry</code> (production build: own renders only, 13 placeholder stems stripped, check PASS, pending extras competitor_report and ad_check hidden, API https://api.winningstatics.com) and deployed to the non-production branch: <a href="https://golive.winning-statics.pages.dev">golive.winning-statics.pages.dev</a> (deployment <code>e82949d7</code>). 200, noindex header from Pages, the free-claim form renders, no placeholder stem in the served bundle, 390 px phone width with no sideways scroll (the Turnstile script loads on first touch; its token could not be checked from a headless browser, and no claim was submitted). Production Pages deployment unchanged (<code>2dd7ddff</code>), winningstatics.com untouched, nothing merged into main. No CORS change was needed (the API answers <code>*</code>).</td></tr>
+</table></div>
+<p class="small">Rollback of the API, if ever needed: <code>cd backend &amp;&amp; npx wrangler queues pause-delivery ws-jobs &amp;&amp; npx wrangler rollback fb9c4902-82dc-4343-97b9-656c5351abd7</code> (that version predates the queue consumer; resume delivery after a fixed deploy). Never roll back past <code>fb9c4902</code>. Migrations are additive: no database rollback is needed. Intel: <code>npx wrangler delete ws-intel</code> plus the D1, buckets, queues and the zone rule <code>ef9501107f874a05b17087328cc1b5e6</code>, if you ever want it gone.</p>
+
+
+<h2>b. The go-live flips, in order</h2>
+<p class="small">Each flip is one OK from you. Watch 24 h before the next one where it says so. "Dial" means it can be lowered from <code>/admin</code> without a deploy (<code>POST /admin/flags</code>); an env switch is set as a Worker secret.</p>
+<div class="flip"><h3><span class="n">1</span> Landing to production <span class="who owner">owner OK</span> <span class="who me">me</span></h3><dl>
+<dt>Changes</dt><dd>winningstatics.com serves the merged branch: monthly plans with Starter $29, the weekly-drops sections, the video band with our own renders only (13 placeholder clips stripped and checked), the competitor report and ad check plan lines hidden. The exact bundle is on the preview tonight: <a href="https://golive.winning-statics.pages.dev">golive.winning-statics.pages.dev</a>.</dd>
+<dt>Who</dt><dd>You: OK the merge of <code>staging/weekly-drops</code> into <code>main</code> and tell Replit. Me: confirm Replit's <code>DATABASE_URL</code> is not Supabase (post-merge.sh runs a drizzle push), confirm <code>pnpm install --frozen-lockfile</code> passes on the branch (it did tonight), fast-forward merge, full-tree diff for Replit's UI files, then <code>bash backend/deploy-landing.sh</code> from the main checkout.</dd>
+<dt>Verify</dt><dd>https://winningstatics.com answers 200, the free-claim form renders, no placeholder stem in the bundle (the script refuses otherwise), phone width (390 px) has no sideways scroll, the Starter button answers 503 <code>plan_unavailable</code> until flip 3.</dd>
+<dt>Rollback</dt><dd>Pages rollback to today's production deployment <code>2dd7ddff-ed50-4023-aee1-0e9a380988b6</code> (main at d3f6f9d, 16 Sep): the Rollback button in Cloudflare Pages, or <code>POST /accounts/&lt;acct&gt;/pages/projects/winning-statics/deployments/2dd7ddff-ed50-4023-aee1-0e9a380988b6/rollback</code>. A git revert of the merge is not needed for the site.</dd>
+</dl></div>
+
+<div class="flip"><h3><span class="n">2</span> Free claims to the new engine, held for review <span class="who owner">owner OK</span> <span class="who me">me</span></h3><dl>
+<dt>Changes</dt><dd>A new free claim becomes a drop-managed product: its first drop is planned words first from the store's truth pack (the engine you approved in rounds 4 and 5), then held in the review queue before the buyer sees anything. Legacy paid orders keep today's path.</dd>
+<dt>Flips</dt><dd>In this order on <code>winningstatics-api</code>:
+<ol>
+<li><code>WORDS_FIRST</code> "true": it is a <code>[vars]</code> entry, so either a one-line change in <code>backend/wrangler.toml</code> deployed with deploy-prod.sh, or <code>npx wrangler deploy --var WORDS_FIRST:true</code> on the same sha (how tonight's proof ran). Since tonight it only touches drop work.</li>
+<li><code>DROPS_ENABLED</code> true (dial), <code>DROPS_SCOPE</code> stays <code>test_only</code> for now.</li>
+<li><code>ENTITLEMENTS_MODE</code> shadow. <span class="amb">One-way after the first plan payment</span>; also needed by flip 3.</li>
+<li><code>DELIVERY_MODE</code> weekly (new periods only), <code>DROPS_FIRST_DROP_ENABLED</code> true (dial).</li>
+<li><code>REVIEW_FIRST_DROP</code> true (dial): also holds a legacy first order for review. A first drop is always held, switch or not.</li>
+<li>After one test claim passes: <code>DROPS_SCOPE</code> opted_in, which admits real buyers.</li>
+</ol>Context v2 is not needed: since tonight a drop-managed product is always read with it.</dd>
+<dt>Verify</dt><dd>One claim from a <code>TEST_EMAILS</code> address on a real store: the product row has <code>drop_managed</code> true, a <code>first</code> drop reaches <code>in_review</code> with a pending hold at <code>/admin#review</code>, no email leaves (DROPS_EMAILS off), cost about $1.30 (round 5, Blast, staging) to $2.20 per store. Then the first real claim lands the same way. <b>Before this flip, fix 0</b>: tonight the production Worker could not read a Shopify store page for 2 hours (HTTP 429).</dd>
+<dt>Rollback</dt><dd><code>DROPS_FIRST_DROP_ENABLED</code> off from <code>/admin</code> sends new claims down the legacy path again; <code>DROPS_ENABLED</code> off pauses the engine (open drops wait). <code>ENTITLEMENTS_MODE</code> cannot go back once a plan payment ran under it.</dd>
+</dl></div>
+
+<div class="flip"><h3><span class="n">3</span> Starter checkout live, with your $29 purchase and refund <span class="who owner">owner</span> <span class="who me">me</span></h3><dl>
+<dt>Changes</dt><dd><code>POST /checkout {pack:'starter'}</code> mints a live Dodo session; a paid Starter gets a 24-static weekly period.</dd>
+<dt>Who</dt><dd>Me: <code>STARTER_ENABLED</code> true (needs <code>ENTITLEMENTS_MODE</code> shadow from flip 2). You, on your own card only: buy Starter monthly through Replit's plan card if live, else sign in to the app, copy your access token and run the OPERATIONS.md recipe <code>curl -X POST https://api.winningstatics.com/checkout -H "authorization: Bearer $TOKEN" -d '{"pack":"starter","plan":"monthly"}'</code>, pay, then refund it from the Dodo dashboard.</dd>
+<dt>Verify</dt><dd><code>GET /admin/entitlements?email=&lt;you&gt;</code> shows an active Starter period (24 statics, 6 a week); the refund voids the period and cancels open drops; <code>webhook_events</code> rows end <code>done</code>. Also run <code>GET /admin/billing/catalog-check</code>.</dd>
+<dt>Rollback</dt><dd><code>STARTER_ENABLED</code> off from <code>/admin</code>: Starter answers 503 again. Outreach that pitches Starter waits for an in-app Starter path (owner blocker 11).</dd>
+</dl></div>
+
+<div class="flip"><h3><span class="n">4</span> Brevo upgrade <span class="who owner">owner</span></h3><dl>
+<dt>Changes</dt><dd>Lifts the free plan's 300 a day cap before any customer email goes on.</dd>
+<dt>Who</dt><dd>You upgrade the Brevo plan; then I raise <code>EMAIL_DAILY_BUDGET</code> (default 280) to the new cap minus a margin.</dd>
+<dt>Verify</dt><dd>Brevo account page shows the plan; <code>/admin</code> ops shows the new budget.</dd>
+<dt>Rollback</dt><dd>Lower <code>EMAIL_DAILY_BUDGET</code>; the plan itself stays.</dd>
+</dl></div>
+
+<div class="flip"><h3><span class="n">5</span> Dodo: Growth, Scale and Studio renames, retired ids <span class="who owner">owner</span></h3><dl>
+<dt>Changes</dt><dd>Product names and descriptions move to the weekly-drops wording (owner decision 4); the retired ids are archived (Monthly refresh $39 and Launch Partner $499, test and live; the one-time packs only once ONE_TIME_PACKS_RETIRED is planned).</dd>
+<dt>Who</dt><dd>You in the Dodo dashboard, or me through the API with your explicit OK at the time. Nothing in Dodo was touched tonight.</dd>
+<dt>Verify</dt><dd><code>GET /admin/billing/catalog-check</code> lists every live plan id with the right price and interval and flags no retired id as purchasable.</dd>
+<dt>Rollback</dt><dd>Rename back in Dodo; unarchive an id.</dd>
+</dl></div>
+
+<div class="flip"><h3><span class="n">6</span> Email copy approvals <span class="who owner">owner</span> <span class="who me">me</span></h3><dl>
+<dt>Changes</dt><dd>Customer emails: <code>BILLING_EMAILS</code>, <code>DROPS_EMAILS</code> (later VIDEO_EMAILS, AD_CHECK_EMAILS, LIFECYCLE_V2_EMAILS). All are off on production; <code>MARKETING_ENABLED</code> stays false.</dd>
+<dt>Who</dt><dd>You approve the copy (previews: <code>GET /admin/drops/&lt;id&gt;/email-preview</code>). Me: each one <code>test_only</code> first (sends only to TEST_EMAILS), then <code>on</code>, after the Brevo upgrade.</dd>
+<dt>Verify</dt><dd>A test_only send arrives at a TEST_EMAILS inbox; <code>email_sends</code> shows it; the daily budget counter moves.</dd>
+<dt>Rollback</dt><dd>Lower the mode from <code>/admin</code> (on, test_only, off).</dd>
+</dl></div>
+
+<div class="flip"><h3><span class="n">7</span> Legal text <span class="who owner">owner blocker</span></h3><dl>
+<dt>Changes</dt><dd>Terms and privacy name Millionth Mile Marketing with its address and jurisdiction (the footer already names it; <code>terms.tsx</code> still carries <code>[Company Address]</code>, <code>[Jurisdiction]</code> and <code>[Jurisdiction City]</code>); account deletion scope and the 72 h grace; the ad-check data line; competitor-media retention; the free-claim consent notice.</dd>
+<dt>Who</dt><dd>You supply or approve the text; Replit places it (UI files); then I turn on <code>ACCOUNT_DELETION_ENABLED</code>.</dd>
+<dt>Verify</dt><dd>/terms and /privacy show no bracket placeholder; <code>POST /account/delete</code> on a test account schedules a purge 72 h out.</dd>
+<dt>Rollback</dt><dd><code>ACCOUNT_DELETION_ENABLED</code> off from <code>/admin</code> (deletion goes back to manual).</dd>
+</dl></div>
+
+<div class="flip"><h3><span class="n">8</span> After go-live <span class="who me">me, each on your OK</span></h3><dl>
+<dt>Changes</dt><dd>Phase 0 flips with 24 h between each: <code>COST_LEDGER_ENABLED</code>, <code>ALERTS_V2_ENABLED</code>, <code>QA_FAIL_CLOSED</code>, <code>EVENTS_INGEST_ENABLED</code>, <code>DATA_EXPORT_ENABLED</code>, <code>UNSUB_SECRET</code>, <code>FREE_MONTHLY_ENABLED</code>, <code>RENEWAL_RECONCILE_ENABLED</code>, <code>FREE_GRANT_MODE</code> batch, <code>FREE_CLAIM_HARDENING</code>. Intel on (C-d3): ws-intel secrets, <code>INTEL_ENABLED</code> "true", weekly cap (you set it, $5 proposed), the API's <code>INTEL</code> binding. <code>CORS_STRICT</code> after 7 clean days. ADMIN_KEY rotation (copy it to <code>UNSUB_LEGACY_SECRET</code> first).</dd>
+<dt>Rollback</dt><dd>Each is a dial or a secret delete; ws-intel goes dark with <code>running</code> 0.</dd>
+</dl></div>
+
+
+<h2>c. Ad-engine fix queue (only if you dislike the ads)</h2>
+<p class="small">From the round 5 review. Every fix is generic (no store-specific rule). None is built yet; each lands with a regression test on the round 5 fixtures and a staging pilot before production.</p>
+<div class="wrap"><table>
+<tr><th>#</th><th>What goes wrong (round 5)</th><th>Generic fix</th></tr>
+<tr><td>0</td><td><b>Ops, before flip 2.</b> Store pages read from the Worker get HTTP 429 (blastvitality.com, every read for 2 h tonight; round 4 all 3 stores for 3 min, round 5 one store for 25 min). The new retries save the money but a claim still fails after 2 h.</td><td>When the Worker gets 429 or 403: honour Retry-After, read Shopify's lighter product endpoint (<code>/products/&lt;handle&gt;.js</code>) once, then read through a paid fallback fetcher (treg scraping) capped per claim; alert on the rate of 429s per hour, not per product.</td></tr>
+<tr><td>1</td><td>An empty UI input field (the Q bar of a Q and A mockup) reads as a broken interface.</td><td>Planner: a template whose interface slot would print nothing is moved to the next template (the slot contract marks input fields; an unfilled one counts as a refusal, like a missing required slot).</td></tr>
+<tr><td>2</td><td>The gate passes a planned line at 85% coverage, so an erased last word ("routine.") ships missing.</td><td>Gate: every word of a planned line must be read (wrap joins across any number of reads, other text in between allowed); an erase never removes a word that belongs to a planned line.</td></tr>
+<tr><td>3</td><td>Serving size or net weight carries the whole message ("Make room for BLAST: 10 g (1 scoop)").</td><td>Message rules: a measurement of quantity (serving, weight, count) never counts as the proof or the lead line; it may only support one.</td></tr>
+<tr><td>4</td><td>Spiral binding read as digit marks ("3 3", "3 -3") failed a correct ad and paid a re-render.</td><td>Gate: rows of repeated single digits or marks with no planned counterpart and no letters are decoration, like lone letters already are.</td></tr>
+<tr><td>5</td><td>Double trademark (full-size TM set after a name that already carries one).</td><td>Text normaliser: collapse repeated TM forms to one, and never print TM larger than a superscript in planned text.</td></tr>
+<tr><td>6</td><td>Image props imply a claim no fact supports (sugar cubes read as low sugar).</td><td>Template tags: props that imply a claim (sugar, flame, leaf, clock, scale) are tied to a needs entry; the template is only eligible when the truth pack has that fact. The visual veto is told the same list.</td></tr>
+<tr><td>7</td><td>Meta copy: option 4 is a bare fact headline, comma-spliced primary text, odd capitals, the same opener on two ads.</td><td>Store the copy checks with each option, run the fallback through the same rules (no bare spec headline, one sentence per clause, sentence case, no opener reused within a drop) and drop an option that fails rather than ship it.</td></tr>
+<tr><td>8</td><td>The recut extension check failed closed on a non-JSON reply, throwing away two paid outpaints.</td><td>Parse the reply leniently (first JSON object in the text), retry once with a format reminder, and only then fall back to plain bands.</td></tr>
+<tr><td>9</td><td>The product cut-out is cached in isolate memory only, so a new isolate pays the background removal again.</td><td>Store the cut-out in the ads bucket keyed by the photo hash and read it before calling the model.</td></tr>
+<tr><td>10</td><td>Blast's pouch prints "Supports digestion, detox &amp; immunity" on every pasted pack: a Meta health-claim risk on all 6 ads.</td><td><b>Your call</b> (see d): keep the real pack as is, blur that line on pasted packs for health products, or exclude health-claim pack text from ads.</td></tr>
+</table></div>
+
+
+<h2>d. What you decide</h2>
+<ol>
+<li><b>Store reads blocked (fix 0).</b> Build the 429 fallback before free claims go to the new engine? It needs a small paid fetch budget per claim (treg); without it a blocked Shopify store gets nothing for 2 h, then a failure.</li>
+<li><b>Re-run the production proof?</b> Once fix 0 lands or the block lifts: add <code>e2e+blastvitality-prod1@winningstatics.com</code> to TEST_EMAILS (it is not there; I added it for the run and took it out again), set the same four vars, unpause. Cap $2.50.</li>
+<li><b>The Blast pack-print health claim.</b> Every pasted or redrawn Blast pouch carries the real printed line "Supports digestion, detox &amp; immunity". Keep (it is the product as sold), blur that line on pasted packs of health products, or keep health-claim pack text out of ads. Until you choose, health stores' ads carry this Meta review risk.</li>
+<li><b>Do you like the ads?</b> If not, say which rows of the fix queue (section c) to build first; each needs a staging pilot round (about $2 to $3).</li>
+<li><b>Soak length.</b> The production API went out after 2.03 h of staging cron runs on the same sha (the plan's hotfix precedent was 2 h; deploy-prod.sh defaults to 24 h). Say if you want 24 h of production observation before flip 2.</li>
+<li><b>Legacy-path fixes are live for real buyers.</b> The dark deploy carries the always-on fixes from the pilot work on the legacy free-claim and pack path (facts-only prompts, the fact-check QA, the store photo as the product reference, the tagged library fit, empty page reads retried for up to 2 h). Production had one free claim since 4 Oct. Rollback target if you want them out: in section a.</li>
+<li><b>free_claim_domains backfill.</b> 001's separate data write (one row per past free-claim domain) was not run. It only matters once <code>FREE_CLAIM_HARDENING</code> is on. OK to run it then?</li>
+<li><b>Staging paid keys.</b> I left <code>REPLICATE_TOKEN</code> and <code>OPENROUTER_API_KEY</code> off the staging Worker so the soak version stayed fixed and nothing could spend. They go back (pilot5/putkeys.sh) before the next staging pilot.</li>
+<li><b>The preview posts to production.</b> golive.winning-statics.pages.dev uses the live free-claim and checkout endpoints, like the live site. It is not linked anywhere; delete the branch deployment after flip 1 if you prefer.</li>
+<li><b>Owner blockers still open</b> (plan_v2 owner_blockers): legal text (4), email copy (5), Replit plan cards for an in-app Starter path (11), whether the competitor and ad-check landing sections stay visible before Tracks C and D (12), the intel weekly cap (6).</li>
+</ol>
+
+
+<h2>e. Production switch state right now</h2>
+<div class="wrap"><table>
+<tr><th>Switch</th><th>Value</th><th>Note</th></tr>
+<tr><td><code>FREE_CLAIMS_ENABLED</code></td><td class="ok">true</td><td>as before; <code>FREE_MONTHLY_ENABLED</code> follows it (fallback), as before</td></tr>
+<tr><td><code>MARKETING_ENABLED</code></td><td>false</td><td>as before</td></tr>
+<tr><td><code>DAILY_GEN_CAP</code> / <code>TEST_ADS_CAP</code></td><td>600 / 5</td><td>as before</td></tr>
+<tr><td><code>TEST_EMAILS</code></td><td>2 entries</td><td>exactly as before (restored after the run)</td></tr>
+<tr><td><code>TURNSTILE_SECRET</code>, Dodo keys, <code>DODO_WEBHOOK_SECRET</code> (test)</td><td>set</td><td>untouched; the test-mode webhook stays on production</td></tr>
+<tr><td><code>OPENROUTER_API_KEY</code></td><td>set (new)</td><td>read only by drop and truth code</td></tr>
+<tr><td><code>WORDS_FIRST</code></td><td>"false"</td><td>the only <code>[vars]</code> entry</td></tr>
+<tr><td>Every other new switch</td><td>unset</td><td>DROPS_ENABLED, DROPS_SCOPE (default test_only), DROPS_FIRST_DROP_ENABLED, CONTEXT_V2_ENABLED, REVIEW_FIRST_DROP, ENTITLEMENTS_MODE (off), DELIVERY_MODE (batch), STARTER_ENABLED, COST_LEDGER_ENABLED, ALERTS_V2_ENABLED, QA_FAIL_CLOSED, INTEL_API_ENABLED, CORS_STRICT, ACCOUNT_DELETION_ENABLED, BILLING_EMAILS, DROPS_EMAILS, VIDEO_EMAILS, AD_CHECK_EMAILS, LIFECYCLE_V2_EMAILS (all off)</td></tr>
+<tr><td>ws-intel</td><td>dark</td><td><code>INTEL_ENABLED "false"</code>, <code>running '0'</code>, no paid secrets, not bound to the API</td></tr>
+</table></div>
+
+<p class="small" style="margin-top:40px">Repo <code>farooqchisty-hub/winningstatics</code>, branch <code>staging/weekly-drops</code>. Plan of record: <code>docs/build/plan_v2.json</code> (deploy_sequence, owner_blockers). Written by Claude for Farooq.</p>
+</main>
+</body>
+</html>
