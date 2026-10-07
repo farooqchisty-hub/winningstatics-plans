@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Winning Statics Go-Live Runbook</title>
-<meta name="description" content="What was done overnight on 6 to 7 Oct 2026, the ordered go-live flips with verify and rollback steps, and the ad-engine fix queue.">
+<meta name="description" content="Winning Statics is LIVE since 8 Oct 2026: the card-required 7-day trial, evidence, rollback for every surface, and what the owner still does. Below it, the 6 to 7 Oct overnight record.">
 <meta name="robots" content="noindex,nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -53,9 +53,70 @@ a{color:var(--mint)}
 </head>
 <body>
 <main>
-<div class="eyebrow">Winning Statics · go-live runbook · night of 6 to 7 Oct 2026</div>
+<div class="eyebrow">Winning Statics · go-live runbook · LIVE 8 Oct 2026</div>
 <h1>Go-live runbook</h1>
-<p class="lede">Everything that could not touch a real visitor was done overnight. Every switch that changes the public site, charges a card, sends an email or turns the new engine on for real visitors is listed below, in order, for your single "go live".</p>
+<p class="lede">Winning Statics is live. Section 0 is the go-live of 8 Oct 2026; everything under it is the record of the night of 6 to 7 Oct, kept as it was.</p>
+
+<div class="card tldr">
+<p><strong class="ok">LIVE since 8 Oct 2026 (about 19:20Z on 7 Oct).</strong> winningstatics.com sells the card-required 7-day trial: the hero form posts <code>POST /trial/lead</code> and opens <code>/plans</code>, every plan button says "Start 7-day free trial", the checkout is Dodo LIVE with a 7-day trial and a card required. Production API runs main <code>d7aa92f</code> with every go-live switch on (section 0.4), ws-intel runs with a $5 weekly cap, and the app is redeployed against the production API. Nothing was charged and no email went to a non-test address.</p>
+<p><strong>Your two steps:</strong> (a) your own live trial test with your card, then "Start my plan now" ($29 on Starter) and a refund in Dodo; (b) the Brevo plan upgrade on the day you choose, then I raise <code>EMAIL_DAILY_BUDGET</code>. Details in 0.6.</p>
+</div>
+
+<h2>0. Go-live, 8 Oct 2026: evidence</h2>
+<div class="wrap"><table>
+<tr><th>Step</th><th>Status</th><th>Evidence</th></tr>
+<tr><td>1. Integrate</td><td class="ok">Done</td><td><code>origin/trial-frontend</code> merged into <code>staging/weekly-drops</code> (<code>9f8e9f7</code>, no conflict; frontend copy only, no Replit layout or animation touched; no file deleted against main). <code>git merge origin/main</code>: already up to date. The landing parity test still asked for the retired free plan line, so it now checks the trial FAQ (<code>bc94395</code>). Backend tests 2076 pass, intel 137 pass; landing and app typecheck and build clean. Pushed.</td></tr>
+<tr><td>2. Staging E2E</td><td class="ok">Done</td><td>Landing on <code>ws-landing-staging</code> (deployment <code>37340704</code>, API staging), app on <code>ws-app-staging</code> (<code>bbdcc06f</code>, API staging, staging Supabase). Local landing (vite on localhost, Turnstile test key) against api-staging, one agent-browser session: hero form with <code>e2e+trial-ui@winningstatics.com</code> and the Blast pouch URL, <code>POST /trial/lead</code> 200, redirect to <code>/plans?lead=</code> ("Your trial is ready for blastvitality.com"), "Start 7-day free trial" on Growth. api-staging answered <code>/checkout</code> 500: the staging Worker holds no Dodo key on purpose (owner blocker 2, the TEST webhook still points at production), and the page showed "We could not open checkout". The same code on a local Worker (staging config, staging database, Dodo TEST key) with the same lead returned <code>https://test.checkout.dodopayments.com/session/cks_0NpEzkBC6PqUHAWkJ7HwE</code>; read with curl: test Growth monthly <code>pdt_0NnkVnYKhJKqE90f2BTDf</code>, <code>trial_period_days 7</code>, <code>payment_method_required true</code>, email prefilled. The page's own redirect loaded that Dodo test page in the headless browser once: nothing was typed or clicked there and the session was closed at once. Screenshots at 1440 and 390 px on the Mac: <code>scratchpad/golive2/s2-*.png</code>. The staging fixture that holds blastvitality.com was set aside for the run and restored exactly.</td></tr>
+<tr><td>3. Dodo (our products only)</td><td class="ok">Done</td><td><b>a.</b> 8 LIVE start-now variants created, cloned from the live plan products (same price and interval, <code>trial_period_days 0</code>, <code>trial_payment_method_optional false</code>, metadata <code>ws_variant start_now</code>), now in <code>PLAN_NOW_PRODUCTS.live</code> (<code>990cef6</code>): see 0.5. <b>b.</b> Read-only: all 8 live plan products have <code>trial_payment_method_optional false</code> and <code>zero_amount_payment_method_optional false</code>; nothing to change. <b>c.</b> Growth, Scale and Studio monthly descriptions rewritten to the weekly-drops wording (live, test, and the test start-now variants; only the description changed, checked field by field), for example "120 new static ads a month, delivered every Monday and built from what is winning in your niche, in 1:1, 4:5 and 9:16. Plus 4 product videos a month. Across up to 8 products." The old text promised 10 studio photos and 3 UGC videos. The names were already in Starter's weekly-drops pattern ("Growth Monthly - 120 Ads/mo"), so they stay. No Dodo product carries "every ad rebuildable once" (it survives only in the dashboard's mock API). Nothing deleted or archived; no business-wide setting touched.</td></tr>
+<tr><td>4. Production backend</td><td class="ok">Done</td><td>Main fast-forwarded <code>1f3288e</code> to <code>d7aa92f</code> and pushed. First, the branch's pnpm-lock.yaml went back to main's (<code>ca60564</code>): the branch carried a pnpm 9 rewrite with no dependency change, which pnpm 10 (Replit's post-merge frozen install) refuses; main's file passes pnpm 10 <code>--frozen-lockfile</code>. Config (<code>d7aa92f</code>): <code>WORDS_FIRST "true"</code>, the INTEL service binding, ws-intel <code>INTEL_ENABLED "true"</code>. Staging redeployed on that sha (<code>3a268078</code>, cron ran). Rollback recorded: <code>7f1c46e0</code>. <code>deploy-prod.sh --soak-hours=0</code> (owner: no soak), every gate passed: live as <code>262d4e9a</code>, smoke PASS (health, check-wiring, heartbeat, 3 min tail clean). Switches then set in one bulk (0.4); ws-intel got its keys and <code>running 1</code>, <code>weekly_cap_usd 5</code>. Smoke after the switches: <code>/health</code> ok, check-wiring PASS, cron heartbeat 1 min, ticks ok (billing.tick, billing.backfill, drops.tick, intel.sync), failed_1h 0, two production tails on the final versions (3 min on 7ba566f9 plus the run around the switch flip) with 17 events, all ok, 0 exceptions. <code>/trial/lead</code>: 403 <code>bot_check</code> without a real Turnstile token, 400 <code>bad_email</code>, CORS <code>*</code>; <code>/free/claim</code> 410 <code>use_trial</code>. The real Turnstile asked for a human click in the headless browser (I do not solve challenges), so the smoke lead for <code>e2e+golive@winningstatics.com</code> was written straight to <code>customer_events</code> in the lead's own shape. <code>POST /checkout {starter, monthly, trial, lead}</code> returned LIVE <code>https://checkout.dodopayments.com/session/cks_0NpF4KefjOZu0MzwfiI7f</code>; read with curl only: product <code>pdt_0Np1JskOjpIwHfoaa0M5F</code> (Starter Monthly, live), <code>trial_period_days 7</code>, <code>payment_method_required true</code>. Never opened or paid. Then <code>TEST_EMAILS</code> restored exactly (2 entries) and the lead row deleted (0 trial leads left).</td></tr>
+<tr><td>5. Production frontends</td><td class="ok">Done</td><td>Rollbacks recorded: landing <code>2dd7ddff</code>, app <code>8e07259f</code>. <code>bash backend/deploy-landing.sh</code> from main <code>d7aa92f</code>: branch gate PASS, 13 placeholder stems stripped, check PASS, pending extras hidden: <code>ad_check</code> only (the competitor report line shows: intel is on). Live as deployment <code>34d84f2c</code>. App built with <code>VITE_API_BASE=https://api.winningstatics.com</code> and deployed to <code>winning-statics-app</code> (<code>efbfbe54</code>). Verified: winningstatics.com 200 with the trial copy (meta and OG text, hero "Try it free for 7 days: 5 ads, $0 today", 4 "Start 7-day free trial" buttons, no "No card" or "free every month", the ad-check line hidden); <code>/plans</code> 200 with the "$0 today. Card needed." banner and all 4 plans; a <code>/trial/lead</code> call from the live origin reads its answer (CORS ok); <code>/old/</code> and <code>/old/terms</code> 200 with <code>X-Robots-Tag: noindex</code> and the robots meta; no placeholder stem in the bundle or served as video; 390 px: no sideways scroll on /, /plans and the app login; app.winningstatics.com 200 and its bundle calls the production API. Screenshots: <code>scratchpad/golive2/s5-*.png</code>.</td></tr>
+</table></div>
+
+<h3>0.4 Production switches now</h3>
+<div class="wrap"><table>
+<tr><th>Switch</th><th>Value</th></tr>
+<tr><td><code>TRIALS_ENABLED</code>, <code>WORDS_FIRST</code> (var), <code>DROPS_ENABLED</code>, <code>DROPS_FIRST_DROP_ENABLED</code>, <code>CONTEXT_V2_ENABLED</code>, <code>REVIEW_FIRST_DROP</code>, <code>STARTER_ENABLED</code>, <code>COST_LEDGER_ENABLED</code>, <code>ALERTS_V2_ENABLED</code>, <code>INTEL_API_ENABLED</code></td><td class="ok">true</td></tr>
+<tr><td><code>ENTITLEMENTS_MODE</code></td><td class="ok">enforce</td></tr>
+<tr><td><code>DROPS_SCOPE</code></td><td class="ok">opted_in (the only value that is not test-only: every account in drop_mode weekly, which every trial gets)</td></tr>
+<tr><td><code>BILLING_EMAILS</code>, <code>DROPS_EMAILS</code></td><td class="ok">on</td></tr>
+<tr><td><code>FREE_CLAIMS_ENABLED</code>, <code>FREE_MONTHLY_ENABLED</code></td><td>false</td></tr>
+<tr><td><code>MARKETING_ENABLED</code> / <code>POLICY_FILTER</code> / <code>DAILY_GEN_CAP</code></td><td>"false" / unset / 600 (unchanged)</td></tr>
+<tr><td><code>TEST_EMAILS</code>, <code>TEST_ADS_CAP</code></td><td>2 entries (exactly as before) / 5</td></tr>
+<tr><td>ws-intel</td><td class="ok"><code>INTEL_ENABLED "true"</code>, running 1, <code>weekly_cap_usd</code> 5, secrets TREG_TOKEN, OPENROUTER_API_KEY, INTEL_SHARED_KEY (the API has the same shared key, in <code>~/.ws_intel_shared_key</code> on the Mac)</td></tr>
+<tr><td>Not changed</td><td><code>DELIVERY_MODE</code> (batch), <code>RENEWAL_RECONCILE_ENABLED</code>, <code>QA_FAIL_CLOSED</code>, <code>FREE_CLAIM_HARDENING</code>, <code>CORS_STRICT</code>, <code>ACCOUNT_DELETION_ENABLED</code>, <code>UNSUB_SECRET</code>, <code>VIDEO_*</code>, <code>AD_CHECK_*</code> (all unset)</td></tr>
+</table></div>
+
+<h3>0.5 Dodo ids</h3>
+<div class="wrap"><table>
+<tr><th>Plan</th><th>Live start-now, month</th><th>Live start-now, year</th></tr>
+<tr><td>Starter</td><td><code>pdt_0NpF0bOVP7pQ8WajkhVCz</code></td><td><code>pdt_0NpF0bRhKEwkLndKPeTHD</code></td></tr>
+<tr><td>Growth</td><td><code>pdt_0NpF0bUkDu1vtKVt79j6T</code></td><td><code>pdt_0NpF0bXucf2VAYwOzSQry</code></td></tr>
+<tr><td>Scale</td><td><code>pdt_0NpF0bkdLNuZeMqFfXTz3</code></td><td><code>pdt_0NpF0bnkiigkPAomJhC6r</code></td></tr>
+<tr><td>Studio</td><td><code>pdt_0NpF0bqnaPolYtORYFZBC</code></td><td><code>pdt_0NpF0btdeq7Keaw5DGlsr</code></td></tr>
+</table></div>
+<p class="small">Descriptions rewritten: live <code>pdt_0NnkVppgvmSG9jGW8hKAP</code>, <code>pdt_0NnkVprTFNXpnDyzxqRIY</code>, <code>pdt_0Nnkw4LOoDe5UjxVGU3nj</code>; test <code>pdt_0NnkVnYKhJKqE90f2BTDf</code>, <code>pdt_0NnkVngrYpO8I88dHIJ8L</code>, <code>pdt_0Nnkw3y12iGu7bAlexZWo</code>, <code>pdt_0NpEnSjs1doBypy0II6c0</code>, <code>pdt_0NpEnStq0badoOeidJcCh</code>, <code>pdt_0NpEnT5HMGvYCVIJCWoQR</code> (the annual ones already read "Everything in ... Monthly, billed once a year"). Retired ids (catalog-check list, not touched): Monthly refresh $39 <code>pdt_0NlW2cEYwklFuPMgMo2ON</code> (test) and <code>pdt_0NlxsI58tT9mepAefCRMu</code> (live), Launch Partner $499 <code>pdt_0NmBPvu4odyVtnTv66y7b</code> (test) and <code>pdt_0NmBjDDOEBybarBwun5dO</code> (live): all four already answer 404 at Dodo, so none is purchasable. Still purchasable and not sold by the new site (not archived, your call): one-time packs (live Test <code>pdt_0NlxsHRpkr1yA4HL4zHJd</code>, Growth <code>pdt_0NlxsHZ6m75Xwp7UytWrz</code>, Scale <code>pdt_0NlxsHhzWf2bLdBsAN66u</code>, Studio <code>pdt_0Nnkw4JvM4NFYeZHJkvNY</code>), the legacy Test plan, top-ups and add-ons.</p>
+
+<h3>0.6 Rollback, per surface</h3>
+<ul>
+<li><b>API</b> (from <code>backend/</code>): <code>npx wrangler rollback 7f1c46e0-c94e-4cd9-84b0-1a00c73e38c6</code>. That restores fix 0's code and its secrets together (every switch off, free claims on). Never roll back past <code>fb9c4902</code> (ROLLBACK_FLOOR). One switch at a time: lower its dial in /admin Switches, or set the secret to "false". <code>ENTITLEMENTS_MODE</code> is one-way once a plan payment ran under it.</li>
+<li><b>Landing</b>: Pages rollback to <code>2dd7ddff-ed50-4023-aee1-0e9a380988b6</code> (Cloudflare Pages, winning-statics, Deployments, Rollback), or <code>curl -X POST -H "Authorization: Bearer $CF_API_TOKEN" https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT_ID/pages/projects/winning-statics/deployments/2dd7ddff-ed50-4023-aee1-0e9a380988b6/rollback</code>. <code>/old/</code> is a separate Worker and Pages project and is unaffected either way.</li>
+<li><b>App</b>: Pages rollback of <code>winning-statics-app</code> to <code>8e07259f-83fc-4e6a-9446-66f79cbbfc04</code> (same call, project <code>winning-statics-app</code>).</li>
+<li><b>Intel</b>: <code>POST /admin/intel/control {"running":"0"}</code> with the admin key (no redeploy). Further: set <code>INTEL_ENABLED "false"</code> in intel/wrangler.toml and deploy, or roll ws-intel back to <code>8dc827c6</code> (dark, with secrets).</li>
+<li><b>Git</b>: main was <code>1f3288e</code> before the fast-forward.</li>
+<li><b>Dodo</b>: the start-now variants are only used by "Start my plan now" when Dodo refuses a same-product change; the old descriptions are in the evidence above if you want them back.</li>
+</ul>
+
+<h3>0.7 What you still do</h3>
+<ol>
+<li><b>Your live trial test, with your own card.</b> On winningstatics.com put a store that has not had a free claim or trial (gymshark.com is used) and your email in the hero form (tick the Turnstile box if it asks), pick Starter on /plans, "Start 7-day free trial", add your card on Dodo ($0 today). In the app the trial banner shows; press "Start my plan now": that charges $29 and opens the first paid drop with the +5 bonus. Then refund the $29 in the Dodo dashboard. Your trial's first drop waits in /admin#review like every first drop.</li>
+<li><b>Brevo plan upgrade</b> on the day you say; then I raise <code>EMAIL_DAILY_BUDGET</code> (now the default 280 a day, under Brevo's free 300).</li>
+<li>Decide: <code>DELIVERY_MODE</code> stays batch, so a paid checkout without a trial (the trial_used fallback) gets a batch period, not weekly drops; trials and converted trials are weekly whatever it says. Say if you want weekly for those too.</li>
+<li>The proof hold <code>20cafc10</code> is still pending (the review_pending alert keeps firing until you reject or release it), and the preview <code>golive2.winning-statics.pages.dev</code> can be deleted if you like.</li>
+<li>Replit: main moved to <code>d7aa92f</code>; its post-merge frozen install passes with main's lockfile.</li>
+</ol>
+
+<h2>Before go-live: the 6 to 7 Oct record</h2>
+
 
 <div class="card tldr">
 <p><strong>Ready.</strong> Production runs the full new code dark (version <code>7f1c46e0</code> since 16:53Z on 7 Oct, with fix 0; every new switch off; rollback target <code>b973f269</code>), all six migrations are applied with the template library tagged and slotted, ws-intel exists dark, and the new landing is live on a preview only: <a href="https://golive.winning-statics.pages.dev">golive.winning-statics.pages.dev</a>. winningstatics.com, the app, Dodo and email are untouched. Nothing was charged and no email was sent.</p>
@@ -188,7 +249,7 @@ Contact sheets, on the Mac only (they show a real brand's pack, so they are not 
 </ol>
 
 
-<h2>e. Production switch state right now</h2>
+<h2>e. Production switch state before go-live (7 Oct; superseded by 0.4)</h2>
 <div class="wrap"><table>
 <tr><th>Switch</th><th>Value</th><th>Note</th></tr>
 <tr><td><code>FREE_CLAIMS_ENABLED</code></td><td class="ok">true</td><td>as before; <code>FREE_MONTHLY_ENABLED</code> follows it (fallback), as before</td></tr>
