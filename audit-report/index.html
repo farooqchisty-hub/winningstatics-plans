@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>WS Audit Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050505;--card:#0D0D0D;--card2:#141414;--line:#232323;--ink:#FCFCFC;--mute:#A3A3A3;--dim:#6B6B6B;
+  --mint:#71D793;--mint-soft:rgba(113,215,147,.12);
+  --amber:#F2C265;--amber-soft:rgba(242,194,101,.12);--red:#F08A8A;--red-soft:rgba(240,138,138,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:880px;margin:0 auto;padding:40px 16px 96px}
+h1{font-size:clamp(28px,6vw,42px);line-height:1.1;letter-spacing:-.02em;margin:0 0 12px}
+h2{font-size:21px;letter-spacing:-.01em;margin:48px 0 12px;padding-top:22px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:20px 0 8px}
+p{margin:0 0 12px;color:#E4E4E4}
+.lede{font-size:17px;color:var(--mute)}
+.eyebrow{font:500 12px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mint);margin-bottom:16px}
+code,.mono{font-family:'JetBrains Mono',monospace;font-size:.86em;overflow-wrap:anywhere}
+code{background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+pre{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow-x:auto;font:13px/1.5 'JetBrains Mono',monospace;margin:6px 0 12px}
+ul,ol{padding-left:20px;margin:0 0 12px}
+li{margin:0 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:12px 0}
+.tldr{border-color:rgba(113,215,147,.35);background:linear-gradient(180deg,var(--mint-soft),var(--card) 70%)}
+.warn{border-color:rgba(242,194,101,.35);background:linear-gradient(180deg,var(--amber-soft),var(--card) 70%)}
+.warn h3{color:var(--amber);margin-top:0}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0 14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.wrap{overflow-x:auto}
+.flip{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0}
+.flip h3{margin:0 0 8px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.flip dl{margin:0;display:grid;grid-template-columns:92px 1fr;gap:6px 12px;font-size:14px}
+.flip dt{color:var(--mute);font-weight:600}
+.flip dd{margin:0;color:#E4E4E4;min-width:0}
+@media (max-width:520px){.flip dl{grid-template-columns:1fr}.flip dt{margin-top:6px}}
+.n{font:600 12px/1 'JetBrains Mono',monospace;color:var(--bg);background:var(--mint);border-radius:6px;padding:5px 7px}
+.who{display:inline-block;font:500 11px/1 'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em;padding:4px 7px;border-radius:5px}
+.me{background:var(--mint-soft);color:var(--mint)}
+.owner{background:var(--amber-soft);color:var(--amber)}
+.ok{color:var(--mint)}.bad{color:var(--red)}.amb{color:var(--amber)}
+.small{font-size:14px;color:var(--mute)}
+a{color:var(--mint)}
+</style>
+
+</head><body>
+<main style="max-width:860px;margin:0 auto;padding:32px 16px 80px">
+<div class="eyebrow">Winning Statics &middot; audit report &middot; 8 Oct 2026</div>
+<h1>Audit done. Fixes are live.</h1>
+<p class="lede">I used the product like a customer, simulated a full month on every plan with weeks compressed to 2 minutes, checked every ad, attacked the money paths, then fixed and shipped. The plan this followed is <a href="../audit/">here</a>.</p>
+
+<div class="card tldr"><h3 style="margin-top:0">In one screen</h3><ul>
+<li><b>Shipped to production</b>: 3 fix sets (landing and app, billing and security, ad engine), each with a recorded rollback. Every check passes. The site end to end test passes 27 of 27.</li>
+<li><b>Found</b>:
+  <ul>
+  <li>34 issues in the click test</li>
+  <li>14 bugs in the month simulation</li>
+  <li>1 critical and 6 serious security gaps</li>
+  </ul>
+  All fixed, except 2 content items and a short list below.</li>
+<li><b>Ads</b>: the simulation delivered 17 of 27. The main cause was the text check rejecting the product's own label. Re-checked with the fix, 6 of the 8 rejected ads now pass.</li>
+<li><b>Test spend</b>: $34.34 of the $45 stop.</li>
+<li><b>Your calls</b>: 5 speed cuts and the dashboard screens, below.</li>
+</ul></div>
+
+<h2>Month simulation, one per plan</h2>
+<div class="wrap"><table>
+<tr><th>Plan</th><th>Twist</th><th>Billing behaviour</th><th>Ads</th></tr>
+<tr><td>Starter</td><td>Cancels in trial</td><td class="ok">No charge, kept its ads, nothing after cancel</td><td>1 of 2 (an early drop opened before the product was read; fixed)</td></tr>
+<tr><td>Growth</td><td>Cancels, then resumes</td><td class="ok">Drops continued to the end date; resume worked; bonus once (120 + 10)</td><td>5 of 8</td></tr>
+<tr><td>Scale</td><td>Renewal fails, then recovers</td><td class="amb">Paused and recovered, but grace started already expired (fixed)</td><td>11 of 12; same model photo every week</td></tr>
+<tr><td>Studio</td><td>Start now, then downgrade</td><td class="ok">Charged at once (600 + 20), renewed on Scale</td><td class="bad">0 of 4: good ads rejected over the can's own label (fixed)</td></tr>
+</table></div>
+<p class="small">A free rerun after the fixes passed 52 of 52 checks: grace starts from the failure, nothing for cancelled or unpaid accounts, early start-now keeps its bonus drop, and the emails arrive in order.</p>
+
+<h2>What was fixed</h2>
+<div class="wrap"><table>
+<tr><th>Area</th><th>Fixed</th></tr>
+<tr><td>Critical</td><td>Payment test mode could open real trials on production. Closed the same hour.</td></tr>
+<tr><td>Selling</td><td>
+<ul>
+<li>Retired packs, the old Test plan and add-ons can no longer be bought.</li>
+<li>Only the 4 plans sell.</li>
+<li>The bot check is on every checkout made without a login.</li>
+<li>Exact per-IP limits, plus a Cloudflare limit on the payment pages.</li>
+</ul></td></tr>
+<tr><td>Abuse</td><td>
+<ul>
+<li>One trial per store, email and card, and every trial drop is reviewed.</li>
+<li>Open sign-up is closed.</li>
+<li>Competitor research is for trial and paid accounts only, with a daily cap.</li>
+<li>Trial accounts have a spend cap, and generation stops if the cost counter can't be read.</li>
+<li>Alerts for failed payment spikes and for cost.</li>
+</ul></td></tr>
+<tr><td>Ad engine</td><td>
+<ul>
+<li>The product's own label passes, while made-up claims still fail.</li>
+<li>Wrapped and slightly reworded lines pass.</li>
+<li>Empty boxes fail, with a hard backup check.</li>
+<li>Failed product reads retry, alert you once and email the customer.</li>
+<li>Early drops wait for the product instead of failing.</li>
+<li>The real reason is shown when a plan's ads are used up.</li>
+</ul></td></tr>
+<tr><td>Billing and emails</td><td>
+<ul>
+<li>Grace starts from the failure.</li>
+<li>New emails for a failed payment and a downgrade.</li>
+<li>Real ad counts and first names, and the bonus shown separately.</li>
+<li>Old pack emails never reach plan customers.</li>
+</ul></td></tr>
+<tr><td>Landing</td><td>
+<ul>
+<li>Terms, refund and privacy rewritten for the trial and subscription.</li>
+<li>A true guarantee seal ("New ads every Monday, flawed ads rebuilt free").</li>
+<li>A new share image and one rebuild promise everywhere.</li>
+<li>The ad check promise and the "4 bonuses" line are hidden until real.</li>
+<li>A branded 404.</li>
+</ul></td></tr>
+<tr><td>App</td><td>
+<ul>
+<li>Plan names instead of "Test Pack".</li>
+<li>A clear "In review" state.</li>
+<li>Billing shows the real price and next charge, with cancel and resume in the app.</li>
+<li>Pack-era add-ons and bonuses are hidden for plan customers.</li>
+<li>"Download everything" works.</li>
+<li>Email links land on the drop.</li>
+</ul></td></tr>
+</table></div>
+
+<h2>Speed cuts for your yes or no</h2>
+<div class="flip"><h3><span class="n">1</span> Auto-release first drops that pass every check</h3><dl>
+<dt>Today</dt><dd>Every first drop waits for your manual review, which is the longest wait for a new customer.</dd>
+<dt>Change</dt><dd>Ads that pass the text check and the image check go straight to the customer. You review only the flagged ones, and a trial from a reused card or email is always held.</dd>
+<dt>Gain</dt><dd>First ads in about 30 to 45 minutes instead of whenever you are free.</dd>
+<dt>Risk</dt><dd>An occasional weak ad reaches a customer. The checks are much stronger after this audit.</dd></dl></div>
+<div class="flip"><h3><span class="n">2</span> No 30 minute research wait on the first drop</h3><dl>
+<dt>Change</dt><dd>The first drop uses the library right away; competitor patterns join from week 2.</dd>
+<dt>Gain</dt><dd>Up to 30 minutes faster first ads. One setting.</dd></dl></div>
+<div class="flip"><h3><span class="n">3</span> Plain extension for 4:5, paid extension only for 9:16</h3><dl>
+<dt>Gain</dt><dd>About a minute and a little cost per ad. Most 4:5 extensions ended up as plain bands anyway.</dd></dl></div>
+<div class="flip"><h3><span class="n">4</span> Different store photos across weeks</h3><dl>
+<dt>Why</dt><dd>Scale reused one model photo for the whole month and felt monotonous. Rotate through the store's photos and prefer a clean pack shot as the hero.</dd></dl></div>
+<div class="flip"><h3><span class="n">5</span> Remove the pack-era code paths</h3><dl>
+<dt>Why</dt><dd>Fewer moving parts and fewer old emails or screens leaking through. No customer-visible change. Later, after launch feedback.</dd></dl></div>
+
+<h2>Dashboard screens, your pick</h2>
+<div class="card"><p>Mockups were sent in chat:</p>
+<ul>
+<li>Drops home (M)</li>
+<li>Ad detail (S)</li>
+<li>Plan and usage (M)</li>
+<li>First-run progress (M)</li>
+<li>Competitor board (L, or M for a first version)</li>
+</ul>
+<p>My recommendation: build the first four now, and do the competitor board as a first version.</p></div>
+
+<h2>Still open</h2>
+<div class="card"><ul>
+<li>The video row on the landing needs at least 4 of our own renders. That is content work, not code.</li>
+<li>OCR sometimes misreads tall condensed headlines. Re-read when a required line goes missing.</li>
+<li>The staging secret key was found in an old staging preview build. Rotation and cleanup are in progress.</li>
+<li>One stray unconfirmed test login exists on production, with no account and no email. Delete it when convenient.</li>
+<li>The /me rate limit was left out on purpose: the app calls it 6 times per page load.</li>
+</ul></div>
+</main>
+</body></html>
