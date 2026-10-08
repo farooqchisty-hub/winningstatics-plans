@@ -1,0 +1,315 @@
+/* ==========================================================================
+   Winning Statics design tokens, v1 (9 Oct 2026)
+   Source of truth for the landing page and the dashboard.
+
+   Direction: tinted graphite instead of black, one step lighter; paper for the
+   reading and deciding sections; mint only for action and proof.
+
+   How to use
+   1. Import this file once, before Tailwind.
+   2. Put data-tone="dark" | "paper" | "bone" on each section. The role tokens
+      (--bg, --surface, --text ...) switch with the tone, so components never
+      reference a raw hex.
+   3. The "shadcn bridge" block at the bottom feeds the existing
+      hsl(var(--background)) style variables, so current components pick the
+      new ladder up without a rewrite.
+
+   Contrast ratios (WCAG 2.x) are noted next to every text colour.
+   No em or en dashes in this file on purpose.
+   ========================================================================== */
+
+:root {
+  /* ---------- Dark ladder: graphite tinted toward the mint hue (140 to 157) */
+  --ws-ink-0: #0E110F;   /* deepest: footer, code wells, image letterbox. L* 4.8 */
+  --ws-ink-1: #141715;   /* page ground on dark sections. L* 7.4 (today #050505, L* 1.4) */
+  --ws-ink-2: #1B1F1C;   /* card, panel. L* 11.3 */
+  --ws-ink-3: #232825;   /* raised: input fill, popover, hover row. L* 15.5 */
+  --ws-ink-4: #2C322E;   /* selected, pressed, strong chip. L* 20.1 */
+
+  --ws-line-1: #2A302C;  /* hairline divider on ink-1 / ink-2 (decorative) */
+  --ws-line-2: #3A413C;  /* card border, table rule */
+  --ws-line-3: #6B736E;  /* control border (inputs, secondary button): 3.7:1 on ink-1, 3.1:1 on ink-3 */
+
+  /* Text on dark (ratios on ink-1 / ink-2) */
+  --ws-fg-1: #F3F5F3;    /* headings, primary text. 16.5 / 15.2 */
+  --ws-fg-2: #C9CFCB;    /* body. 11.4 / 10.5 */
+  --ws-fg-3: #9AA29D;    /* muted, captions, mono labels. 6.9 / 6.4 */
+  --ws-fg-4: #7A827D;    /* disabled and decorative only, never for needed text. 4.6 / 4.2 */
+
+  /* ---------- Light ladder: warm paper, used for reading and deciding */
+  --ws-paper: #F6F5F0;   /* light section ground. L* 96.5 */
+  --ws-bone: #EDECE5;    /* alternate light band, inset wells on paper. L* 93.3 */
+  --ws-white: #FFFFFF;   /* cards on paper */
+
+  --ws-line-l1: #E3E1D9; /* hairline on paper (decorative) */
+  --ws-line-l2: #CFCDC3; /* card border, table rule on paper */
+  --ws-line-l3: #868C87; /* control border on paper and white: 3.2:1 / 3.4:1 */
+
+  /* Text on light (ratios on paper / white) */
+  --ws-ink-text: #141715;  /* headings. 16.5 / 18.1 */
+  --ws-body-l: #39403B;    /* body. 9.8 / 10.7 */
+  --ws-muted-l: #5C645F;   /* muted, captions, mono labels. 5.6 / 6.1 */
+
+  /* ---------- Mint, the only brand accent (ramp from the logo kit + two text steps) */
+  --ws-mint-50: #EAF6EE;   /* tint surface on paper */
+  --ws-mint-100: #DCF4E6;  /* logo ramp: lit corner */
+  --ws-mint-200: #BBECCF;  /* logo ramp: soft */
+  --ws-mint-300: #8EDCB0;  /* hover fill for the primary button; duo favicon top */
+  --ws-mint-500: #71D793;  /* THE brand mint: primary button fill, accent text on dark (10.2:1 on ink-1) */
+  --ws-mint-600: #41B983;  /* logo ramp mid; charts */
+  --ws-mint-700: #2E9965;  /* primary button edge on light (3.3:1 on paper), focus ring on light */
+  --ws-mint-800: #1D7047;  /* accent TEXT on light: 5.6 paper, 5.1 bone, 6.1 white */
+  --ws-mint-900: #17603C;  /* pressed text on light */
+  --ws-mint-950: #10261A;  /* tint surface on dark (recommended card, success well) */
+
+  /* ---------- Semantic (dark value / light value) */
+  --ws-success: #71D793;      --ws-success-l: #1D7047;
+  --ws-warning: #E8B04B;      --ws-warning-l: #8A5A00;   /* 9.2 on ink-1 / 5.0 on bone */
+  --ws-danger: #F28B82;       --ws-danger-l: #B42318;    /* 7.6 on ink-1 / 5.6 on bone */
+  --ws-info: #8AB8F5;         --ws-info-l: #1D5FB4;      /* 8.8 on ink-1 / 5.3 on bone */
+  --ws-success-tint: rgba(113, 215, 147, 0.12);  --ws-success-tint-l: #EAF6EE;
+  --ws-warning-tint: rgba(232, 176, 75, 0.12);   --ws-warning-tint-l: #FBF1DC;
+  --ws-danger-tint: rgba(242, 139, 130, 0.12);   --ws-danger-tint-l: #FCE8E6;
+  --ws-info-tint: rgba(138, 184, 245, 0.12);     --ws-info-tint-l: #E6EFFB;
+  --ws-star: #E8B04B;  /* rating stars only, solid fill, never a gradient, never decorative */
+
+  /* ---------- Typography */
+  --ws-font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ws-font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Load: family=Geist:wght@400..700&family=Geist+Mono:wght@400..500 (drop 100..900 and 600 mono) */
+
+  /* Scale: size / line height / tracking / weight. Desktop first, mobile in the media query. */
+  --ws-display-1: 64px;   --ws-display-1-lh: 1.02; --ws-display-1-tr: -0.04em;  --ws-display-1-w: 550; /* H1 */
+  --ws-display-2: 44px;   --ws-display-2-lh: 1.08; --ws-display-2-tr: -0.032em; --ws-display-2-w: 550; /* section H2 */
+  --ws-title-1: 28px;     --ws-title-1-lh: 1.2;    --ws-title-1-tr: -0.02em;    --ws-title-1-w: 600;   /* CTA band, big card */
+  --ws-title-2: 20px;     --ws-title-2-lh: 1.3;    --ws-title-2-tr: -0.012em;   --ws-title-2-w: 600;   /* card H3 */
+  --ws-title-3: 17px;     --ws-title-3-lh: 1.4;    --ws-title-3-tr: -0.006em;   --ws-title-3-w: 600;   /* list title, FAQ question */
+  --ws-lead: 19px;        --ws-lead-lh: 1.55;      --ws-lead-tr: -0.005em;      --ws-lead-w: 400;
+  --ws-body: 16px;        --ws-body-lh: 1.6;       --ws-body-tr: 0;             --ws-body-w: 400;
+  --ws-small: 14px;       --ws-small-lh: 1.5;      --ws-small-tr: 0;            --ws-small-w: 400;
+  --ws-caption: 13px;     --ws-caption-lh: 1.45;   --ws-caption-tr: 0.002em;    --ws-caption-w: 400;
+  --ws-label: 12px;       --ws-label-lh: 1.3;      --ws-label-tr: 0.08em;       --ws-label-w: 500;     /* mono, uppercase */
+  --ws-data: 13px;        --ws-data-lh: 1.4;       --ws-data-tr: 0;             --ws-data-w: 400;      /* mono, tabular */
+  --ws-stat: 40px;        --ws-stat-lh: 1;         --ws-stat-tr: -0.03em;       --ws-stat-w: 600;      /* sans, tabular */
+  --ws-min-text: 12px;    /* nothing smaller ships, on the page or in the app */
+
+  /* ---------- Spacing: 8 pt scale with a 4 px half step */
+  --ws-space-0: 0;
+  --ws-space-1: 4px;
+  --ws-space-2: 8px;
+  --ws-space-3: 12px;
+  --ws-space-4: 16px;
+  --ws-space-5: 24px;
+  --ws-space-6: 32px;
+  --ws-space-7: 40px;
+  --ws-space-8: 48px;
+  --ws-space-9: 64px;
+  --ws-space-10: 80px;
+  --ws-space-11: 96px;
+  --ws-space-12: 128px;
+  --ws-space-13: 160px;
+
+  /* Section rhythm */
+  --ws-section-y: 128px;        /* top and bottom padding of a section that opens an act */
+  --ws-section-y-tight: 96px;   /* a section that continues the same act and tone */
+  --ws-head-gap: 48px;          /* section head to content */
+  --ws-block-gap: 32px;         /* between blocks inside a section */
+
+  /* ---------- Layout (keeps the owner's 80% column) */
+  --ws-page-max: 1180px;        /* outer page column */
+  --ws-page-pad: 40px;          /* side padding from md up; 16px on phones */
+  --ws-content: 80%;            /* every section below the hero uses 80% of the column: 880px at desktop */
+  --ws-content-max: 880px;
+  --ws-text-max: 640px;         /* paragraphs and section leads */
+  --ws-grid-cols: 12;
+  --ws-grid-gutter: 24px;       /* 16px on phones */
+  --ws-nav-h: 64px;
+
+  /* ---------- Radii: six steps only */
+  --ws-radius-xs: 4px;    /* tag inside an image, progress bars */
+  --ws-radius-sm: 6px;    /* tags, badges, checkboxes, kbd */
+  --ws-radius-md: 10px;   /* buttons, inputs, segmented control, ad thumbnails */
+  --ws-radius-lg: 16px;   /* cards, panels, table wrappers */
+  --ws-radius-xl: 24px;   /* pricing cards, CTA band, section containers */
+  --ws-radius-full: 999px;/* chips, toggles, avatars, status dots. Never a primary button. */
+
+  /* ---------- Elevation. Dark uses surface steps, not shadows. No glows anywhere. */
+  --ws-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.04);     /* top edge of a dark card */
+  --ws-shadow-dark-float: 0 24px 48px -24px rgba(0, 0, 0, 0.6); /* product shot or popover over dark */
+  --ws-shadow-l1: 0 1px 2px rgba(20, 23, 21, 0.05), 0 0 0 1px rgba(20, 23, 21, 0.02);
+  --ws-shadow-l2: 0 12px 32px -16px rgba(20, 23, 21, 0.22), 0 2px 6px -2px rgba(20, 23, 21, 0.06);
+  --ws-focus-ring: 0 0 0 2px var(--ws-ink-1), 0 0 0 4px var(--ws-mint-500);
+
+  /* ---------- Motion: opacity and transform only */
+  --ws-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ws-ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --ws-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ws-dur-fast: 120ms;     /* hover colour */
+  --ws-dur-base: 200ms;     /* press, toggle, segmented */
+  --ws-dur-slow: 320ms;     /* accordion, tab panel */
+  --ws-dur-reveal: 480ms;   /* one-shot scroll reveal */
+  --ws-reveal-shift: 12px;  /* translateY of a reveal */
+  --ws-stagger: 60ms;       /* max 6 items */
+
+  /* ---------- Ad thumbnails */
+  --ws-ad-ratio: 4 / 5;     /* the deliverable format; 1:1 only where the source is square */
+  --ws-ad-radius: 10px;
+  --ws-ad-mat: 8px;         /* white mat around an ad on paper */
+}
+
+@media (max-width: 767px) {
+  :root {
+    --ws-display-1: 40px;  --ws-display-1-lh: 1.06; --ws-display-1-tr: -0.03em;
+    --ws-display-2: 32px;  --ws-display-2-lh: 1.1;  --ws-display-2-tr: -0.025em;
+    --ws-title-1: 24px;
+    --ws-title-2: 18px;
+    --ws-title-3: 16px;
+    --ws-lead: 17px;
+    --ws-stat: 32px;
+    --ws-section-y: 80px;
+    --ws-section-y-tight: 64px;
+    --ws-head-gap: 32px;
+    --ws-block-gap: 24px;
+    --ws-page-pad: 16px;
+    --ws-grid-gutter: 16px;
+    --ws-nav-h: 56px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Role tokens per tone. Components read only these.
+   -------------------------------------------------------------------------- */
+:root,
+[data-tone='dark'] {
+  --bg: var(--ws-ink-1);
+  --bg-deep: var(--ws-ink-0);
+  --surface: var(--ws-ink-2);
+  --surface-2: var(--ws-ink-3);
+  --surface-3: var(--ws-ink-4);
+  --line: var(--ws-line-1);
+  --line-strong: var(--ws-line-2);
+  --line-control: var(--ws-line-3);
+  --text: var(--ws-fg-1);
+  --text-2: var(--ws-fg-2);
+  --text-3: var(--ws-fg-3);
+  --text-4: var(--ws-fg-4);
+  --accent: var(--ws-mint-500);       /* fills */
+  --accent-text: var(--ws-mint-500);  /* text and icons */
+  --accent-tint: var(--ws-mint-950);
+  --btn-primary-bg: var(--ws-mint-500);
+  --btn-primary-bg-hover: var(--ws-mint-300);
+  --btn-primary-text: var(--ws-ink-0);
+  --btn-primary-edge: transparent;
+  --btn-secondary-bg: transparent;
+  --btn-secondary-bg-hover: var(--ws-ink-3);
+  --btn-secondary-text: var(--ws-fg-1);
+  --card-shadow: var(--ws-highlight);
+  --float-shadow: var(--ws-shadow-dark-float);
+  --focus: var(--ws-mint-500);
+  color-scheme: dark;
+}
+
+[data-tone='paper'],
+[data-tone='bone'] {
+  --bg: var(--ws-paper);
+  --bg-deep: var(--ws-bone);
+  --surface: var(--ws-white);
+  --surface-2: var(--ws-bone);
+  --surface-3: #E2E1D9;
+  --line: var(--ws-line-l1);
+  --line-strong: var(--ws-line-l2);
+  --line-control: var(--ws-line-l3);
+  --text: var(--ws-ink-text);
+  --text-2: var(--ws-body-l);
+  --text-3: var(--ws-muted-l);
+  --text-4: #868C87;
+  --accent: var(--ws-mint-500);
+  --accent-text: var(--ws-mint-800);
+  --accent-tint: var(--ws-mint-50);
+  --btn-primary-bg: var(--ws-mint-500);
+  --btn-primary-bg-hover: var(--ws-mint-300);
+  --btn-primary-text: var(--ws-ink-0);
+  --btn-primary-edge: var(--ws-mint-700);  /* gives the mint button a 3:1 boundary on paper */
+  --btn-secondary-bg: var(--ws-white);
+  --btn-secondary-bg-hover: var(--ws-bone);
+  --btn-secondary-text: var(--ws-ink-text);
+  --card-shadow: var(--ws-shadow-l1);
+  --float-shadow: var(--ws-shadow-l2);
+  --focus: var(--ws-mint-700);
+  color-scheme: light;
+}
+
+[data-tone='bone'] {
+  --bg: var(--ws-bone);
+  --bg-deep: #E2E1D9;
+  --surface-2: var(--ws-paper);
+}
+
+[data-tone] {
+  background-color: var(--bg);
+  color: var(--text-2);
+}
+
+/* --------------------------------------------------------------------------
+   Type helpers (optional; Tailwind utilities can replace them)
+   -------------------------------------------------------------------------- */
+.ws-display-1 { font: var(--ws-display-1-w) var(--ws-display-1)/var(--ws-display-1-lh) var(--ws-font-sans); letter-spacing: var(--ws-display-1-tr); color: var(--text); text-wrap: balance; }
+.ws-display-2 { font: var(--ws-display-2-w) var(--ws-display-2)/var(--ws-display-2-lh) var(--ws-font-sans); letter-spacing: var(--ws-display-2-tr); color: var(--text); text-wrap: balance; }
+.ws-title-1 { font: var(--ws-title-1-w) var(--ws-title-1)/var(--ws-title-1-lh) var(--ws-font-sans); letter-spacing: var(--ws-title-1-tr); color: var(--text); }
+.ws-title-2 { font: var(--ws-title-2-w) var(--ws-title-2)/var(--ws-title-2-lh) var(--ws-font-sans); letter-spacing: var(--ws-title-2-tr); color: var(--text); }
+.ws-title-3 { font: var(--ws-title-3-w) var(--ws-title-3)/var(--ws-title-3-lh) var(--ws-font-sans); letter-spacing: var(--ws-title-3-tr); color: var(--text); }
+.ws-lead { font: var(--ws-lead-w) var(--ws-lead)/var(--ws-lead-lh) var(--ws-font-sans); letter-spacing: var(--ws-lead-tr); color: var(--text-2); }
+.ws-body { font: var(--ws-body-w) var(--ws-body)/var(--ws-body-lh) var(--ws-font-sans); color: var(--text-2); }
+.ws-small { font: var(--ws-small-w) var(--ws-small)/var(--ws-small-lh) var(--ws-font-sans); color: var(--text-2); }
+.ws-caption { font: var(--ws-caption-w) var(--ws-caption)/var(--ws-caption-lh) var(--ws-font-sans); color: var(--text-3); }
+.ws-label { font: var(--ws-label-w) var(--ws-label)/var(--ws-label-lh) var(--ws-font-mono); letter-spacing: var(--ws-label-tr); text-transform: uppercase; color: var(--text-3); }
+.ws-data { font: var(--ws-data-w) var(--ws-data)/var(--ws-data-lh) var(--ws-font-mono); font-variant-numeric: tabular-nums; color: var(--text-2); }
+.ws-stat { font: var(--ws-stat-w) var(--ws-stat)/var(--ws-stat-lh) var(--ws-font-sans); letter-spacing: var(--ws-stat-tr); font-variant-numeric: tabular-nums; color: var(--text); }
+/* Two-tone headline: the second clause steps down to text-3, it does not turn mint. */
+.ws-quiet { color: var(--text-3); }
+
+/* The 80% section column, unchanged in behaviour from index.css .ws-section */
+.ws-section { width: 100%; max-width: var(--ws-page-max); margin-inline: auto; padding-inline: 16px; }
+@media (min-width: 768px) {
+  .ws-section { padding-inline: calc(var(--ws-page-pad) + (min(100%, var(--ws-page-max)) - 2 * var(--ws-page-pad)) * 0.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 1ms !important; }
+}
+
+/* --------------------------------------------------------------------------
+   shadcn bridge: HSL triplets for the existing hsl(var(--x)) variables in
+   artifacts/winning-statics/src/index.css and artifacts/dashboard/src/index.css.
+   Dark is the default for both apps; paper sections use the role tokens above.
+   -------------------------------------------------------------------------- */
+:root, .dark {
+  --background: 140 7% 8.4%;          /* #141715 */
+  --foreground: 120 9% 95.7%;         /* #F3F5F3 */
+  --card: 135 7% 11.4%;               /* #1B1F1C */
+  --card-foreground: 120 9% 95.7%;
+  --card-border: 137 6% 24.1%;        /* #3A413C */
+  --popover: 144 7% 14.7%;            /* #232825 */
+  --popover-foreground: 120 9% 95.7%;
+  --popover-border: 137 6% 24.1%;
+  --border: 140 7% 17.6%;             /* #2A302C */
+  --input: 143 4% 43.5%;              /* #6B736E, control border */
+  --ring: 140 56% 64.3%;              /* #71D793 */
+  --primary: 140 56% 64.3%;           /* #71D793 */
+  --primary-foreground: 140 10% 6.1%; /* #0E110F */
+  --secondary: 144 7% 14.7%;          /* #232825, neutral secondary (was mint deep) */
+  --secondary-foreground: 120 9% 95.7%;
+  --muted: 140 6% 18.4%;              /* #2C322E */
+  --muted-foreground: 143 4% 62%;     /* #9AA29D */
+  --accent: 144 56% 82.9%;            /* #BBECCF */
+  --accent-foreground: 140 10% 6.1%;
+  --destructive: 5 81% 72.9%;         /* #F28B82 */
+  --destructive-foreground: 140 10% 6.1%;
+  --sidebar: 140 10% 6.1%;            /* #0E110F */
+  --sidebar-foreground: 120 9% 95.7%;
+  --sidebar-border: 140 7% 17.6%;
+  --sidebar-accent: 135 7% 11.4%;
+  --sidebar-accent-foreground: 120 9% 95.7%;
+  --sidebar-ring: 140 56% 64.3%;
+  --radius: 0.625rem;                 /* 10px base. The shadcn calc gives sm 6, md 8, lg 10, xl 14. Prefer the --ws-radius-* steps */
+}

@@ -1,0 +1,1290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Winning Statics Design System</title>
+<meta name="description" content="Audit, research, design system and brand kit for winningstatics.com and its dashboard. v1, 9 Oct 2026.">
+<link rel="icon" href="assets/ws-mark-dark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400..500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;font-family:var(--ws-font-sans);background:var(--ws-ink-1);color:var(--ws-fg-2);-webkit-font-smoothing:antialiased;font-size:16px;line-height:1.6}
+h1,h2,h3,h4,p,ul,ol,dl,dd,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+img{max-width:100%;display:block;height:auto}
+a{color:var(--accent-text);text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+code,.mono{font-family:var(--ws-font-mono);font-size:13px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 40px}
+.col{max-width:880px}
+.measure{max-width:640px}
+@media (max-width:767px){.wrap{padding:0 16px}}
+section.doc{padding:var(--ws-section-y) 0}
+section.doc.tight{padding-top:var(--ws-section-y-tight)}
+.stack-8>*+*{margin-top:8px}.stack-16>*+*{margin-top:16px}.stack-24>*+*{margin-top:24px}.stack-32>*+*{margin-top:32px}.stack-48>*+*{margin-top:48px}
+.label-dot{display:inline-flex;align-items:center;gap:8px}
+.label-dot::before{content:"";width:6px;height:6px;border-radius:2px;background:var(--accent)}
+[data-tone=paper] .label-dot::before,[data-tone=bone] .label-dot::before{background:var(--ws-mint-700)}
+
+/* Doc nav */
+.docnav{position:sticky;top:0;z-index:20;background:rgba(14,17,15,.94);border-bottom:1px solid var(--ws-line-1)}
+.docnav .wrap{display:flex;align-items:center;gap:24px;height:56px}
+.docnav img{height:20px;width:auto}
+.docnav ul{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1}
+.docnav ul::-webkit-scrollbar{display:none}
+.docnav a{display:block;padding:6px 10px;border-radius:8px;color:var(--ws-fg-3);font-size:13px;font-weight:500;text-decoration:none;white-space:nowrap}
+.docnav a:hover{color:var(--ws-fg-1);background:var(--ws-ink-3)}
+@media (max-width:767px){.docnav img{display:none}}
+
+/* Section head (the system's own component) */
+.shead{display:grid;grid-template-columns:7fr 5fr;gap:48px;align-items:end;margin-bottom:var(--ws-head-gap)}
+.shead .ws-label{margin-bottom:16px;display:inline-flex}
+@media (max-width:899px){.shead{grid-template-columns:1fr;gap:16px}}
+.sub-h{font:600 20px/1.3 var(--ws-font-sans);letter-spacing:-.012em;color:var(--text);margin:64px 0 16px}
+.sub-h:first-child{margin-top:0}
+.note{font-size:14px;color:var(--text-3)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;border-radius:var(--ws-radius-md);font:600 14px/1 var(--ws-font-sans);letter-spacing:-.005em;border:1px solid transparent;text-decoration:none;cursor:pointer;white-space:nowrap;transition:background-color var(--ws-dur-fast) var(--ws-ease-standard),transform var(--ws-dur-base) var(--ws-ease-standard),border-color var(--ws-dur-fast)}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible{outline:none;box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--focus)}
+.btn-lg{height:48px;padding:0 20px;font-size:15px}
+.btn-sm{height:32px;padding:0 12px;font-size:13px}
+.btn-block{width:100%}
+.btn-primary{background:var(--btn-primary-bg);color:var(--btn-primary-text);border-color:var(--btn-primary-edge)}
+.btn-primary:hover{background:var(--btn-primary-bg-hover)}
+.btn-secondary{background:var(--btn-secondary-bg);color:var(--btn-secondary-text);border-color:var(--line-control)}
+.btn-secondary:hover{background:var(--btn-secondary-bg-hover)}
+.btn-ghost{background:transparent;color:var(--text)}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.link-arrow{font-weight:600;font-size:14px;color:var(--text);text-decoration:none}
+.link-arrow::after{content:" \2192";color:var(--accent-text)}
+.link-arrow:hover{text-decoration:underline}
+
+/* Tags, badges, status */
+.tag{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;border-radius:var(--ws-radius-sm);border:1px solid var(--line-strong);background:var(--surface-2);font:500 12px/1 var(--ws-font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);white-space:nowrap}
+.tag-mint{color:var(--accent-text);background:var(--accent-tint);border-color:color-mix(in srgb,var(--ws-mint-700) 55%,transparent)}
+.tag-warn{color:var(--ws-warning);background:var(--ws-warning-tint);border-color:rgba(232,176,75,.35)}
+[data-tone=paper] .tag-warn,[data-tone=bone] .tag-warn{color:var(--ws-warning-l);background:var(--ws-warning-tint-l)}
+.status{display:inline-flex;align-items:center;gap:8px;height:28px;padding:0 12px;border-radius:var(--ws-radius-full);border:1px solid var(--line-strong);background:var(--surface);font:500 13px/1 var(--ws-font-sans);color:var(--text)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--ws-mint-500) 18%,transparent)}
+.chip{display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:var(--ws-radius-full);border:1px solid var(--line-strong);font-size:13px;font-weight:500;color:var(--text-2);background:transparent}
+.chip.on{background:var(--surface-3);color:var(--text);border-color:var(--line-control)}
+
+/* Cards and panels */
+.card{background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--ws-radius-lg);box-shadow:var(--card-shadow);padding:24px}
+.panel{position:relative;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--ws-radius-lg);box-shadow:var(--card-shadow);overflow:hidden}
+.panel-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;height:44px;padding:0 20px;border-bottom:1px solid var(--line);font:500 12px/1 var(--ws-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--text-3)}
+.panel-bar b{color:var(--text);font-weight:500}
+.panel-body{padding:20px}
+.ticks{position:relative}
+.ticks::before,.ticks::after{content:"";position:absolute;width:12px;height:12px;border-color:var(--line-control);border-style:solid;pointer-events:none}
+.ticks::before{left:-8px;top:-8px;border-width:1px 0 0 1px}
+.ticks::after{right:-8px;bottom:-8px;border-width:0 1px 1px 0}
+
+/* Stat tile */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line-strong);border:1px solid var(--line-strong);border-radius:var(--ws-radius-lg);overflow:hidden}
+.stats>div{background:var(--surface);padding:20px}
+.stats .ws-stat{display:block;margin-bottom:8px}
+.stats .ws-caption{display:block}
+@media (max-width:899px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+/* Tables */
+.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:14px}
+.tbl th{font:500 12px/1.3 var(--ws-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);text-align:left;padding:12px 16px;border-bottom:1px solid var(--line-strong);vertical-align:bottom}
+.tbl td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--text-2)}
+.tbl td:first-child{color:var(--text);font-weight:500}
+.tbl tr:last-child td{border-bottom:0}
+.tbl .hl{background:var(--accent-tint)}
+.tbl-wrap{border:1px solid var(--line-strong);border-radius:var(--ws-radius-lg);overflow-x:auto;background:var(--surface)}
+.tbl.dense td{padding:10px 12px;font-size:13px}
+.tbl.dense th{padding:10px 12px}
+.pass{color:var(--accent-text);font-weight:600}
+.fail{color:var(--ws-danger);font-weight:600}
+[data-tone=paper] .fail{color:var(--ws-danger-l)}
+
+/* Forms */
+.field{display:flex;flex-direction:column;gap:8px;min-width:0}
+.field label{font-size:14px;font-weight:500;color:var(--text)}
+.input{height:48px;width:100%;padding:0 14px;border-radius:var(--ws-radius-md);border:1px solid var(--line-control);background:var(--surface-2);color:var(--text);font:400 15px/1 var(--ws-font-sans)}
+[data-tone=paper] .input,[data-tone=bone] .input{background:var(--ws-white)}
+.input::placeholder{color:var(--text-3)}
+.input:focus{outline:none;border-color:var(--focus);box-shadow:0 0 0 3px color-mix(in srgb,var(--ws-mint-500) 25%,transparent)}
+.input.err{border-color:var(--ws-danger)}
+.help{font-size:13px;color:var(--text-3)}
+.help.err{color:var(--ws-danger)}
+[data-tone=paper] .help.err{color:var(--ws-danger-l)}
+
+/* Ad frame */
+.ad{position:relative;border-radius:var(--ws-ad-radius);overflow:hidden;background:var(--bg-deep);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.ad img{width:100%;height:100%;object-fit:cover;aspect-ratio:1/1}
+.ad .ad-tag{position:absolute;left:8px;top:8px;height:22px;padding:0 8px;display:inline-flex;align-items:center;border-radius:6px;background:rgba(14,17,15,.82);color:#F3F5F3;font:500 12px/1 var(--ws-font-mono);letter-spacing:.06em;text-transform:uppercase}
+.mat{background:var(--ws-white);padding:var(--ws-ad-mat);border:1px solid var(--ws-line-l1);border-radius:16px;box-shadow:var(--ws-shadow-l1)}
+.mat .ad{border-radius:8px;box-shadow:none}
+.ad-cap{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font:400 12px/1.3 var(--ws-font-mono);letter-spacing:.04em;text-transform:uppercase;color:var(--text-3)}
+
+/* Swatches */
+.swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.sw{border:1px solid var(--line-strong);border-radius:var(--ws-radius-lg);overflow:hidden;background:var(--surface)}
+.sw .chipc{height:88px;display:flex;align-items:flex-end;padding:10px;font:500 12px/1 var(--ws-font-mono)}
+.sw .meta{padding:12px;font-size:13px;line-height:1.45}
+.sw .meta b{display:block;color:var(--text);font-weight:600;font-size:14px}
+.sw .meta code{color:var(--text-3);font-size:12px}
+@media (max-width:899px){.swatches{grid-template-columns:repeat(2,1fr)}}
+.ladder{display:flex;border-radius:var(--ws-radius-lg);overflow:hidden;border:1px solid var(--line-strong)}
+.ladder div{flex:1;height:64px;display:flex;align-items:flex-end;padding:8px;font:500 11px/1.2 var(--ws-font-mono)}
+
+/* Grids */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media (max-width:899px){.g2,.g3{grid-template-columns:1fr}.g4{grid-template-columns:repeat(2,1fr)}}
+
+/* Findings */
+.findings{counter-reset:f}
+.finding{display:grid;grid-template-columns:56px 1fr 360px;gap:24px;padding:28px 0;border-top:1px solid var(--line)}
+.finding:last-child{border-bottom:1px solid var(--line)}
+.finding .num{font:500 13px/1 var(--ws-font-mono);color:var(--accent-text);padding-top:6px}
+.finding h3{font:600 19px/1.35 var(--ws-font-sans);letter-spacing:-.01em;color:var(--text);margin-bottom:8px}
+.finding p{font-size:15px}
+.finding figure img{border-radius:10px;border:1px solid var(--line-strong)}
+.finding figcaption{font-size:12px;color:var(--text-3);margin-top:6px;font-family:var(--ws-font-mono);letter-spacing:.02em}
+@media (max-width:999px){.finding{grid-template-columns:40px 1fr}.finding figure{grid-column:2}}
+
+/* Screens gallery */
+.shots{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.shots figure{margin:0}
+.shots img{border-radius:10px;border:1px solid var(--line-strong);width:100%;height:220px;object-fit:cover;object-position:top}
+.shots figcaption{font-size:13px;color:var(--text-3);margin-top:8px}
+.shots figcaption b{color:var(--text);font-weight:600}
+@media (max-width:899px){.shots{grid-template-columns:1fr 1fr}.shots img{height:160px}}
+.wide-shot{border-radius:12px;border:1px solid var(--line-strong);overflow-x:auto}
+.wide-shot img{max-width:none;height:auto}
+
+/* Research board */
+.rb{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+@media (max-width:899px){.rb{grid-template-columns:1fr}}
+.rcard{background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--ws-radius-lg);overflow:hidden;box-shadow:var(--card-shadow);display:flex;flex-direction:column}
+.rcard img{border-bottom:1px solid var(--line)}
+.rcard .rbody{padding:20px;display:flex;flex-direction:column;gap:12px}
+.rcard h3{font:600 18px/1.3 var(--ws-font-sans);color:var(--text);display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.rcard h3 a{font:500 12px/1 var(--ws-font-mono);color:var(--text-3);text-decoration:none}
+.rcard dl{display:grid;grid-template-columns:96px 1fr;gap:6px 12px;font-size:14px}
+.rcard dt{font:500 12px/1.6 var(--ws-font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+.rcard dd{color:var(--text-2)}
+.rcard .lesson{border-top:1px solid var(--line);padding-top:12px;font-size:15px;color:var(--text)}
+.rcard .lesson b{color:var(--accent-text);font-weight:600}
+.pal{display:flex;gap:4px;flex-wrap:wrap}
+.pal i{width:20px;height:20px;border-radius:5px;border:1px solid rgba(128,128,128,.35);display:inline-block}
+
+/* Type specimen */
+.spec{display:grid;grid-template-columns:220px 1fr;gap:24px;padding:24px 0;border-top:1px solid var(--line);align-items:baseline}
+.spec .meta{font:400 12px/1.6 var(--ws-font-mono);color:var(--text-3);letter-spacing:.02em}
+.spec .meta b{display:block;font:500 13px/1.4 var(--ws-font-mono);color:var(--text);letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+@media (max-width:767px){.spec{grid-template-columns:1fr;gap:8px}}
+
+/* Rhythm diagram */
+.rhythm{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.rcol h4{font:500 12px/1 var(--ws-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:12px}
+.rbar{border-radius:12px;overflow:hidden;border:1px solid var(--line-strong)}
+.rbar div{display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:12px;border-bottom:1px solid rgba(128,128,128,.18)}
+.rbar .d{background:#050505;color:#9AA29D}
+.rbar .g{background:var(--ws-ink-1);color:var(--ws-fg-3)}
+.rbar .g2{background:var(--ws-ink-0);color:var(--ws-fg-3)}
+.rbar .p{background:var(--ws-paper);color:var(--ws-muted-l)}
+.rbar .b{background:var(--ws-bone);color:var(--ws-muted-l)}
+.rbar span:last-child{font-family:var(--ws-font-mono);font-size:11px}
+@media (max-width:767px){.rhythm{grid-template-columns:1fr 1fr;gap:12px}.rbar div{font-size:10px;padding:0 6px}}
+
+/* Before / after */
+.ba{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:96px}
+.ba-label{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.ba-before img{border-radius:12px;border:1px solid var(--line-strong)}
+.mock{border-radius:16px;border:1px solid var(--line-strong);overflow:hidden}
+.mock-in{padding:56px 5%}
+@media (max-width:767px){.mock-in{padding:32px 16px}}
+
+/* Mock: hero */
+.m-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px;padding:0 6%;border-bottom:1px solid var(--line)}
+.m-nav img{height:22px;width:auto}
+.m-nav ul{display:flex;gap:4px}
+.m-nav ul a{color:var(--text-2);font-size:14px;font-weight:500;text-decoration:none;padding:8px 10px;border-radius:8px}
+.m-nav ul a:hover{color:var(--text);background:var(--surface-2)}
+.m-nav .r{display:flex;gap:8px;align-items:center}
+@media (max-width:899px){.m-nav ul,.m-nav .btn-ghost{display:none}}
+.m-hero{display:grid;grid-template-columns:1.3fr .7fr;gap:40px;align-items:center}
+@media (max-width:899px){.m-hero{grid-template-columns:1fr}}
+.m-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:32px}
+.m-form .btn{grid-column:1/-1}
+@media (max-width:599px){.m-form{grid-template-columns:1fr}}
+.proof-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px;padding-top:24px;border-top:1px solid var(--line)}
+.proof-row li{font-size:14px;color:var(--text-2);line-height:1.45}
+.proof-row .ws-label{display:block;margin-bottom:6px}
+@media (max-width:599px){.proof-row{grid-template-columns:1fr}}
+.fan{position:relative;height:440px;width:100%}
+.fan .ad{position:absolute;width:62%;top:40px;box-shadow:0 0 0 1px rgba(255,255,255,.07),var(--ws-shadow-dark-float)}
+.fan .a1{left:2%;transform:rotate(-6deg);opacity:.8}
+.fan .a2{right:2%;transform:rotate(5deg);opacity:.9}
+.fan .a3{left:19%;top:20px;z-index:2}
+.fan .chipf{position:absolute;z-index:3;display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 12px;border-radius:10px;background:var(--ws-ink-3);border:1px solid var(--ws-line-2);font-size:13px;color:var(--ws-fg-1);white-space:nowrap}
+.fan .c1{right:0;top:0}
+.fan .c2{left:6%;bottom:24px}
+.fan .chipf small{font:500 12px/1 var(--ws-font-mono);color:var(--ws-fg-3);letter-spacing:.04em;text-transform:uppercase}
+@media (max-width:899px){.fan{height:330px;max-width:420px;margin:0 auto}.fan .chipf small{display:none}}
+
+/* Mock: patterns */
+.m-pat{display:grid;grid-template-columns:5fr 7fr;gap:40px;align-items:start}
+@media (max-width:899px){.m-pat{grid-template-columns:1fr}}
+.plist li{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:baseline;padding:16px 0 16px 12px;border-top:1px solid var(--line-strong);position:relative}
+.plist li:last-child{border-bottom:1px solid var(--line-strong)}
+.plist .ix{font:500 12px/1 var(--ws-font-mono);color:var(--text-3)}
+.plist .nm{font:600 18px/1.3 var(--ws-font-sans);letter-spacing:-.01em;color:var(--text-3)}
+.plist .dt{font:400 12px/1 var(--ws-font-mono);color:var(--text-3);letter-spacing:.04em;text-transform:uppercase}
+.plist li.on .nm{color:var(--text)}
+.plist li.on .ix{color:var(--accent-text)}
+.plist li.on::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:2px;background:var(--text);border-radius:2px}
+.notes{margin-top:32px;display:grid;gap:20px}
+.notes div{display:grid;grid-template-columns:110px 1fr;gap:16px;font-size:15px}
+.notes dt{font:500 12px/1.7 var(--ws-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text)}
+.notes dd{color:var(--text-2)}
+.same{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+
+/* Mock: pricing */
+.m-ctrl{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.seg{display:inline-flex;gap:2px;padding:3px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface)}
+.seg button{height:34px;padding:0 14px;border-radius:9px;border:0;background:transparent;font:500 14px/1 var(--ws-font-sans);color:var(--text-3);cursor:pointer}
+.seg button.on{background:var(--ws-ink-1);color:var(--ws-fg-1)}
+.seg button em{font-style:normal;color:var(--accent-text);font-weight:600}
+.plans{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:999px){.plans{grid-template-columns:1fr 1fr}}
+@media (max-width:599px){.plans{grid-template-columns:1fr}}
+.plan{display:flex;flex-direction:column;gap:16px;padding:24px 20px;border-radius:var(--ws-radius-xl);background:var(--ws-white);border:1px solid var(--ws-line-l2);box-shadow:var(--ws-shadow-l1);color:var(--ws-body-l)}
+.plan .pn{display:flex;justify-content:space-between;align-items:center;gap:8px;font:500 12px/1 var(--ws-font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ws-ink-text)}
+.plan .pp{font:600 40px/1 var(--ws-font-sans);letter-spacing:-.03em;color:var(--ws-ink-text);font-variant-numeric:tabular-nums}
+.plan .pp small{font-size:15px;font-weight:500;letter-spacing:0;color:var(--ws-muted-l)}
+.plan .per{font-size:13px;color:var(--ws-muted-l);margin-top:6px}
+.plan .per b{color:var(--ws-mint-800);font-weight:600}
+.plan .quota{border-radius:12px;background:var(--ws-bone);padding:12px 14px;font-size:13px;line-height:1.4}
+.plan .quota b{display:block;font:600 24px/1.1 var(--ws-font-sans);letter-spacing:-.02em;color:var(--ws-ink-text);font-variant-numeric:tabular-nums}
+.plan ul{display:grid;gap:8px;font-size:14px;line-height:1.4;flex:1}
+.plan li{display:grid;grid-template-columns:16px 1fr;gap:8px}
+.plan li::before{content:"";width:12px;height:7px;margin-top:5px;border-left:2px solid var(--ws-mint-800);border-bottom:2px solid var(--ws-mint-800);transform:rotate(-45deg)}
+.plan.free{background:transparent;box-shadow:none;border-style:dashed}
+.plan.rec{background:var(--ws-ink-1);border-color:var(--ws-ink-1);color:var(--ws-fg-2);box-shadow:var(--ws-shadow-l2)}
+.plan.rec .pn,.plan.rec .pp,.plan.rec .quota b{color:var(--ws-fg-1)}
+.plan.rec .pp small,.plan.rec .per{color:var(--ws-fg-3)}
+.plan.rec .per b{color:var(--ws-mint-500)}
+.plan.rec .quota{background:var(--ws-ink-2);color:var(--ws-fg-2)}
+.plan.rec li::before{border-color:var(--ws-mint-500)}
+.risk{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:24px;border:1px solid var(--ws-line-l2);border-radius:var(--ws-radius-lg);overflow:hidden;background:var(--ws-line-l2)}
+.risk>div{background:var(--ws-bone);padding:20px 24px;font-size:14px}
+.risk b{display:block;font:600 16px/1.35 var(--ws-font-sans);color:var(--ws-ink-text);margin-bottom:4px}
+@media (max-width:599px){.risk{grid-template-columns:1fr}}
+.morerow{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:16px;padding:16px 4px 0;font-size:14px;color:var(--ws-muted-l)}
+
+/* OG mock */
+.og{position:relative;aspect-ratio:1200/630;border-radius:12px;overflow:hidden;background:var(--ws-ink-1);border:1px solid var(--ws-line-2);container-type:inline-size}
+.og .in{position:absolute;inset:5.3cqw;display:grid;grid-template-columns:1.15fr .85fr;gap:3cqw}
+.og .logo{height:2.7cqw;width:auto}
+.og h4{font:550 5.3cqw/1.04 var(--ws-font-sans);letter-spacing:-.035em;color:var(--ws-fg-1);margin-top:4.5cqw}
+.og h4 span{color:var(--ws-fg-3)}
+.og .ft{position:absolute;left:0;bottom:0;display:flex;gap:1.5cqw;align-items:center}
+.og .ft .pill{height:3.6cqw;padding:0 1.4cqw;border-radius:.9cqw;background:var(--ws-mint-500);color:var(--ws-ink-0);font:600 1.5cqw/3.6cqw var(--ws-font-sans)}
+.og .ft .url{font:500 1.35cqw/1 var(--ws-font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ws-fg-3)}
+.og .ads{position:relative}
+.og .ads .ad{position:absolute;width:62%;border-radius:.9cqw;box-shadow:0 2cqw 4cqw -2cqw rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.08)}
+.og .ads .x1{left:0;top:9%;transform:rotate(-5deg);opacity:.85}
+.og .ads .x2{right:0;top:13%;transform:rotate(5deg);opacity:.9}
+.og .ads .x3{left:19%;top:3%;z-index:2}
+.og .safe{position:absolute;inset:5.3cqw;border:1px dashed rgba(113,215,147,.35);pointer-events:none}
+
+/* Logo demo */
+.logo-demo{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.logo-demo>div{border-radius:16px;border:1px solid var(--line-strong);height:160px;display:flex;align-items:center;justify-content:center;position:relative}
+.logo-demo img{height:36px;width:auto}
+.logo-demo span{position:absolute;left:12px;bottom:10px;font:500 12px/1 var(--ws-font-mono);letter-spacing:.06em;text-transform:uppercase}
+@media (max-width:899px){.logo-demo{grid-template-columns:1fr}}
+.clear{position:relative;display:inline-block;padding:14px;outline:1px dashed var(--ws-mint-700)}
+.clear img{height:56px;width:auto}
+
+.dodont{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.dodont ul{display:grid;gap:10px;font-size:15px}
+.dodont li{padding-left:24px;position:relative}
+.dodont .do li::before{content:"";position:absolute;left:2px;top:7px;width:10px;height:6px;border-left:2px solid var(--accent-text);border-bottom:2px solid var(--accent-text);transform:rotate(-45deg)}
+.dodont .dont li::before{content:"\00d7";position:absolute;left:2px;top:-1px;color:var(--ws-danger-l);font-weight:700;font-size:18px}
+[data-tone=dark] .dodont .dont li::before{color:var(--ws-danger)}
+@media (max-width:767px){.dodont{grid-template-columns:1fr}}
+
+.voice{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line-strong);border:1px solid var(--line-strong);border-radius:16px;overflow:hidden}
+.voice>div{background:var(--surface);padding:16px 20px;font-size:15px}
+.voice .h{font:500 12px/1 var(--ws-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);padding:12px 20px}
+.voice .bad{color:var(--text-3);text-decoration:line-through;text-decoration-color:rgba(180,35,24,.5)}
+
+.build li{display:grid;grid-template-columns:200px 1fr;gap:24px;padding:16px 0;border-top:1px solid var(--line);font-size:15px}
+.build li b{color:var(--text);font-weight:600}
+@media (max-width:767px){.build li{grid-template-columns:1fr;gap:4px}}
+.foot{padding:48px 0;background:var(--ws-ink-0);color:var(--ws-fg-3);font-size:13px}
+.foot .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
+.cta-band{border-radius:var(--ws-radius-xl);background:var(--ws-ink-2);border:1px solid var(--ws-line-2);padding:56px 24px;text-align:center}
+.cta-band .m-form{max-width:560px;margin:28px auto 0;text-align:left}
+.kv{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.kv div{border:1px solid var(--line-strong);border-radius:12px;padding:14px;background:var(--surface)}
+.kv b{display:block;font:600 22px/1.1 var(--ws-font-sans);color:var(--text);margin-bottom:4px}
+.kv span{font-size:13px;color:var(--text-3)}
+@media (max-width:899px){.kv{grid-template-columns:repeat(2,1fr)}}
+.space-demo{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.space-demo div{background:var(--ws-mint-500);opacity:.85;border-radius:2px}
+.space-demo figure{display:flex;flex-direction:column;align-items:center;gap:6px;font:400 11px/1 var(--ws-font-mono);color:var(--text-3)}
+.radii{display:flex;gap:16px;flex-wrap:wrap}
+.radii figure{display:flex;flex-direction:column;gap:8px;font:400 12px/1.3 var(--ws-font-mono);color:var(--text-3)}
+.radii div{width:96px;height:72px;background:var(--surface-2);border:1px solid var(--line-control)}
+@media (max-width:767px){.ladder{flex-wrap:wrap}.ladder div{flex:1 1 33%;min-width:33%;height:52px}.ladder.prop{flex-wrap:nowrap}.ladder.prop div{min-width:0;font-size:9px}.foot-demo{grid-template-columns:1fr 1fr !important}}
+.elev{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.elev div{height:96px;border-radius:16px;padding:12px;font:400 12px/1.4 var(--ws-font-mono)}
+@media (max-width:899px){.elev{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<nav class="docnav" aria-label="Sections">
+  <div class="wrap">
+    <img src="assets/ws-lockup-horizontal-dark.svg" alt="Winning Statics">
+    <ul>
+      <li><a href="#direction">Direction</a></li>
+      <li><a href="#audit">Audit</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#tokens">Tokens</a></li>
+      <li><a href="#type">Type</a></li>
+      <li><a href="#components">Components</a></li>
+      <li><a href="#rhythm">Rhythm</a></li>
+      <li><a href="#conversion">Conversion</a></li>
+      <li><a href="#a11y">Accessibility</a></li>
+      <li><a href="#app">Dashboard</a></li>
+      <li><a href="#brand">Brand kit</a></li>
+      <li><a href="#before-after">Before vs proposed</a></li>
+      <li><a href="#build">Build list</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============================== HERO ============================== -->
+<header data-tone="dark" class="doc" style="padding:96px 0 80px">
+  <div class="wrap">
+    <p class="ws-label label-dot" style="margin-bottom:20px">Design system v1 · 9 Oct 2026</p>
+    <h1 class="ws-display-1" style="max-width:900px">One system for the page and the app. <span class="ws-quiet">About a fifth lighter, a lot calmer.</span></h1>
+    <p class="ws-lead measure" style="margin-top:24px">An audit of the newest landing (branch pricing-frontend: pricing v3 and the 80% column) and every dashboard screen, a study of 20 best-in-class AI and SaaS sites, and the design system and brand kit that came out of it. Research and design only: nothing in the product changed. The tokens are ready for the build step on staging.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:32px">
+      <a class="btn btn-primary btn-lg" href="#direction">Read the direction</a>
+      <a class="btn btn-secondary btn-lg" href="tokens.css">tokens.css</a>
+      <a class="btn btn-ghost btn-lg" href="tailwind-tokens.json">tailwind-tokens.json</a>
+    </div>
+    <div class="ladder" style="margin-top:56px" aria-label="Background ladder">
+      <div style="background:#050505;color:#7A827D">today #050505</div>
+      <div style="background:#0E110F;color:#9AA29D">ink-0 #0E110F</div>
+      <div style="background:#141715;color:#9AA29D">ink-1 #141715</div>
+      <div style="background:#1B1F1C;color:#9AA29D">ink-2 #1B1F1C</div>
+      <div style="background:#232825;color:#C9CFCB">ink-3 #232825</div>
+      <div style="background:#2C322E;color:#C9CFCB">ink-4 #2C322E</div>
+      <div style="background:#EDECE5;color:#5C645F">bone #EDECE5</div>
+      <div style="background:#F6F5F0;color:#5C645F">paper #F6F5F0</div>
+      <div style="background:#71D793;color:#0E110F">mint #71D793</div>
+    </div>
+    <p class="note" style="margin-top:12px">Supersedes the 2 Oct landing design system on ground colour, glows, radii and the type scale. Keeps its principles: the ads are the colour, show the source, accessible by default.</p>
+  </div>
+</header>
+
+<!-- ============================== DIRECTION ============================== -->
+<section id="direction" data-tone="paper" class="doc">
+  <div class="wrap">
+    <div class="shead">
+      <div><p class="ws-label label-dot">The direction in five lines</p>
+      <h2 class="ws-display-2">Graphite, paper and one mint. <span class="ws-quiet">Evolved, not replaced.</span></h2></div>
+      <p class="ws-lead">The brand stays: Geist, the Stack Fan, mint, the instrument panel. What changes is how dark, how loud and how many ways the same thing is drawn.</p>
+    </div>
+    <ol class="stack-16" style="counter-reset:d">
+      <li class="card" style="display:grid;grid-template-columns:48px 1fr;gap:16px"><span class="ws-label" style="color:var(--accent-text)">01</span><p><b style="color:var(--text)">Graphite, not black.</b> The dark ground moves from #050505 to a mint-tinted graphite ladder: <code>#0E110F</code> deep, <code>#141715</code> page, <code>#1B1F1C</code> card, <code>#232825</code> raised, <code>#2C322E</code> selected. Cards separate from the page by surface step, not by glow.</p></li>
+      <li class="card" style="display:grid;grid-template-columns:48px 1fr;gap:16px"><span class="ws-label" style="color:var(--accent-text)">02</span><p><b style="color:var(--text)">Paper where people read and decide.</b> Winning patterns and the pricing zone sit on warm paper <code>#F6F5F0</code> with bone <code>#EDECE5</code> and white cards: about a quarter of the scroll, bracketed by graphite. That is the "20% lighter" in practice.</p></li>
+      <li class="card" style="display:grid;grid-template-columns:48px 1fr;gap:16px"><span class="ws-label" style="color:var(--accent-text)">03</span><p><b style="color:var(--text)">Mint means act or proof, nothing else.</b> One primary button, live dots, progress and proof numbers. Headlines go two-tone in grey, not mint, so the button is always the brightest thing on screen. No glows, no gold stars.</p></li>
+      <li class="card" style="display:grid;grid-template-columns:48px 1fr;gap:16px"><span class="ws-label" style="color:var(--accent-text)">04</span><p><b style="color:var(--text)">One type voice.</b> Geist 550 for display (the wordmark's own weight) at 64 and 44px, Geist 400 for text at 16 to 19px, Geist Mono 500 for 12px labels and data. The H1 is the biggest thing on the page again, and nothing ships under 12px.</p></li>
+      <li class="card" style="display:grid;grid-template-columns:48px 1fr;gap:16px"><span class="ws-label" style="color:var(--accent-text)">05</span><p><b style="color:var(--text)">One frame for everything.</b> The 80% column, an 8pt scale, six radii, 1px hairlines, opacity and transform motion only, and one ad frame (4:5, 10px radius, mono caption) used on the page and in the app.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================== AUDIT ============================== -->
+<section id="audit" data-tone="dark" class="doc">
+  <div class="wrap">
+    <div class="shead">
+      <div><p class="ws-label label-dot">01 · Audit</p>
+      <h2 class="ws-display-2">Good parts, too many dialects. <span class="ws-quiet">Here is what doesn't add up.</span></h2></div>
+      <p class="ws-lead">Every number below was read from the computed CSS of each element on the running branch (localhost, vite), at 1440 and 390, plus 21 dashboard screens and states in mock mode.</p>
+    </div>
+
+    <div class="stats" style="margin-bottom:24px">
+      <div><span class="ws-stat">5</span><span class="ws-caption">heading sizes for one job: H1 50px, H2 at 36, 48, 56 and 60px</span></div>
+      <div><span class="ws-stat">16</span><span class="ws-caption">corner radii on the landing (2 to 24px plus pill); the app uses 6 on buttons alone</span></div>
+      <div><span class="ws-stat">15</span><span class="ws-caption">white opacities used for text, 0.40 to 0.90; the 0.40 footer line fails AA (3.7:1)</span></div>
+      <div><span class="ws-stat">7</span><span class="ws-caption">CTA labels for 3 intents (trial, plans, Free) across about 16 CTAs</span></div>
+      <div><span class="ws-stat">15,125</span><span class="ws-caption">px of page at 1440 (live: 13,424)</span></div>
+      <div><span class="ws-stat">23,050</span><span class="ws-caption">px at 390: 27 phone screens; pricing alone is 3,650</span></div>
+      <div><span class="ws-stat">9.5 to 10px</span><span class="ws-caption">the dashboard's most common text sizes; the landing has about 100 elements at 10px</span></div>
+      <div><span class="ws-stat">0%</span><span class="ws-caption">of the live landing on a light surface; ground #050505, L* 1.4</span></div>
+    </div>
+
+    <h3 class="sub-h" style="margin-top:64px">The 10 biggest findings</h3>
+    <div class="findings">
+      <article class="finding"><span class="num">01</span><div><h3>The heading hierarchy is upside down.</h3><p>The hero H1 is 50px while section H2s run 56px (six sections), 48px (three), 60px (Guarantee, final CTA) and 36px (BuildLine). Five sizes do one job, and alignment flips between left (7) and centred (5). Each section reads like it came from a different page, which is exactly the "not one landing page" feeling.</p></div><figure><img src="img/audit/L1440-guarantee.webp" alt="Guarantee section with a 60px centred heading" loading="lazy"><figcaption>Guarantee: H2 60px centred, seal and glow</figcaption></figure></article>
+      <article class="finding"><span class="num">02</span><div><h3>Too dark, and the same dark for 15,000px.</h3><p>Everything sits on #050505 (L* 1.4), darker than Linear #08090A or Retool #151515. Panels are #0A0B0A to #0E100E, so cards barely lift off the page and need glows and crop ticks to be seen. There is no light section, so the scroll is one long black slab.</p></div><figure><img src="img/audit/L1440-report.webp" alt="Weekly report section on near-black" loading="lazy"><figcaption>Weekly report: panel #0E100E on #050505</figcaption></figure></article>
+      <article class="finding"><span class="num">03</span><div><h3>Two visual languages on one page.</h3><p>The newer instrument panel kit (weekly/ui.tsx: mono labels, hairlines, square tags) sits next to older pieces: the spinning seal with a green glow, gradient gold stars, radial glows in the hero and final CTA, pill toggles, a niche marquee, and an Ads Manager clone in Meta blue and the system font.</p></div><figure><img src="img/audit/L1440-adcheck.webp" alt="Ad check section showing a Meta-styled table" loading="lazy"><figcaption>Ad check (staging only): the page's only light surface is a third-party UI</figcaption></figure></article>
+      <article class="finding"><span class="num">04</span><div><h3>Mint is everywhere, so it stops meaning "click here".</h3><p>11 of the 13 headlines carry a mint clause, plus mint eyebrow dots, tags, progress, links, checkmarks, prices per ad and three button styles. When the accent is everywhere the CTA is never the brightest thing on screen.</p></div><figure><img src="img/audit/L1440-patterns.webp" alt="Patterns section heading in white and mint" loading="lazy"><figcaption>Patterns: half the headline is CTA colour</figcaption></figure></article>
+      <article class="finding"><span class="num">05</span><div><h3>CTA sprawl.</h3><p>About 16 CTAs carry 7 labels for 3 intents: four for the trial (Start free trial, Get my 5 free ads, Get my ads, Start 7-day free trial), one for plans (See the plans), two for Free (Watch my competitors, Start on Free). Corners of 7 and 9px, with and without a glow. The hero's "See the plans" is an orphan link, left-aligned under centred microcopy.</p></div><figure><img src="img/audit/L1440-hero.webp" alt="Hero with form and secondary link" loading="lazy"><figcaption>Hero: H1 50px, orphan "See the plans", gold stars, marquee</figcaption></figure></article>
+      <article class="finding"><span class="num">06</span><div><h3>The story is told twice, and the page is long.</h3><p>The hero ends with the 5-step BuildLine ("From your link to Monday's drop"), then DropLoop explains the same build again ("Your competitors test"). BuildLine also runs 1,100px wide while every section below uses the 880px column. On a phone the page is 27 screens.</p></div><figure><img src="img/audit/L1440-droploop.webp" alt="DropLoop section" loading="lazy"><figcaption>DropLoop repeats the BuildLine story</figcaption></figure></article>
+      <article class="finding"><span class="num">07</span><div><h3>Text is too small and too dim to scan.</h3><p>The landing sets about 100 elements at 10px, mostly mono labels, plus a 9px seal label. In the dashboard the most common sizes are 9.5 to 12.5px, and text at white 0.32 and 0.42 fails AA (2.7:1 and 4.0:1). Page titles are 15px under 27px card headings.</p></div><figure><img src="img/audit/D1440-drops-active.webp" alt="Dashboard drops home" loading="lazy"><figcaption>Dashboard drops home: 9.5 to 11px labels</figcaption></figure></article>
+      <article class="finding"><span class="num">08</span><div><h3>Pricing is crowded at the decision point.</h3><p>Four plans, a billing toggle and an anchor line, then the same trial microcopy four times, a 6-tile add-on grid with two "Coming soon" tiles, a 5+ stores band and a compare accordion: 1,800px at desktop. Prices use weight 900, which only the seal shares.</p></div><figure><img src="img/audit/L1440-pricing.webp" alt="Pricing section" loading="lazy"><figcaption>Pricing v3: four cards plus add-ons, bands and accordion</figcaption></figure></article>
+      <article class="finding"><span class="num">09</span><div><h3>The first trust signal is decoration.</h3><p>With no customer logos yet (correctly: none are faked), the first thing under the form is a row of gold stars on USPs that read like ratings, and an uppercase niche marquee. The real proof, a dated Meta Ad Library board with days live, starts 4,000px down.</p></div><figure><img src="img/audit/live-hero.webp" alt="Live hero" loading="lazy"><figcaption>Live site hero today</figcaption></figure></article>
+      <article class="finding"><span class="num">10</span><div><h3>The app and the page look like two brands.</h3><p>Landing: #050505 with Geist Mono labels. Dashboard: #111 cards, blue-tinted leftovers from the indigo era (rgb 11,11,18 and 14,14,20), no Geist Mono at all, buttons at 8, 10, 14, 16, 20px and pill. And the page shows square 1:1 example ads while every plan ships 4:5.</p></div><figure><img src="img/audit/D1440-plan-trialing.webp" alt="Dashboard plan page" loading="lazy"><figcaption>Dashboard plan: radii 10, 14, 16, 20 and pill on one screen</figcaption></figure></article>
+    </div>
+
+    <h3 class="sub-h">Section by section, landing at 1440</h3>
+    <div class="tbl-wrap">
+      <table class="tbl dense">
+        <thead><tr><th>Section</th><th>Type and alignment</th><th>Ground, cards, radii</th><th>Buttons</th><th>Icons, motion, images</th><th>Density</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td>Nav</td><td>Geist 14/500, floating capsule</td><td>Transparent glass; pill links; 7px CTA</td><td>Log in outline 7px, mint 7px</td><td>None</td><td>Light</td><td>Keep structure; CTA radius off-scale</td></tr>
+          <tr><td>Hero</td><td>H1 50/700 left, sub 18, BuildLine H2 36 centred</td><td>3 radial glows on #050505; inputs 9px; panel 18px</td><td>Mint 56px 9px; orphan text link</td><td>Gradient gold stars; 92s marquee; 12 tiles</td><td>Medium</td><td>H1 too small; mixed widths; off-palette stars</td></tr>
+          <tr><td>How it works (DropLoop)</td><td>H2 56 split head; 25 labels at 10px mono</td><td>#0D0F0D panels; radii 6, 14, 16, 20</td><td>None</td><td>Static; 38 tiny thumbs</td><td>High</td><td>Repeats BuildLine; labels too small</td></tr>
+          <tr><td>Winning patterns</td><td>H2 56 split; notes 15px at 0.82</td><td>Panel 20px; paper polaroid tilted</td><td>List rows as tabs</td><td>Fade-in tab; 10 images</td><td>High</td><td>Best content; long reading on black</td></tr>
+          <tr><td>Weekly report</td><td>H2 56 split; 27 labels at 10px</td><td>Board 20px, tiles 12px, chips pill</td><td>Segmented 9px</td><td>21 photos, black 70% tags</td><td>High</td><td>Strong proof, arrives late</td></tr>
+          <tr><td>Ad check (staging)</td><td>H2 56; table in -apple-system</td><td>White Ads Manager clone, Meta blue</td><td>None</td><td>Static</td><td>High</td><td>Off-brand; restyle in our own panel</td></tr>
+          <tr><td>Styles explorer</td><td>H2 48 centred, mint sentence in lead</td><td>Tab grid 0px cells; panel 24px</td><td>"See the plans" mint with glow</td><td>16 phone mockups</td><td>Medium</td><td>Different head and alignment</td></tr>
+          <tr><td>Your ads library</td><td>H2 56 split; 15 labels at 10px</td><td>Dashboard mock 20px; radii 7 to 12</td><td>Mock buttons; "See the plans" glow</td><td>10 thumbs</td><td>High</td><td>Good; type floor</td></tr>
+          <tr><td>Compare</td><td>H2 56 split; cells 11px mono caps</td><td>Table panel 20px; mint 6% column</td><td>None</td><td>12 logos</td><td>High</td><td>Honest; hard to scan in caps</td></tr>
+          <tr><td>Pricing</td><td>H2 48 centred; prices 34 to 40 at 900</td><td>Cards 24px; Free dashed; Growth glow</td><td>3 CTA styles in one row</td><td>Static</td><td>Very high</td><td>Too much at the decision point</td></tr>
+          <tr><td>Guarantee</td><td>H2 60 centred; body 14 centred; 9px seal</td><td>Radial glow; cards 24px</td><td>"Get my ads" 56px glow</td><td>30s spinning seal; gold stars</td><td>Low</td><td>Off-system; merge into pricing</td></tr>
+          <tr><td>FAQ</td><td>H2 48 left; questions 20/500</td><td>Hairline rows</td><td>"Start free trial" glow</td><td>Accordion</td><td>Low</td><td>Fine; drop the CTA (final CTA follows)</td></tr>
+          <tr><td>Final CTA</td><td>H2 60 centred</td><td>Radial mint glow</td><td>Form, 56px</td><td>None</td><td>Low</td><td>Keep form; lose the glow</td></tr>
+          <tr><td>Footer</td><td>14px links, 10px headings, centred</td><td>#050505</td><td>"Get my ads" 44px</td><td>Social icons</td><td>Low</td><td>Left-align, one CTA label</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub-h">Dashboard, screen by screen</h3>
+    <div class="tbl-wrap">
+      <table class="tbl dense">
+        <thead><tr><th>Screen and states</th><th>What works</th><th>What breaks the system</th></tr></thead>
+        <tbody>
+          <tr><td>Shell: sidebar, trial bar, bottom tabs (390)</td><td>Clear five-item nav; trial countdown is honest</td><td>Sidebar #050505 vs main #111; trial bar mint fill competes with page CTAs; floating mint "Need a hand?" pill sits on top of content at 390</td></tr>
+          <tr><td>Drops home (trialing, review, active, no drop)</td><td>Strong status model (Making, Checking, Ready); countdown tiles</td><td>9.5 to 11px uppercase Geist labels (not Mono); radii 6, 8, 14, 20, pill; 0.46 text at 4.6:1 is the floor in use</td></tr>
+          <tr><td>Drop view, ad detail</td><td>Grid of ads, copy blocks with copy buttons</td><td>Blue-tinted surfaces rgb(11,11,18) and rgb(14,14,20); H1 17px; 10px meta</td></tr>
+          <tr><td>Competitors (active, free)</td><td>Same board as the landing, good continuity</td><td>Free upsell repeats the pricing cards in a third style</td></tr>
+          <tr><td>Plan (trialing, active, add-ons, free, cancelled, scheduled)</td><td>Everything a buyer needs on one screen</td><td>5,700px at 390; 41px rows at 12.5px; "Coming soon" add-ons inside billing</td></tr>
+          <tr><td>Library, product, add-ons, account, setup</td><td>Simple, readable</td><td>Empty states use 0.32 text (2.7:1, fails); danger zone red not from a token</td></tr>
+          <tr><td>Login, loading, error</td><td>Calm, single action</td><td>Login uses a blue-tinted card and 20px radius buttons, unlike the page</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub-h">Conversion audit</h3>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:170px">Lens</th><th>Today</th><th>Change</th></tr></thead>
+        <tbody>
+          <tr><td>Hero clarity</td><td>The promise is clear and the offer is in the sub (5 ads, $0 today). The H1 is smaller than every H2, half of it is mint, and the visual hides behind "Example ad" labels.</td><td>H1 64px, second clause in quiet grey, the button as the only mint object above the fold.</td></tr>
+          <tr><td>CTA count and hierarchy</td><td>About 16 CTAs, 7 labels, 3 intents; mobile adds a sticky bar on top of the hero form.</td><td>Two labels (Start free trial; See plans), one primary per act, sticky bar only after the hero form leaves the screen.</td></tr>
+          <tr><td>Proof placement</td><td>First signal is decorative stars; real proof starts 4,000px down.</td><td>A three-fact proof row under the form (source, signal, output), then the dated report board right after How it works.</td></tr>
+          <tr><td>Objection handling</td><td>Strong material (rebuilds, refund, cancel, card) spread over Guarantee, pricing cards and FAQ.</td><td>One risk line under every primary CTA, the guarantee as a strip inside pricing, the FAQ for the rest.</td></tr>
+          <tr><td>Pricing clarity</td><td>Good anchor ($2 to $10 an ad elsewhere) and per-ad cost; then repeated microcopy and coming-soon items.</td><td>One trial line above the cards, a dark recommended card on paper, add-ons behind one link.</td></tr>
+          <tr><td>Page length</td><td>15,125px desktop, 23,050px mobile.</td><td>Target about 11,500 and 16,000 by merging BuildLine and DropLoop and folding Guarantee into pricing.</td></tr>
+          <tr><td>Scannability</td><td>Split heads help; 10px labels and mint half-headlines don't.</td><td>12px floor, two-tone grey heads, 16px body on paper for the long reads.</td></tr>
+          <tr><td>Speed</td><td>Live: 62 requests, about 0.9 MB, LCP about 0.5s on a desktop connection; 6 running animations; Geist loaded 100 to 900.</td><td>Keep it fast: load Geist 400 to 700 only, no new fonts, no continuous animation, remove the marquee and seal spin.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub-h">Screens captured</h3>
+    <p class="note" style="margin-bottom:16px">Landing at 1440, section by section (newest branch). Click any image to open it full size.</p>
+    <div class="shots">
+      <figure><a href="img/audit/L1440-hero.webp"><img src="img/audit/L1440-hero.webp" alt="Hero" loading="lazy"></a><figcaption><b>Hero</b> with BuildLine</figcaption></figure>
+      <figure><a href="img/audit/L1440-droploop.webp"><img src="img/audit/L1440-droploop.webp" alt="How it works" loading="lazy"></a><figcaption><b>How it works</b> (DropLoop)</figcaption></figure>
+      <figure><a href="img/audit/L1440-patterns.webp"><img src="img/audit/L1440-patterns.webp" alt="Patterns" loading="lazy"></a><figcaption><b>Winning patterns</b></figcaption></figure>
+      <figure><a href="img/audit/L1440-report.webp"><img src="img/audit/L1440-report.webp" alt="Report" loading="lazy"></a><figcaption><b>Weekly report</b></figcaption></figure>
+      <figure><a href="img/audit/L1440-adcheck.webp"><img src="img/audit/L1440-adcheck.webp" alt="Ad check" loading="lazy"></a><figcaption><b>Ad check</b> (staging only)</figcaption></figure>
+      <figure><a href="img/audit/L1440-styles.webp"><img src="img/audit/L1440-styles.webp" alt="Styles" loading="lazy"></a><figcaption><b>Styles explorer</b></figcaption></figure>
+      <figure><a href="img/audit/L1440-dashboard.webp"><img src="img/audit/L1440-dashboard.webp" alt="Ads library" loading="lazy"></a><figcaption><b>Your ads library</b></figcaption></figure>
+      <figure><a href="img/audit/L1440-compare.webp"><img src="img/audit/L1440-compare.webp" alt="Compare" loading="lazy"></a><figcaption><b>Compare</b></figcaption></figure>
+      <figure><a href="img/audit/L1440-pricing.webp"><img src="img/audit/L1440-pricing.webp" alt="Pricing" loading="lazy"></a><figcaption><b>Pricing</b> v3</figcaption></figure>
+      <figure><a href="img/audit/L1440-guarantee.webp"><img src="img/audit/L1440-guarantee.webp" alt="Guarantee" loading="lazy"></a><figcaption><b>Guarantee</b></figcaption></figure>
+      <figure><a href="img/audit/L1440-faq.webp"><img src="img/audit/L1440-faq.webp" alt="FAQ" loading="lazy"></a><figcaption><b>FAQ</b></figcaption></figure>
+      <figure><a href="img/audit/L1440-finalclose.webp"><img src="img/audit/L1440-finalclose.webp" alt="Final CTA" loading="lazy"></a><figcaption><b>Final CTA</b> and <a href="img/audit/L1440-footer.webp">footer</a></figcaption></figure>
+    </div>
+    <p class="note" style="margin:32px 0 12px">Landing at 390, every section top to bottom (two strips, scroll sideways). First screen: <a href="img/audit/L390-viewport-top.webp">390 x 844</a>.</p>
+    <div class="wide-shot"><img src="img/audit/L390-sheet0.webp" alt="Mobile sections, hero to ads library" loading="lazy" width="1255"></div>
+    <div class="wide-shot" style="margin-top:12px"><img src="img/audit/L390-sheet1.webp" alt="Mobile sections, compare to footer" loading="lazy" width="1076"></div>
+    <p class="note" style="margin:32px 0 12px">Dashboard at 1440 (mock mode).</p>
+    <div class="shots">
+      <figure><a href="img/audit/D1440-drops-trialing.webp"><img src="img/audit/D1440-drops-trialing.webp" alt="Drops, trialing" loading="lazy"></a><figcaption><b>Drops</b> trialing, making</figcaption></figure>
+      <figure><a href="img/audit/D1440-drops-active.webp"><img src="img/audit/D1440-drops-active.webp" alt="Drops, active" loading="lazy"></a><figcaption><b>Drops</b> active, ready</figcaption></figure>
+      <figure><a href="img/audit/D1440-drop-view.webp"><img src="img/audit/D1440-drop-view.webp" alt="Drop view" loading="lazy"></a><figcaption><b>Drop view</b></figcaption></figure>
+      <figure><a href="img/audit/D1440-ad-detail.webp"><img src="img/audit/D1440-ad-detail.webp" alt="Ad detail" loading="lazy"></a><figcaption><b>Ad detail</b></figcaption></figure>
+      <figure><a href="img/audit/D1440-competitors-free.webp"><img src="img/audit/D1440-competitors-free.webp" alt="Competitors, free" loading="lazy"></a><figcaption><b>Competitors</b> on Free</figcaption></figure>
+      <figure><a href="img/audit/D1440-plan-trialing.webp"><img src="img/audit/D1440-plan-trialing.webp" alt="Plan, trialing" loading="lazy"></a><figcaption><b>Plan</b> trialing</figcaption></figure>
+      <figure><a href="img/audit/D1440-library.webp"><img src="img/audit/D1440-library.webp" alt="Library" loading="lazy"></a><figcaption><b>Library</b></figcaption></figure>
+      <figure><a href="img/audit/D1440-account.webp"><img src="img/audit/D1440-account.webp" alt="Account" loading="lazy"></a><figcaption><b>Account</b></figcaption></figure>
+      <figure><a href="img/audit/D1440-login.webp"><img src="img/audit/D1440-login.webp" alt="Login" loading="lazy"></a><figcaption><b>Login</b> (and <a href="img/audit/D1440-setup.webp">setup</a>)</figcaption></figure>
+    </div>
+    <p class="note" style="margin:32px 0 12px">Dashboard at 390: login, drops (trialing, active, review), drop view, ad detail, competitors (active, free), plan (trialing, free), library, product, account, setup. Loading, error, cancelled, scheduled and add-on states were captured too.</p>
+    <div class="wide-shot"><img src="img/audit/D390-sheet.webp" alt="Dashboard screens at 390" loading="lazy" width="2130"></div>
+  </div>
+</section>
+
+<!-- ============================== RESEARCH ============================== -->
+<section id="research" data-tone="paper" class="doc">
+  <div class="wrap">
+    <div class="shead">
+      <div><p class="ws-label label-dot">02 · Research</p>
+      <h2 class="ws-display-2">20 sites that feel expensive. <span class="ws-quiet">What they do that we don't.</span></h2></div>
+      <p class="ws-lead">Each board is the hero plus three points down the page, captured at 1440 on 9 Oct 2026 with cookies declined. Grounds, type and buttons were read from computed CSS.</p>
+    </div>
+
+    <div class="kv" style="margin-bottom:40px">
+      <div><b>11 of 20</b><span>are light or alternate light and dark</span></div>
+      <div><b>#07 to #17</b><span>the grounds of the 9 dark sites; only 3 use pure black</span></div>
+      <div><b>300 to 600</b><span>headline weights; none at 700</span></div>
+      <div><b>Grey</b><span>is the usual second tone in a two-tone headline; Supabase alone uses its green</span></div>
+      <div><b>4 to 8x</b><span>the primary CTA repeats, with one label</span></div>
+    </div>
+
+    <div class="rb">
+      <article class="rcard"><a href="img/research/linear.webp"><img src="img/research/linear.webp" alt="Linear" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Linear <a href="https://linear.app">linear.app</a></h3><div class="pal"><i style="background:#08090A"></i><i style="background:#0F1011"></i><i style="background:#8A8F98"></i><i style="background:#5E6AD2"></i></div><dl><dt>Ground</dt><dd>#08090A all the way, one #0F1011 band</dd><dt>Type</dt><dd>Inter Display 64 / 510, -1.4px; body 15px #8A8F98; Berkeley Mono</dd><dt>CTA</dt><dd>Get started + Contact sales</dd></dl><p class="lesson"><b>Lesson:</b> medium weight beats bold. A 510 headline with a grey second line, the product UI as the hero image, and almost no accent. Their 2026 refresh softened borders and warmed the greys.</p></div></article>
+      <article class="rcard"><a href="img/research/vercel.webp"><img src="img/research/vercel.webp" alt="Vercel" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Vercel <a href="https://vercel.com">vercel.com</a></h3><div class="pal"><i style="background:#000"></i><i style="background:#A1A1A1"></i><i style="background:#EDEDED"></i></div><dl><dt>Ground</dt><dd>#000000, logo wall inside the first screen</dd><dt>Type</dt><dd>Geist 64 / 400, -3.84px; body 24px #A1A1A1; Geist Mono</dd><dt>CTA</dt><dd>Deploy now (light pill) + Talk to sales (dark pill)</dd></dl><p class="lesson"><b>Lesson:</b> our own font, used at 400 to 450 with tight tracking, reads premium. Geist doesn't need 700 to feel confident.</p></div></article>
+      <article class="rcard"><a href="img/research/supabase.webp"><img src="img/research/supabase.webp" alt="Supabase" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Supabase <a href="https://supabase.com">supabase.com</a></h3><div class="pal"><i style="background:#121412"></i><i style="background:#3ECF8E"></i><i style="background:#A9ADAA"></i></div><dl><dt>Ground</dt><dd>oklch(0.19 0.003 157), a green-tinted graphite</dd><dt>Type</dt><dd>H1 46 / 500; Inter 16 body; Source Code Pro</dd><dt>CTA</dt><dd>Start your project (green, 9px) + Request a demo</dd></dl><p class="lesson"><b>Lesson:</b> the closest analogue. Green accent on graphite tinted toward the same hue reads calm, not heavy. Our ladder borrows the tint.</p></div></article>
+      <article class="rcard"><a href="img/research/retool.webp"><img src="img/research/retool.webp" alt="Retool" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Retool <a href="https://retool.com">retool.com</a></h3><div class="pal"><i style="background:#151515"></i><i style="background:#242424"></i><i style="background:#CBCCC4"></i><i style="background:#EAEBDF"></i></div><dl><dt>Ground</dt><dd>#151515 with a #242424 band</dd><dt>Type</dt><dd>Saans 72 / 300; body 16 #CBCCC4</dd><dt>CTA</dt><dd>Start for free (white pill) + Book a demo (outline pill)</dd></dl><p class="lesson"><b>Lesson:</b> graphite at L* 7, almost exactly our new ink-1, plus light-weight display type. Logos paired with outcomes ("Ramp saved $8M").</p></div></article>
+      <article class="rcard"><a href="img/research/mercury.webp"><img src="img/research/mercury.webp" alt="Mercury" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Mercury <a href="https://mercury.com">mercury.com</a></h3><div class="pal"><i style="background:#171721"></i><i style="background:#F6F5F2"></i><i style="background:#FBFCFD"></i><i style="background:#5266EB"></i></div><dl><dt>Ground</dt><dd>#171721 hero, then 7 light bands, then dark again to close</dd><dt>Type</dt><dd>Arcadia Display 49 / 480</dd><dt>CTA</dt><dd>Email field + Open account, Launch demo</dd></dl><p class="lesson"><b>Lesson:</b> the dark, light, dark rhythm we want. A stat row (300K+, 1 in 3, $20B+, 4.9) as proof, and the email field in the hero, like our form.</p></div></article>
+      <article class="rcard"><a href="img/research/ramp.webp"><img src="img/research/ramp.webp" alt="Ramp" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Ramp <a href="https://ramp.com">ramp.com</a></h3><div class="pal"><i style="background:#FFFFFF"></i><i style="background:#F7F6F4"></i><i style="background:#181716"></i><i style="background:#E4F222"></i></div><dl><dt>Ground</dt><dd>White and #F7F6F4, near-black bands for proof</dd><dt>Type</dt><dd>Lausanne 64 / 400; body 20</dd><dt>CTA</dt><dd>Email + Get started (lime, 8px); See a demo</dd></dl><p class="lesson"><b>Lesson:</b> our palette, flipped. One acid accent, warm paper and a black band for "Trusted by". Same CTA label six times.</p></div></article>
+      <article class="rcard"><a href="img/research/stripe.webp"><img src="img/research/stripe.webp" alt="Stripe" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Stripe <a href="https://stripe.com">stripe.com</a></h3><div class="pal"><i style="background:#FFFFFF"></i><i style="background:#0D1738"></i><i style="background:#64748D"></i><i style="background:#533AFD"></i></div><dl><dt>Ground</dt><dd>White with #0D1738 navy bands, twice</dd><dt>Type</dt><dd>Sohne 48 / 300, grey second clause</dd><dt>CTA</dt><dd>Start now (4px) + Contact sales</dd></dl><p class="lesson"><b>Lesson:</b> alternation paces a long page. The headline's second half drops to grey, not to colour. Product UI drawn as tables.</p></div></article>
+      <article class="rcard"><a href="img/research/harvey.webp"><img src="img/research/harvey.webp" alt="Harvey" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Harvey <a href="https://www.harvey.ai">harvey.ai</a></h3><div class="pal"><i style="background:#FAFAF9"></i><i style="background:#F2F1F0"></i><i style="background:#0F0E0D"></i><i style="background:#706D66"></i></div><dl><dt>Ground</dt><dd>Paper #FAFAF9 and warm black #0F0E0D, alternating</dd><dt>Type</dt><dd>Harvey Serif 72 / 400 + Harvey Sans 14</dd><dt>CTA</dt><dd>Request a Demo (black, 4px), one label</dd></dl><p class="lesson"><b>Lesson:</b> warm paper next to warm black reads expensive. Dark is saved for proof (customer films).</p></div></article>
+      <article class="rcard"><a href="img/research/cursor.webp"><img src="img/research/cursor.webp" alt="Cursor" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Cursor <a href="https://cursor.com">cursor.com</a></h3><div class="pal"><i style="background:#14120B"></i><i style="background:#1B1913"></i><i style="background:#EDECEC"></i><i style="background:#F54E00"></i></div><dl><dt>Ground</dt><dd>Warm near-black #14120B</dd><dt>Type</dt><dd>Cursor Gothic, a small 26px hero; Berkeley Mono</dd><dt>CTA</dt><dd>Download for macOS (light pill) + Request a demo</dd></dl><p class="lesson"><b>Lesson:</b> a tinted near-black and an off-white primary. Screenshots sit on soft landscape plates; named leaders instead of logos.</p></div></article>
+      <article class="rcard"><a href="img/research/resend.webp"><img src="img/research/resend.webp" alt="Resend" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Resend <a href="https://resend.com">resend.com</a></h3><div class="pal"><i style="background:#000"></i><i style="background:#A1A4A5"></i><i style="background:#F0F0F0"></i></div><dl><dt>Ground</dt><dd>#000, dark mode first by their own handbook</dd><dt>Type</dt><dd>Domaine serif 96 / 400, ABC Favorit, Inter 18</dd><dt>CTA</dt><dd>Get started + Documentation</dd></dl><p class="lesson"><b>Lesson:</b> pure black works only when type does all the work and colour is almost absent. We have a bright accent, so we lift the ground.</p></div></article>
+      <article class="rcard"><a href="img/research/raycast.webp"><img src="img/research/raycast.webp" alt="Raycast" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Raycast <a href="https://www.raycast.com">raycast.com</a></h3><div class="pal"><i style="background:#07080A"></i><i style="background:#FF6363"></i><i style="background:#E6E6E6"></i></div><dl><dt>Ground</dt><dd>#07080A throughout</dd><dt>Type</dt><dd>Inter 64 / 600</dd><dt>CTA</dt><dd>Download for Mac (light, 8px), one label</dd></dl><p class="lesson"><b>Lesson:</b> one signature visual at the top, then quiet sections. Named-avatar testimonials as a wall.</p></div></article>
+      <article class="rcard"><a href="img/research/granola.webp"><img src="img/research/granola.webp" alt="Granola" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Granola <a href="https://www.granola.ai">granola.ai</a></h3><div class="pal"><i style="background:#FFFFFF"></i><i style="background:#F7F7F2"></i><i style="background:#292929"></i><i style="background:#B2C248"></i><i style="background:#5B6F00"></i></div><dl><dt>Ground</dt><dd>White, one lime band, two charcoal bands</dd><dt>Type</dt><dd>Quadrant serif 86 / 400 + Melange</dd><dt>CTA</dt><dd>Download for free (olive pill)</dd></dl><p class="lesson"><b>Lesson:</b> one accent-tinted band marks the key moment without any glow. "Less SaaS, more EQ".</p></div></article>
+      <article class="rcard"><a href="img/research/clay.webp"><img src="img/research/clay.webp" alt="Clay" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Clay <a href="https://www.clay.com">clay.com</a></h3><div class="pal"><i style="background:#035D44"></i><i style="background:#FFFFFF"></i><i style="background:#FFFDF9"></i><i style="background:#CBD810"></i></div><dl><dt>Ground</dt><dd>Deep green hero, then white and cream</dd><dt>Type</dt><dd>Roobert 88 / 575</dd><dt>CTA</dt><dd>Start free trial (white) + Get a demo (lime), 12px</dd></dl><p class="lesson"><b>Lesson:</b> a green brand stays premium when the green is deep and the page is light. Logos paired with outcome metrics.</p></div></article>
+      <article class="rcard"><a href="img/research/elevenlabs.webp"><img src="img/research/elevenlabs.webp" alt="ElevenLabs" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>ElevenLabs <a href="https://elevenlabs.io">elevenlabs.io</a></h3><div class="pal"><i style="background:#FDFCFC"></i><i style="background:#F2F0EE"></i><i style="background:#59544F"></i><i style="background:#000"></i></div><dl><dt>Ground</dt><dd>#FDFCFC, product in soft bone panels</dd><dt>Type</dt><dd>Waldenburg 48 / 300, Inter 14, Geist Mono labels</dd><dt>CTA</dt><dd>Sign up (black pill) + Contact sales</dd></dl><p class="lesson"><b>Lesson:</b> an AI company that chose light. Mono for labels, light display weight, product tabs inside a bone panel.</p></div></article>
+      <article class="rcard"><a href="img/research/runway.webp"><img src="img/research/runway.webp" alt="Runway" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Runway <a href="https://runwayml.com">runwayml.com</a></h3><div class="pal"><i style="background:#FFFFFF"></i><i style="background:#0C0C0C"></i></div><dl><dt>Ground</dt><dd>White chrome, full-bleed media</dd><dt>Type</dt><dd>ABC Normal 40 to 56 / 400</dd><dt>CTA</dt><dd>Try Runway for free</dd></dl><p class="lesson"><b>Lesson:</b> when the product is visual, the images are the colour and the chrome stays neutral. Our ads should be the loudest thing, not the UI.</p></div></article>
+      <article class="rcard"><a href="img/research/framer.webp"><img src="img/research/framer.webp" alt="Framer" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Framer <a href="https://www.framer.com">framer.com</a></h3><div class="pal"><i style="background:#000"></i><i style="background:#0099FF"></i><i style="background:#FFFFFF"></i></div><dl><dt>Ground</dt><dd>#000 throughout</dd><dt>Type</dt><dd>GT Walsheim 54 / 500; Inter 18 at 60%</dd><dt>CTA</dt><dd>Get started for free + Download app, 8px</dd></dl><p class="lesson"><b>Lesson, the counter-example:</b> pure black plus saturated blue and busy canvases feels heavier than the graphite sites, which is how our page feels today.</p></div></article>
+      <article class="rcard"><a href="img/research/superhuman.webp"><img src="img/research/superhuman.webp" alt="Superhuman" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Superhuman <a href="https://superhuman.com">superhuman.com</a></h3><div class="pal"><i style="background:#FFFFFF"></i><i style="background:#F7F5F2"></i><i style="background:#E8E0FF"></i><i style="background:#281647"></i><i style="background:#D4C7FF"></i></div><dl><dt>Ground</dt><dd>Paper #F7F5F2, a lavender band, plum to close</dd><dt>Type</dt><dd>Super Sans 49 / 460; body 18</dd><dt>CTA</dt><dd>Get Mail (lavender, 8px, 36px tall) + Learn more</dd></dl><p class="lesson"><b>Lesson:</b> the accent becomes a tinted surface for the testimonial, not a glow. Dark only at the close.</p></div></article>
+      <article class="rcard"><a href="img/research/mintlify.webp"><img src="img/research/mintlify.webp" alt="Mintlify" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Mintlify <a href="https://www.mintlify.com">mintlify.com</a></h3><div class="pal"><i style="background:#08090A"></i><i style="background:#17CF85"></i><i style="background:#FFFFFF"></i></div><dl><dt>Ground</dt><dd>Near-black with green line art</dd><dt>Type</dt><dd>Arizona Flare serif 50 / 400 + Inter 18 at 60%</dd><dt>CTA</dt><dd>Get started (white, 4px) + Sign up with Google</dd></dl><p class="lesson"><b>Lesson:</b> green on dark done with thin lines and real case-study cards, not radial glows.</p></div></article>
+      <article class="rcard"><a href="img/research/sierra.webp"><img src="img/research/sierra.webp" alt="Sierra" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Sierra <a href="https://sierra.ai">sierra.ai</a></h3><div class="pal"><i style="background:#FFFFFF"></i><i style="background:#F6F5F3"></i><i style="background:#716F6C"></i><i style="background:#65835B"></i></div><dl><dt>Ground</dt><dd>White and #F6F5F3</dd><dt>Type</dt><dd>GT America 65 / 400, grey nav</dd><dt>CTA</dt><dd>Learn more (pill), sales-led</dd></dl><p class="lesson"><b>Lesson:</b> calm enterprise AI: one photo, a 28-logo wall, quiet greys. Calm reads as confidence.</p></div></article>
+      <article class="rcard"><a href="img/research/notion.webp"><img src="img/research/notion.webp" alt="Notion" loading="lazy" width="1288" height="808"></a><div class="rbody"><h3>Notion <a href="https://www.notion.com">notion.com</a></h3><div class="pal"><i style="background:#FFFFFF"></i><i style="background:#F6F5F4"></i><i style="background:#0075DE"></i><i style="background:#E6F3FE"></i></div><dl><dt>Ground</dt><dd>White and #F6F5F4</dd><dt>Type</dt><dd>Notion Inter 96 / 600, -4.6px</dd><dt>CTA</dt><dd>Get Notion free (8px) + Request a demo (tinted)</dd></dl><p class="lesson"><b>Lesson:</b> the light benchmark. A tinted secondary button, a logo strip in the first screen, testimonial cards with names and roles.</p></div></article>
+    </div>
+    <p class="note" style="margin-top:24px">Also studied from public sources, not captured: Attio (its WebGL hero crashed the headless browser), Lovable and Perplexity (behind a Cloudflare bot check, which was not bypassed). Attio pairs "Start for free" with "Talk to sales" four and three times and shows "30,000+ customers" plus case metrics.</p>
+
+    <h3 class="sub-h">What the research says about converting</h3>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:36%">Finding</th><th>What we do with it</th></tr></thead>
+        <tbody>
+          <tr><td>Light text on dark (negative polarity) loses on reading accuracy for most users, more so as text gets small. <a href="https://www.nngroup.com/articles/dark-mode/">NN/g</a></td><td>Long reads (pattern notes, pricing, plan details) move to paper; nothing under 12px.</td></tr>
+          <tr><td>57% of viewing time is above the fold, 74% in the first two screens. <a href="https://www.nngroup.com/articles/scrolling-and-attention/">NN/g</a></td><td>Form, offer, risk line and proof row all inside the first screen.</td></tr>
+          <tr><td>SaaS pages convert at a 3.8% median; plain copy at a 5th to 7th grade level converts far better than professional-level copy. <a href="https://unbounce.com/conversion-benchmark-report/saas-conversion-rate/">Unbounce</a></td><td>Keep the owner's plain voice; cut words, not sections, where we can.</td></tr>
+          <tr><td>One page, one goal: attention ratio 1:1. <a href="https://unbounce.com/conversion-glossary/definition/attention-ratio/">Unbounce</a></td><td>One primary action label everywhere; See plans is the only secondary.</td></tr>
+          <tr><td>Complex offers convert better when the CTA repeats after the explanation. <a href="https://blog.hubspot.com/marketing/5-landing-page-a/b-tests-and-their-surprising-results">HubSpot on Content Verve</a></td><td>A primary CTA at the end of each act, not after every section.</td></tr>
+          <tr><td>Hidden or confusing prices push buyers to competitors. <a href="https://www.nngroup.com/articles/b2b-trust-from-b2c/">NN/g</a></td><td>Price, per-ad cost and trial terms visible on every card, said once.</td></tr>
+          <tr><td>Social proof backfires when it's thin or distracting. <a href="https://www.nngroup.com/articles/social-proof-ux/">NN/g</a></td><td>No fake logos or quotes; product proof with sources until real customers can be named.</td></tr>
+          <tr><td>19% of shoppers abandon when they don't trust a site with card details. <a href="https://baymard.com/lists/cart-abandonment-rate">Baymard</a></td><td>"$0 today, card needed, cancel before day 7" sits next to every trial button.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== TOKENS ============================== -->
+<section id="tokens" data-tone="dark" class="doc">
+  <div class="wrap">
+    <div class="shead">
+      <div><p class="ws-label label-dot">03 · Colour</p>
+      <h2 class="ws-display-2">A ladder, not a void. <span class="ws-quiet">Every step has a job.</span></h2></div>
+      <p class="ws-lead">Graphite tinted toward the mint hue, warm paper for light sections, one accent. Ratios are WCAG contrast for the text colour shown on that surface.</p>
+    </div>
+
+    <h3 class="sub-h">Dark ladder</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chipc" style="background:#0E110F;color:#9AA29D">ink-0</div><div class="meta"><b>#0E110F</b>Footer, code wells, letterbox<br><code>L* 4.8 · fg-1 17.3:1</code></div></div>
+      <div class="sw"><div class="chipc" style="background:#141715;color:#9AA29D">ink-1</div><div class="meta"><b>#141715</b>Page ground (was #050505)<br><code>L* 7.4 · fg-1 16.5 · fg-3 6.9</code></div></div>
+      <div class="sw"><div class="chipc" style="background:#1B1F1C;color:#9AA29D">ink-2</div><div class="meta"><b>#1B1F1C</b>Card, panel<br><code>L* 11.3 · fg-2 10.5 · fg-3 6.4</code></div></div>
+      <div class="sw"><div class="chipc" style="background:#232825;color:#C9CFCB">ink-3</div><div class="meta"><b>#232825</b>Input, popover, hover<br><code>L* 15.5 · fg-3 5.7</code></div></div>
+      <div class="sw"><div class="chipc" style="background:#2C322E;color:#C9CFCB">ink-4</div><div class="meta"><b>#2C322E</b>Selected, pressed<br><code>L* 20.1 · fg-3 5.0</code></div></div>
+    </div>
+    <div class="swatches" style="margin-top:12px">
+      <div class="sw"><div class="chipc" style="background:#141715;color:#F3F5F3;border-bottom:1px solid #2A302C">line-1 #2A302C</div><div class="meta"><b>Hairline</b>Dividers, decorative</div></div>
+      <div class="sw"><div class="chipc" style="background:#1B1F1C;color:#F3F5F3;box-shadow:inset 0 0 0 1px #3A413C">line-2 #3A413C</div><div class="meta"><b>Card border</b>Table rules</div></div>
+      <div class="sw"><div class="chipc" style="background:#141715;color:#F3F5F3;box-shadow:inset 0 0 0 1px #6B736E">line-3 #6B736E</div><div class="meta"><b>Control border</b><code>3.7:1 on ink-1, 3.1 on ink-3</code></div></div>
+      <div class="sw"><div class="chipc" style="background:#141715;color:#F3F5F3">fg-1 #F3F5F3</div><div class="meta"><b>Headings</b>16.5:1 on ink-1</div></div>
+      <div class="sw"><div class="chipc" style="background:#141715;color:#C9CFCB">fg-2 #C9CFCB</div><div class="meta"><b>Body</b>11.4:1 · fg-3 #9AA29D 6.9 · fg-4 #7A827D 4.6 (disabled only)</div></div>
+    </div>
+
+    <h3 class="sub-h">Light ladder</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chipc" style="background:#F6F5F0;color:#5C645F">paper</div><div class="meta"><b>#F6F5F0</b>Light section ground<br><code>ink 16.5 · body 9.8 · muted 5.6</code></div></div>
+      <div class="sw"><div class="chipc" style="background:#EDECE5;color:#5C645F">bone</div><div class="meta"><b>#EDECE5</b>Alt band, wells on paper<br><code>ink 15.2 · muted 5.1</code></div></div>
+      <div class="sw"><div class="chipc" style="background:#FFFFFF;color:#5C645F;box-shadow:inset 0 0 0 1px #E3E1D9">white</div><div class="meta"><b>#FFFFFF</b>Cards on paper<br><code>ink 18.1 · body 10.7</code></div></div>
+      <div class="sw"><div class="chipc" style="background:#F6F5F0;color:#141715;box-shadow:inset 0 0 0 1px #CFCDC3">line-l2 #CFCDC3</div><div class="meta"><b>Lines on paper</b>l1 #E3E1D9 hairline; l3 #868C87 controls 3.2:1</div></div>
+      <div class="sw"><div class="chipc" style="background:#F6F5F0;color:#39403B">#141715 · #39403B · #5C645F</div><div class="meta"><b>Text on light</b>Heading, body, muted</div></div>
+    </div>
+
+    <h3 class="sub-h">Mint and semantic colour</h3>
+    <div class="ladder" aria-label="Mint ramp">
+      <div style="background:#EAF6EE;color:#1D7047">50 #EAF6EE</div><div style="background:#DCF4E6;color:#1D7047">100 #DCF4E6</div><div style="background:#BBECCF;color:#17603C">200 #BBECCF</div><div style="background:#8EDCB0;color:#0E110F">300 #8EDCB0</div><div style="background:#71D793;color:#0E110F">500 #71D793</div><div style="background:#41B983;color:#0E110F">600 #41B983</div><div style="background:#2E9965;color:#F3F5F3">700 #2E9965</div><div style="background:#1D7047;color:#F3F5F3">800 #1D7047</div><div style="background:#17603C;color:#F3F5F3">900 #17603C</div><div style="background:#10261A;color:#71D793">950 #10261A</div>
+    </div>
+    <div class="g2" style="margin-top:24px">
+      <div class="card stack-8">
+        <p class="ws-label">Mint rules</p>
+        <ul class="stack-8 ws-small">
+          <li><b style="color:var(--text)">Fills:</b> only the primary button (500, ink-0 label, 10.7:1), progress bars, live dots, the selected toggle dot.</li>
+          <li><b style="color:var(--text)">Text on dark:</b> 500 for proof numbers and links (10.2:1 on ink-1). <b style="color:var(--text)">Text on paper:</b> 800 #1D7047 (5.6:1); never 500 on paper (1.6:1).</li>
+          <li><b style="color:var(--text)">On paper</b> the mint button carries a 1px 700 edge so its boundary passes 3:1.</li>
+          <li><b style="color:var(--text)">Tints:</b> 950 on dark and 50 on paper mark the recommended card, a selected row, a success well.</li>
+          <li><b style="color:var(--text)">Never:</b> mint headlines, mint glows, mint gradients outside the logo, mint on a mint-tinted card.</li>
+        </ul>
+      </div>
+      <div class="card stack-8">
+        <p class="ws-label">Secondary accent and semantics</p>
+        <p class="ws-small">No second brand accent. The ads supply the colour. Semantic colours exist for state only, each with a dark and a light value:</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <span class="tag tag-mint">Success #71D793 / #1D7047</span>
+          <span class="tag tag-warn">Warning #E8B04B / #8A5A00</span>
+          <span class="tag" style="color:#F28B82;border-color:rgba(242,139,130,.35);background:rgba(242,139,130,.12)">Danger #F28B82 / #B42318</span>
+          <span class="tag" style="color:#8AB8F5;border-color:rgba(138,184,245,.35);background:rgba(138,184,245,.12)">Info #8AB8F5 / #1D5FB4</span>
+        </div>
+        <p class="ws-small" style="margin-top:8px">Rating stars, if real ratings ever appear, use a solid #E8B04B. Not the gradient gold, and never on USPs.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-h">When a section goes light, and how it pairs</h3>
+    <div class="g3">
+      <div class="card"><p class="ws-label" style="margin-bottom:8px">Paper</p><p class="ws-small">For reading and deciding: pattern notes, pricing, the risk strip. White cards with a 1px l2 line and shadow l1; one dark card allowed on paper (the recommended plan).</p></div>
+      <div class="card"><p class="ws-label" style="margin-bottom:8px">Bone</p><p class="ws-small">Only inside a paper zone: wells, quota boxes, the risk strip, or a second paper section in the same act. Never next to dark directly.</p></div>
+      <div class="card"><p class="ws-label" style="margin-bottom:8px">Pairing</p><p class="ws-small">Hard cut, no gradient between tones, 128px of padding on both sides. A paper zone is always bracketed by graphite. Never two light zones in a row, never more than three dark sections in a row.</p></div>
+    </div>
+
+    <h3 class="sub-h" id="spacing">Spacing, grid, radii, elevation</h3>
+    <div class="g2">
+      <div class="card stack-16">
+        <p class="ws-label">8pt scale with a 4px half step</p>
+        <div class="space-demo">
+          <figure><div style="width:4px;height:4px"></div>4</figure><figure><div style="width:8px;height:8px"></div>8</figure><figure><div style="width:12px;height:12px"></div>12</figure><figure><div style="width:16px;height:16px"></div>16</figure><figure><div style="width:24px;height:24px"></div>24</figure><figure><div style="width:32px;height:32px"></div>32</figure><figure><div style="width:40px;height:40px"></div>40</figure><figure><div style="width:48px;height:48px"></div>48</figure><figure><div style="width:64px;height:64px"></div>64</figure><figure><div style="width:80px;height:80px"></div>80</figure>
+        </div>
+        <p class="ws-small">Plus 96, 128, 160 for sections. Section padding: 128 when a section opens an act, 96 when it continues one (mobile 80 and 64). Head to content 48 (32). Card padding 24 (20). Between blocks 32 (24).</p>
+      </div>
+      <div class="card stack-16">
+        <p class="ws-label">Grid and the 80% column</p>
+        <p class="ws-small">Page column 1180px with 40px sides. Every section below the hero keeps the owner's 80% column: <b style="color:var(--text)">880px of content</b> at desktop, 16px gutters on phones. Inside it, 12 columns with 24px gutters. Heads split 7/5; galleries 3 or 4 up; pricing 4 up at 880 (2 up under 1000px, 1 up on phones). Text measure 640px. Only the hero may use the full 1100px stage.</p>
+        <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:6px;height:40px">
+          <span style="background:var(--accent-tint);border:1px solid var(--line-strong);border-radius:4px"></span><span style="background:var(--accent-tint);border:1px solid var(--line-strong);border-radius:4px"></span><span style="background:var(--accent-tint);border:1px solid var(--line-strong);border-radius:4px"></span><span style="background:var(--accent-tint);border:1px solid var(--line-strong);border-radius:4px"></span><span style="background:var(--accent-tint);border:1px solid var(--line-strong);border-radius:4px"></span><span style="background:var(--accent-tint);border:1px solid var(--line-strong);border-radius:4px"></span><span style="background:var(--accent-tint);border:1px solid var(--line-strong);border-radius:4px"></span><span style="background:var(--surface-2);border:1px solid var(--line-strong);border-radius:4px"></span><span style="background:var(--surface-2);border:1px solid var(--line-strong);border-radius:4px"></span><span style="background:var(--surface-2);border:1px solid var(--line-strong);border-radius:4px"></span><span style="background:var(--surface-2);border:1px solid var(--line-strong);border-radius:4px"></span><span style="background:var(--surface-2);border:1px solid var(--line-strong);border-radius:4px"></span>
+        </div>
+        <p class="note">7 / 5 split head: title left, lead right, bottoms aligned.</p>
+      </div>
+    </div>
+    <div class="g2" style="margin-top:24px">
+      <div class="card stack-16">
+        <p class="ws-label">Six radii, replacing 17 across page and app</p>
+        <div class="radii">
+          <figure><div style="border-radius:4px"></div>xs 4 · in-image tags</figure>
+          <figure><div style="border-radius:6px"></div>sm 6 · tags, badges</figure>
+          <figure><div style="border-radius:10px"></div>md 10 · buttons, inputs, ads</figure>
+          <figure><div style="border-radius:16px"></div>lg 16 · cards, panels</figure>
+          <figure><div style="border-radius:24px"></div>xl 24 · pricing, CTA band</figure>
+          <figure><div style="border-radius:999px;width:72px"></div>full · chips, dots</figure>
+        </div>
+        <p class="note">Nested corners: inner radius = outer minus padding (a 16px card with 8px padding holds 8px corners).</p>
+      </div>
+      <div class="card stack-16">
+        <p class="ws-label">Elevation and borders</p>
+        <div class="elev">
+          <div style="background:var(--ws-ink-1);border:1px solid var(--ws-line-1);color:var(--ws-fg-3)">e0 · ink-1 flat</div>
+          <div style="background:var(--ws-ink-2);border:1px solid var(--ws-line-2);box-shadow:var(--ws-highlight);color:var(--ws-fg-3)">e1 dark · ink-2, line-2, top highlight</div>
+          <div style="background:var(--ws-white);border:1px solid var(--ws-line-l1);box-shadow:var(--ws-shadow-l1);color:var(--ws-muted-l)">e1 light · white, l1, shadow-l1</div>
+          <div style="background:var(--ws-white);border:1px solid var(--ws-line-l1);box-shadow:var(--ws-shadow-l2);color:var(--ws-muted-l)">e2 light · floating product shot</div>
+        </div>
+        <p class="ws-small">On dark, depth comes from the surface step, not a shadow. Every border is 1px. No glows, no blur behind cards, no backdrop-filter on full-width layers.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-h">Icons, motion, imagery</h3>
+    <div class="g3">
+      <div class="card stack-8"><p class="ws-label">Icons</p><p class="ws-small">Lucide only (already in the repo), 1.5px stroke, 16px in text and buttons, 20px in cards, currentColor. Icons sit in text colour; mint only on a success check. No emoji, no gradient icons, no icon tiles with glows. Steps use mono numbers (01, 02) instead of icons.</p></div>
+      <div class="card stack-8"><p class="ws-label">Motion</p><p class="ws-small">Opacity and transform only. Hover 120ms, press and toggles 200ms, accordion 320ms, reveal 480ms with a 12px rise, once, max 6 staggered at 60ms. No continuous animation on the page: no marquee, no spinning seal, no drifting backdrop. One live-dot pulse inside a status pill is the exception. Everything off screen is paused; reduced motion turns it all off.</p></div>
+      <div class="card stack-8"><p class="ws-label">Ads and imagery</p><p class="ws-small">The ad frame: 4:5 (1:1 only where the source is square), 10px radius, 1px inner hairline, mono caption below. On paper an ad sits on a white mat with 8px padding. Tilt only in the hero stack, max 6 degrees, three cards, echoing the Stack Fan. No device frames except for native-interface ads, no stock people at laptops.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== TYPE ============================== -->
+<section id="type" data-tone="paper" class="doc">
+  <div class="wrap">
+    <div class="shead">
+      <div><p class="ws-label label-dot">04 · Typography</p>
+      <h2 class="ws-display-2">Keep Geist. <span class="ws-quiet">Use it like Vercel does, not like a poster.</span></h2></div>
+      <p class="ws-lead">Geist is the wordmark, it's on Google Fonts, and it's already loaded. The fix is weight, scale and discipline, not a new family.</p>
+    </div>
+    <div class="g3" style="margin-bottom:40px">
+      <div class="card stack-8"><p class="ws-label">Display · Geist 550</p><p class="ws-small">The wordmark's own weight. Down from 700: on screen at 44 to 64px, 550 reads confident and calm, the way Linear (510) and Vercel (400 to 450) set theirs.</p></div>
+      <div class="card stack-8"><p class="ws-label">Text · Geist 400 and 500</p><p class="ws-small">Body 16px at 1.6, leads 19px. 500 for UI labels, 600 for card titles and buttons. 900 retires (prices go to 600).</p></div>
+      <div class="card stack-8"><p class="ws-label">Mono · Geist Mono 500</p><p class="ws-small">Labels, eyebrows and data at 12px, tracked +0.08em, uppercase only for labels. Tabular numerals for prices and counts in sans. Added to the dashboard, which has none today.</p></div>
+    </div>
+    <p class="note" style="margin-bottom:8px">Considered and rejected: a serif display pairing (Harvey, Granola, Resend, Mintlify do it well). It signals editorial or legal luxury, adds a font request, and our ads already bring the visual variety. Geist only, two families, 400 to 700.</p>
+
+    <div class="spec"><div class="meta"><b>display-1 · H1</b>64 / 1.02 / -0.04em / 550<br>mobile 40 / 1.06 / -0.03em</div><p class="ws-display-1">New ads every Monday. <span class="ws-quiet">From what's winning.</span></p></div>
+    <div class="spec"><div class="meta"><b>display-2 · H2</b>44 / 1.08 / -0.032em / 550<br>mobile 32 / 1.1 / -0.025em</div><p class="ws-display-2">See what your competitors keep paying to run.</p></div>
+    <div class="spec"><div class="meta"><b>title-1</b>28 / 1.2 / -0.02em / 600<br>mobile 24</div><p class="ws-title-1">Next Monday, your ads could be in the drop.</p></div>
+    <div class="spec"><div class="meta"><b>title-2 · card H3</b>20 / 1.3 / -0.012em / 600<br>mobile 18</div><p class="ws-title-2">Rebuilt free, no limit</p></div>
+    <div class="spec"><div class="meta"><b>title-3 · list, FAQ</b>17 / 1.4 / -0.006em / 600<br>mobile 16</div><p class="ws-title-3">How does the free trial work?</p></div>
+    <div class="spec"><div class="meta"><b>lead</b>19 / 1.55 / 400<br>mobile 17</div><p class="ws-lead">We track the ads your competitors keep paying to run, then build yours in those formats.</p></div>
+    <div class="spec"><div class="meta"><b>body</b>16 / 1.6 / 400</div><p class="ws-body measure">Two columns put the old way next to yours. The eye reads the gap before it reads a word, so the decision happens inside the scroll.</p></div>
+    <div class="spec"><div class="meta"><b>small · caption</b>14 / 1.5 and 13 / 1.45</div><p><span class="ws-small">$0 today. Card needed on the next step.</span><br><span class="ws-caption">Source: Meta Ad Library, pulled 4 Oct 2026.</span></p></div>
+    <div class="spec"><div class="meta"><b>label · mono</b>12 / 1.3 / +0.08em / 500 / caps</div><p class="ws-label">Pattern 01 · Us versus them · 118 days</p></div>
+    <div class="spec"><div class="meta"><b>stat · sans tabular</b>40 / 1 / -0.03em / 600<br>mobile 32</div><p class="ws-stat">$0.53 <span class="ws-caption" style="font-size:14px;letter-spacing:0">an ad on Growth</span></p></div>
+    <p class="note" style="margin-top:24px">Floors: 12px anywhere (the app's labels may go to 11px mono, never lower). Body on paper 16px minimum. Line length 45 to 75 characters. One H1 per page, H2 per section, no skipped levels.</p>
+  </div>
+</section>
+
+<!-- ============================== COMPONENTS ============================== -->
+<section id="components" data-tone="dark" class="doc">
+  <div class="wrap">
+    <div class="shead">
+      <div><p class="ws-label label-dot">05 · Components</p>
+      <h2 class="ws-display-2">Built once, used everywhere. <span class="ws-quiet">Live HTML, both tones.</span></h2></div>
+      <p class="ws-lead">Each component reads role tokens, so the same markup works on graphite and on paper. These are the pieces the build step implements in components/ui and weekly/ui.tsx.</p>
+    </div>
+
+    <h3 class="sub-h">Buttons</h3>
+    <div class="g2">
+      <div class="card stack-16" data-tone="dark">
+        <p class="ws-label">On graphite</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center"><a class="btn btn-primary btn-lg" href="#components">Start free trial</a><a class="btn btn-secondary btn-lg" href="#components">See plans</a><a class="btn btn-ghost btn-lg" href="#components">Log in</a></div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center"><a class="btn btn-primary" href="#components">Start free trial</a><a class="btn btn-secondary" href="#components">See plans</a><a class="btn btn-primary btn-sm" href="#components">Download</a><button class="btn btn-secondary btn-sm" disabled>Disabled</button><a class="link-arrow" href="#components">See the board</a></div>
+      </div>
+      <div class="card stack-16" data-tone="paper" style="background:var(--ws-paper)">
+        <p class="ws-label">On paper</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center"><a class="btn btn-primary btn-lg" href="#components">Start free trial</a><a class="btn btn-secondary btn-lg" href="#components">See plans</a><a class="btn btn-ghost btn-lg" href="#components">Log in</a></div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center"><a class="btn btn-primary" href="#components">Start free trial</a><a class="btn btn-secondary" href="#components">See plans</a><a class="btn btn-primary btn-sm" href="#components">Download</a><button class="btn btn-secondary btn-sm" disabled>Disabled</button><a class="link-arrow" href="#components">Compare every feature</a></div>
+      </div>
+    </div>
+    <p class="ws-small" style="margin-top:16px">Sizes 48 (hero, pricing, final CTA), 40 (nav, cards), 32 (inside panels and the app). Radius 10 always, never pill, never a glow. Primary: mint fill, ink-0 label, hover to mint-300, press moves 1px. Secondary: transparent on dark, white on paper, 1px control border. Ghost: text only, surface-2 on hover. Focus: 2px gap plus 2px mint ring. Labels say what happens: "Start free trial", "Get my 5 free ads" (the form submit only), "See plans", "Start on Free".</p>
+
+    <h3 class="sub-h">Badges, tags, status</h3>
+    <div class="card" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <span class="status"><span class="dot"></span>Ready · drop 4</span>
+      <span class="status">Making · 3 of 28</span>
+      <span class="tag">Pattern 01</span>
+      <span class="tag">Monthly</span>
+      <span class="tag tag-mint">Most picked</span>
+      <span class="tag tag-mint">5 to come</span>
+      <span class="tag tag-warn">Coming soon</span>
+      <span class="tag">Example ad</span>
+      <span class="chip on">Running longest</span><span class="chip">Most versions</span><span class="chip">Newest</span>
+    </div>
+    <p class="ws-small" style="margin-top:12px">Tags are square-ish (6px) and mono; pills are for status and filter chips only. One mint tag per card at most.</p>
+
+    <h3 class="sub-h">Cards, panels, stat tiles</h3>
+    <div class="g2">
+      <div class="panel ticks">
+        <div class="panel-bar"><span><span class="dot" style="display:inline-block;margin-right:8px;vertical-align:middle"></span><b>Niche board</b> · activewear</span><span>Source: Meta Ad Library</span></div>
+        <div class="panel-body">
+          <div class="g3" style="gap:12px">
+            <div><div class="ad"><img src="img/ads/a4.webp" alt="Example ad" loading="lazy"><span class="ad-tag">Offer</span></div><p class="ad-cap"><span>Cindera</span><span>141 days</span></p></div>
+            <div><div class="ad"><img src="img/ads/a3.webp" alt="Example ad" loading="lazy"><span class="ad-tag">Quote</span></div><p class="ad-cap"><span>Pawfull</span><span>165 days</span></p></div>
+            <div><div class="ad"><img src="img/ads/a5.webp" alt="Example ad" loading="lazy"><span class="ad-tag">Inside</span></div><p class="ad-cap"><span>Gritbar</span><span>96 days</span></p></div>
+          </div>
+        </div>
+      </div>
+      <div class="stack-16">
+        <div class="card"><p class="ws-title-2" style="margin-bottom:8px">Card</p><p class="ws-small">ink-2, 1px line-2, 16px radius, 24px padding, top highlight. Title-2 plus small text. The panel adds a 44px mono bar: what it is on the left, its state on the right. Crop ticks only on the one evidence panel per section.</p></div>
+        <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+          <div><span class="ws-stat">28</span><span class="ws-caption">new ads this Monday</span></div>
+          <div><span class="ws-stat" style="color:var(--accent-text)">118</span><span class="ws-caption">median days live</span></div>
+          <div><span class="ws-stat">15</span><span class="ws-caption">ad styles</span></div>
+        </div>
+        <p class="note">Stat tiles: number in sans 600 tabular, caption 13. Mint only when the number is proof.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-h">Table</h3>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th></th><th class="hl" style="color:var(--accent-text)">Winning Statics</th><th>Tool A</th><th>Tool B</th><th>Tool C</th></tr></thead>
+        <tbody>
+          <tr><td>New ads every week, no prompting</td><td class="hl"><span class="pass">Yes</span></td><td>Yes</td><td>Partly</td><td>Partly</td></tr>
+          <tr><td>Built from competitors' long-running ads</td><td class="hl"><span class="pass">Yes</span></td><td>Partly</td><td>Yes</td><td>Not listed</td></tr>
+          <tr><td>Try it free</td><td class="hl">Free plan or 7-day trial</td><td>7-day trial</td><td>Not listed</td><td>5 ads, once</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ws-small" style="margin-top:12px">14px words in sentence case instead of 11px mono caps. Our column carries the accent tint. Rows 52px. Source line under every comparison.</p>
+
+    <h3 class="sub-h">Form and inputs</h3>
+    <div class="g2">
+      <div class="card">
+        <div class="m-form" style="margin-top:0">
+          <div class="field"><label for="f1">Your store or product link</label><input id="f1" class="input" placeholder="yourstore.com"></div>
+          <div class="field"><label for="f2">Where to send them</label><input id="f2" class="input" placeholder="you@yourstore.com"></div>
+          <a class="btn btn-primary btn-lg" href="#components">Get my 5 free ads</a>
+        </div>
+        <p class="ws-caption" style="margin-top:12px">$0 today. Card needed on the next step. Cancel within 7 days and pay nothing.</p>
+      </div>
+      <div class="card" data-tone="paper" style="background:var(--ws-paper)">
+        <div class="stack-16">
+          <div class="field"><label for="f3">Email</label><input id="f3" class="input err" value="you@yourstore" aria-invalid="true"><span class="help err">That email is missing its ending, like .com</span></div>
+          <div class="field"><label for="f4">Store link</label><input id="f4" class="input" placeholder="yourstore.com"><span class="help">We read your products and reviews. Nothing is posted.</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="ws-small" style="margin-top:12px">Label above (14/500), 48px input, 10px radius, control border at 3:1, focus ring mint, error text under the field in plain words. Placeholders are examples, never labels.</p>
+
+    <h3 class="sub-h">Nav, FAQ, proof, logo strip, CTA band, footer</h3>
+    <div class="mock" data-tone="dark" style="margin-bottom:24px">
+      <div class="m-nav"><img src="assets/ws-lockup-horizontal-dark.svg" alt="Winning Statics"><ul><li><a href="#components">How it works</a></li><li><a href="#components">Weekly report</a></li><li><a href="#components">Examples</a></li><li><a href="#components">Pricing</a></li><li><a href="#components">FAQ</a></li></ul><div class="r"><a class="btn btn-ghost" href="#components">Log in</a><a class="btn btn-primary" href="#components">Start free trial</a></div></div>
+    </div>
+    <p class="ws-small" style="margin-bottom:24px">Nav: 64px, solid ink-1 at 94% with a hairline once scrolled (no capsule, no backdrop blur), links 14/500 fg-2, one primary. Mobile: logo, a small "Start free trial", menu.</p>
+    <div class="g2">
+      <div class="card">
+        <p class="ws-label" style="margin-bottom:8px">FAQ</p>
+        <div style="border-top:1px solid var(--line)">
+          <details open style="border-bottom:1px solid var(--line);padding:16px 0"><summary class="ws-title-3" style="cursor:pointer;list-style:none;display:flex;justify-content:space-between">How does the free trial work? <span style="color:var(--text-3)">&minus;</span></summary><p class="ws-body" style="margin-top:8px">You get 5 ads for one product, $0 today. If you don't cancel before day 7, your plan starts and the weekly drops begin.</p></details>
+          <details style="border-bottom:1px solid var(--line);padding:16px 0"><summary class="ws-title-3" style="cursor:pointer;list-style:none;display:flex;justify-content:space-between">Who owns the ads? <span style="color:var(--text-3)">+</span></summary><p class="ws-body" style="margin-top:8px">You do, with full commercial rights.</p></details>
+        </div>
+      </div>
+      <div class="card stack-16">
+        <p class="ws-label">Proof card · the honest version</p>
+        <p class="ws-lead" style="color:var(--text)">"Back in stock" ran 141 days for one activewear brand, with 20 live versions across two brands.</p>
+        <p class="ws-caption">Source: Meta Ad Library, pulled 4 Oct 2026. Shown as research; we rebuild the pattern, never the ad.</p>
+        <p class="note">When a real customer agrees to be named, the same card takes a quote, a name, the store and the niche, with a 40px photo. Never an invented quote, rating or logo.</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:24px;display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+      <span class="ws-label">Built for stores in</span>
+      <span class="ws-small" style="color:var(--text-3);display:flex;gap:20px;flex-wrap:wrap"><span>Skincare</span><span>Supplements</span><span>Apparel</span><span>Pet</span><span>Coffee</span><span>Home</span><span>Fitness</span><span>Jewelry</span></span>
+    </div>
+    <p class="ws-small" style="margin:12px 0 24px">Logo strip: static, one line, fg-3. Until there are customer logos it lists niches; later, 6 to 8 monochrome logos at 24px. No marquee.</p>
+    <div class="cta-band">
+      <p class="ws-label label-dot" style="justify-content:center;margin-bottom:16px">Next drop Monday 10:00 UTC</p>
+      <p class="ws-display-2" style="color:var(--text)">Next Monday, your ads <span class="ws-quiet">could be in the drop.</span></p>
+      <div class="m-form"><div class="field"><label for="f5">Your store</label><input id="f5" class="input" placeholder="yourstore.com"></div><div class="field"><label for="f6">Email</label><input id="f6" class="input" placeholder="you@yourstore.com"></div><a class="btn btn-primary btn-lg" href="#components">Get my 5 free ads</a></div>
+      <p class="ws-caption" style="margin-top:12px">$0 today. Cancel within 7 days and pay nothing.</p>
+    </div>
+    <div style="margin-top:24px;border-radius:16px;overflow:hidden;border:1px solid var(--line-strong)">
+      <div style="background:var(--ws-ink-0);padding:32px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:24px;font-size:14px" class="foot-demo">
+        <div class="stack-16"><img src="assets/ws-lockup-horizontal-dark.svg" alt="Winning Statics" style="height:22px;width:auto"><p class="ws-small" style="color:var(--text-3);max-width:280px">New static ads every Monday, built from the formats your niche keeps running.</p></div>
+        <div class="stack-8"><p class="ws-label">Product</p><p>How it works</p><p>Weekly report</p><p>Pricing</p></div>
+        <div class="stack-8"><p class="ws-label">Company</p><p>FAQ</p><p>support@winningstatics.com</p></div>
+        <div class="stack-8"><p class="ws-label">Legal</p><p>Terms</p><p>Privacy</p><p>Refunds</p></div>
+      </div>
+    </div>
+    <p class="ws-small" style="margin-top:12px">Footer: ink-0, left aligned, four columns, links 14px fg-2, headings as mono labels. No CTA button in the footer: the final CTA band sits right above it.</p>
+  </div>
+</section>
+
+<!-- ============================== RHYTHM ============================== -->
+<section id="rhythm" data-tone="paper" class="doc">
+  <div class="wrap">
+    <div class="shead">
+      <div><p class="ws-label label-dot">06 · Section templates and page rhythm</p>
+      <h2 class="ws-display-2">Five acts, two of them on paper. <span class="ws-quiet">One section, one question.</span></h2></div>
+      <p class="ws-lead">The page reads as one story: promise, how, craft, product, decision, close. Tone changes mark the acts, not every section.</p>
+    </div>
+    <div class="rhythm">
+      <div class="rcol"><h4>Today · 15,125px · 0% light</h4><div class="rbar">
+        <div class="d" style="height:99px"><span>Hero + BuildLine</span><span>1,498</span></div>
+        <div class="d" style="height:81px"><span>How it works</span><span>1,223</span></div>
+        <div class="d" style="height:85px"><span>Winning patterns</span><span>1,287</span></div>
+        <div class="d" style="height:96px"><span>Weekly report</span><span>1,448</span></div>
+        <div class="d" style="height:70px"><span>Ad check (staging)</span><span>1,067</span></div>
+        <div class="d" style="height:91px"><span>Styles</span><span>1,378</span></div>
+        <div class="d" style="height:91px"><span>Ads library</span><span>1,382</span></div>
+        <div class="d" style="height:68px"><span>Compare</span><span>1,031</span></div>
+        <div class="d" style="height:119px"><span>Pricing</span><span>1,794</span></div>
+        <div class="d" style="height:52px"><span>Guarantee</span><span>781</span></div>
+        <div class="d" style="height:74px"><span>FAQ</span><span>1,119</span></div>
+        <div class="d" style="height:40px"><span>Final CTA</span><span>602</span></div>
+        <div class="d" style="height:34px"><span>Footer</span><span>517</span></div>
+      </div></div>
+      <div class="rcol"><h4>Proposed · about 11,500px · about 25% paper</h4><div class="rbar">
+        <div class="g" style="height:60px"><span>Act 1 · Hero + proof row</span><span>900</span></div>
+        <div class="g" style="height:67px"><span>Act 2 · How it works (one section)</span><span>1,000</span></div>
+        <div class="p" style="height:80px"><span>Act 3 · Winning patterns</span><span>1,200</span></div>
+        <div class="g" style="height:90px"><span>Act 3 · Weekly report</span><span>1,350</span></div>
+        <div class="g" style="height:73px"><span>Act 3 · Styles gallery</span><span>1,100</span></div>
+        <div class="g" style="height:80px"><span>Act 4 · Ads library</span><span>1,200</span></div>
+        <div class="g" style="height:60px"><span>Act 4 · Compare</span><span>900</span></div>
+        <div class="p" style="height:100px"><span>Act 5 · Pricing</span><span>1,500</span></div>
+        <div class="b" style="height:27px"><span>Act 5 · Risk strip</span><span>400</span></div>
+        <div class="g" style="height:67px"><span>FAQ</span><span>1,000</span></div>
+        <div class="g" style="height:37px"><span>Final CTA band</span><span>550</span></div>
+        <div class="g2" style="height:30px"><span>Footer</span><span>450</span></div>
+      </div></div>
+    </div>
+    <p class="note" style="margin-top:16px">Heights drawn to scale. Ad check slots into Act 3 on graphite when it goes live. If a quarter on paper feels like too much, flip Winning patterns to dark: it's one data-tone attribute.</p>
+
+    <h3 class="sub-h">Templates</h3>
+    <div class="g3">
+      <div class="card stack-8"><p class="ws-label">T1 · Split head + evidence panel</p><p class="ws-small">Graphite. 7/5 head, then one panel with a mono bar and crop ticks. How it works, Weekly report, Ads library.</p></div>
+      <div class="card stack-8"><p class="ws-label">T2 · Editorial list + detail</p><p class="ws-small">Paper. 5/7 split: a numbered list on the left, an ad on a white mat and notes on the right. Winning patterns.</p></div>
+      <div class="card stack-8"><p class="ws-label">T3 · Gallery</p><p class="ws-small">Graphite. Filter chips, then 3 or 4 up ad frames with captions, one secondary CTA under it. Styles.</p></div>
+      <div class="card stack-8"><p class="ws-label">T4 · Comparison table</p><p class="ws-small">Graphite. Head, table in a 16px wrapper, source line. Compare.</p></div>
+      <div class="card stack-8"><p class="ws-label">T5 · Decision</p><p class="ws-small">Paper. Head, toggle, four plan cards with the recommended one dark, risk strip on bone, one add-ons link. Pricing and Guarantee.</p></div>
+      <div class="card stack-8"><p class="ws-label">T6 · CTA band</p><p class="ws-small">Graphite. The only centred head on the page, the form again, one risk line. Final CTA.</p></div>
+    </div>
+    <p class="ws-small" style="margin-top:16px">Every section head is left aligned (the CTA band is the one centred exception). Eyebrow label, two-tone H2, lead on the right. The head always comes first; no section opens with a visual.</p>
+  </div>
+</section>
+
+<!-- ============================== CONVERSION ============================== -->
+<section id="conversion" data-tone="dark" class="doc">
+  <div class="wrap">
+    <div class="shead">
+      <div><p class="ws-label label-dot">07 · Conversion patterns</p>
+      <h2 class="ws-display-2">Two labels, five asks. <span class="ws-quiet">Proof before every one.</span></h2></div>
+      <p class="ws-lead">The visitor is solution-aware and arrives from an ad or an email. The page earns belief act by act and asks once at the end of each.</p>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:190px">Where</th><th>Ask</th><th>Proof right before it</th><th>Microcopy next to it</th></tr></thead>
+        <tbody>
+          <tr><td>Nav (always)</td><td>Start free trial · primary 40</td><td>n/a</td><td>n/a</td></tr>
+          <tr><td>Hero</td><td>Get my 5 free ads · form submit 48</td><td>The offer in the sub; proof row under the form</td><td>$0 today. Card needed on the next step. Cancel within 7 days and pay nothing. · See plans · Only want the report? Start on Free</td></tr>
+          <tr><td>End of Act 3 (after Styles)</td><td>See plans · secondary 48</td><td>Patterns, the dated board, 15 styles</td><td>New ads every Monday from $0.50 an ad.</td></tr>
+          <tr><td>End of Act 4 (after Compare)</td><td>Start free trial · primary 48</td><td>The product and the honest comparison</td><td>5 ads free for 7 days.</td></tr>
+          <tr><td>Pricing cards</td><td>Start free trial (paid) · Start on Free</td><td>Per-ad price against "$2 to $10 an ad"</td><td>One line above the cards: Every paid plan starts with a 7-day trial: 5 ads, $0 today. Under the cards: Keep every ad, even if you cancel.</td></tr>
+          <tr><td>Final CTA band</td><td>Get my 5 free ads · form 48</td><td>FAQ answered the last doubts</td><td>$0 today. Cancel within 7 days and pay nothing.</td></tr>
+          <tr><td>Mobile sticky bar</td><td>Start free trial</td><td>Appears once the hero form scrolls away; hides over pricing and the final form</td><td>n/a</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="g3" style="margin-top:24px">
+      <div class="card stack-8"><p class="ws-label">Retire</p><p class="ws-small">Get my ads · Get my free ads · Watch my competitors · Start 7-day free trial · the Guarantee button · the FAQ button · the footer button · the glow on every CTA.</p></div>
+      <div class="card stack-8"><p class="ws-label">Proof without customers</p><p class="ws-small">Source, signal, output: "Meta Ad Library, pulled weekly", "Ranked by days live", "15 styles, 4:5, copy written". Then the dated board in Act 3. No invented logos, quotes, ratings or results, ever.</p></div>
+      <div class="card stack-8"><p class="ws-label">Friction killers</p><p class="ws-small">Labels that say what happens. One risk line under every primary CTA. Price per ad on every card. "Keep every ad, even if you cancel." Errors in plain words under the field. No surprise on the next step: say "card needed" before it.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== A11Y ============================== -->
+<section id="a11y" data-tone="paper" class="doc">
+  <div class="wrap">
+    <div class="shead">
+      <div><p class="ws-label label-dot">08 · Accessibility</p>
+      <h2 class="ws-display-2">AA everywhere. <span class="ws-quiet">Measured, not guessed.</span></h2></div>
+      <p class="ws-lead">WCAG 2.2 AA: 4.5:1 for text, 3:1 for large text and for the boundaries of controls, visible focus, 24px minimum targets (44px on touch).</p>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl dense">
+        <thead><tr><th>Pair</th><th>Ratio</th><th>Use</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td>fg-1 #F3F5F3 on ink-1 #141715</td><td>16.5</td><td>Headings on dark</td><td class="pass">AAA</td></tr>
+          <tr><td>fg-2 #C9CFCB on ink-2 #1B1F1C</td><td>10.5</td><td>Body on cards</td><td class="pass">AAA</td></tr>
+          <tr><td>fg-3 #9AA29D on ink-3 #232825</td><td>5.7</td><td>Captions on raised</td><td class="pass">AA</td></tr>
+          <tr><td>fg-4 #7A827D on ink-2</td><td>4.2</td><td>Disabled only, never needed text</td><td class="fail">Decorative only</td></tr>
+          <tr><td>mint-500 #71D793 on ink-1</td><td>10.2</td><td>Proof numbers, links on dark</td><td class="pass">AAA</td></tr>
+          <tr><td>ink-0 #0E110F on mint-500</td><td>10.7</td><td>Primary button label</td><td class="pass">AAA</td></tr>
+          <tr><td>Body #39403B on paper #F6F5F0</td><td>9.8</td><td>Body on paper</td><td class="pass">AAA</td></tr>
+          <tr><td>Muted #5C645F on bone #EDECE5</td><td>5.1</td><td>Captions on bone</td><td class="pass">AA</td></tr>
+          <tr><td>mint-800 #1D7047 on paper / bone</td><td>5.6 / 5.1</td><td>Accent text on light</td><td class="pass">AA</td></tr>
+          <tr><td>mint-500 #71D793 on paper</td><td>1.6</td><td>Never as text on light</td><td class="fail">Banned</td></tr>
+          <tr><td>mint-700 #2E9965 edge on paper</td><td>3.3</td><td>Primary button boundary on paper</td><td class="pass">3:1 met</td></tr>
+          <tr><td>line-3 #6B736E on ink-1 / line-l3 #868C87 on paper</td><td>3.7 / 3.2</td><td>Input and secondary button borders</td><td class="pass">3:1 met</td></tr>
+          <tr><td>Today: white 0.32 and 0.42 on #050505 (dashboard)</td><td>2.7 / 4.0</td><td>Empty states, meta</td><td class="fail">Fails, retire</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="g3" style="margin-top:24px">
+      <div class="card stack-8"><p class="ws-label">Focus and keyboard</p><p class="ws-small">2px gap plus 2px ring in mint (mint-700 on paper) on every interactive element; never removed. Tabs and segmented controls use roving tabindex and arrow keys. Skip link to main.</p></div>
+      <div class="card stack-8"><p class="ws-label">Targets and type</p><p class="ws-small">Buttons 40 to 48px tall, 32px only inside dense panels with 8px spacing. 44px touch targets on phones. 12px text floor; 16px body on paper.</p></div>
+      <div class="card stack-8"><p class="ws-label">Motion and media</p><p class="ws-small">prefers-reduced-motion stops all animation. Every ad image has alt text naming the pattern and product. Colour is never the only signal: states carry a word (Ready, Making, Coming soon).</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== APP ============================== -->
+<section id="app" data-tone="dark" class="doc">
+  <div class="wrap">
+    <div class="shead">
+      <div><p class="ws-label label-dot">09 · The dashboard</p>
+      <h2 class="ws-display-2">Same tokens, denser scale. <span class="ws-quiet">Stays graphite.</span></h2></div>
+      <p class="ws-lead">The app is a tool people sit in, and ads read best on a dark neutral, so it stays dark. It moves to the same ladder and the same components as the page.</p>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th style="width:190px">Area</th><th>Today</th><th>System</th></tr></thead>
+        <tbody>
+          <tr><td>Grounds</td><td>Sidebar and body #050505, cards #111, blue-tinted #0B0B12 and #0E0E14 on login and ad detail</td><td>Sidebar ink-0, main ink-1, cards ink-2, popovers ink-3. Blue tints removed.</td></tr>
+          <tr><td>Type</td><td>Page title 15px, card H2 27px, labels 9.5 to 10.5px Geist caps, body 12.5px</td><td>Page title 24/600, section 18/600, card 15/600, body 14, labels Geist Mono 11 caps, data 13 mono. Floor 12 for sans.</td></tr>
+          <tr><td>Text colour</td><td>White at 0.32, 0.42, 0.46, 0.64, 0.75, 0.84, 0.92 (0.32 and 0.42 fail AA)</td><td>fg-1, fg-2, fg-3 only (fg-4 for disabled).</td></tr>
+          <tr><td>Buttons</td><td>8, 10, 14, 16, 20px and pill</td><td>The page's Button: 10px, sizes 32 / 40 / 48. "Need a hand?" becomes a secondary chip (ink-3, mint dot) so it never outshouts the page's primary.</td></tr>
+          <tr><td>Trial bar</td><td>Mint progress across the top plus two buttons</td><td>mint-950 tint bar, one primary (Start my plan now), Cancel trial as ghost.</td></tr>
+          <tr><td>Ads</td><td>Mixed 1:1 and 4:5 tiles, black 70% tags</td><td>The shared ad frame: 4:5, 10px, mono caption, in-image tag on ink-0 at 82%.</td></tr>
+          <tr><td>Plan page</td><td>5,700px at 390, coming-soon add-ons inline</td><td>Collapse add-ons and styles into disclosure rows; coming-soon items move to a "Next up" line.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== BRAND KIT ============================== -->
+<section id="brand" data-tone="paper" class="doc">
+  <div class="wrap">
+    <div class="shead">
+      <div><p class="ws-label label-dot">10 · Brand kit</p>
+      <h2 class="ws-display-2">The Stack Fan, on graphite and on paper. <span class="ws-quiet">Plain words around it.</span></h2></div>
+      <p class="ws-lead">The logo kit from August stays as is (Stack Fan v3, Geist 550 outlined wordmark). This adds how it lives with the new ladder.</p>
+    </div>
+
+    <h3 class="sub-h">Logo usage</h3>
+    <div class="logo-demo">
+      <div style="background:#141715"><img src="assets/ws-lockup-horizontal-dark.svg" alt="Lockup on graphite"><span style="color:#9AA29D">On graphite · lockup dark</span></div>
+      <div style="background:#F6F5F0"><img src="assets/ws-lockup-horizontal-light.svg" alt="Lockup on paper"><span style="color:#5C645F">On paper · lockup light</span></div>
+      <div style="background:#71D793"><img src="assets/ws-mark-flat-charcoal.svg" alt="Flat mark on mint" style="height:56px"><span style="color:#0E110F">On mint · flat charcoal only</span></div>
+    </div>
+    <div class="g2" style="margin-top:24px">
+      <div class="card stack-16">
+        <p class="ws-label">Clear space and minimum size</p>
+        <div style="display:flex;gap:32px;align-items:center;flex-wrap:wrap">
+          <span class="clear"><img src="assets/ws-mark-light.svg" alt="Mark with clear space"></span>
+          <div class="ws-small stack-8"><p>Clear space on all sides: 0.25 times the mark's height. Nothing else enters it, including the page edge.</p><p>Minimums: full mark 48px and up; compact cut 24 to 48px; two-card xs cut under 24px (16px floor). Horizontal lockup 20px tall, stacked lockup 48px tall.</p></div>
+        </div>
+      </div>
+      <div class="card stack-8">
+        <p class="ws-label">Which file</p>
+        <ul class="ws-small stack-8">
+          <li>Graphite and the app: <code>ws-mark-dark</code>, <code>ws-lockup-horizontal-dark</code></li>
+          <li>Paper, invoices, print: <code>ws-mark-light</code>, <code>ws-lockup-horizontal-light</code></li>
+          <li>On a mint fill or any mid green: <code>ws-mark-flat-charcoal</code> or <code>flat-white</code></li>
+          <li>One colour, embroidery, fax: <code>ws-mark-flat-*</code></li>
+          <li>Favicon: <code>favicon.svg</code> (switches with the OS theme)</li>
+        </ul>
+        <p class="note">Don't recolour outside the mint family, add a glow or shadow, rotate, separate the cards, stretch, or retype the wordmark.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-h">Colour, type and proportion</h3>
+    <div class="ladder prop" style="height:56px">
+      <div style="flex:60;background:#141715;color:#9AA29D">Graphite 60</div>
+      <div style="flex:25;background:#F6F5F0;color:#5C645F">Paper 25</div>
+      <div style="flex:10;background:#C9CFCB;color:#39403B">Neutral text 10</div>
+      <div style="flex:5;background:#71D793;color:#0E110F">Mint 5</div>
+    </div>
+    <p class="ws-small" style="margin-top:12px">Graphite carries the brand, paper carries the reading, mint carries the action. Geist 550 for headlines, 400 for text, Geist Mono 500 for labels. Example ads supply every other colour.</p>
+
+    <h3 class="sub-h">Imagery and the ad frame</h3>
+    <div class="g4">
+      <div><div class="mat"><div class="ad"><img src="img/ads/a2.webp" alt="Us versus them example ad" loading="lazy"></div></div><p class="ad-cap"><span>Us versus them</span><span>118 days</span></p></div>
+      <div><div class="mat"><div class="ad"><img src="img/ads/a6.webp" alt="Handwritten unboxing example ad" loading="lazy"></div></div><p class="ad-cap"><span>Handwritten</span><span>87 days</span></p></div>
+      <div><div class="mat"><div class="ad"><img src="img/ads/s4.webp" alt="Data and statistics example ad" loading="lazy"></div></div><p class="ad-cap"><span>Data and stats</span><span>Example</span></p></div>
+      <div><div class="mat"><div class="ad"><img src="img/ads/s2.webp" alt="Editorial example ad" loading="lazy"></div></div><p class="ad-cap"><span>Editorial</span><span>Example</span></p></div>
+    </div>
+    <p class="ws-small" style="margin-top:12px">On paper: white mat, 8px padding, 16px outer radius, shadow l1. On graphite: no mat, 1px inner hairline. Caption in mono 12: pattern, then days live or "Example". Show 4:5 once the example set is regenerated at 4:5 (every plan ships 4:5; the current samples are square). One "Example ad" tag per ad, top left.</p>
+
+    <h3 class="sub-h">Voice</h3>
+    <p class="ws-body measure" style="margin-bottom:16px">Casual, plain and honest: a founder talking to a founder who already runs Meta ads. Contractions, short sentences, numbers instead of adjectives, the source next to every claim. No hype, no fake urgency.</p>
+    <div class="voice">
+      <div class="h">Say</div><div class="h">Not</div>
+      <div>New ads every Monday. Cancel in one click.</div><div class="bad">Unlock unlimited AI-powered creatives that supercharge your ROAS.</div>
+      <div>Ranked by days live in the Meta Ad Library.</div><div class="bad">Proven, battle-tested, high-converting winners.</div>
+      <div>$0 today. Card needed on the next step.</div><div class="bad">Totally free! No strings attached!</div>
+      <div>Something off? Flag it and we'll rebuild it free.</div><div class="bad">Our cutting-edge AI never makes mistakes.</div>
+      <div>The ads your competitors keep paying to run.</div><div class="bad">Game-changing creative intelligence for modern brands.</div>
+    </div>
+
+    <h3 class="sub-h">Dos and don'ts</h3>
+    <div class="dodont">
+      <ul class="do"><li>Let the ads be the loudest colour on the page.</li><li>Use mint for the one action and for proof numbers.</li><li>Put the source and date next to every "winning" claim.</li><li>Keep headlines two-tone in grey and under two lines.</li><li>Use paper for anything people read for more than 10 seconds.</li><li>Reuse the same ad frame on the page, in the app, in emails and in OG images.</li></ul>
+      <ul class="dont"><li>Glows, radial blooms, gradient text, gold stars.</li><li>Pure black (#000 or #050505) grounds.</li><li>Pill-shaped primary buttons or more than one primary per view.</li><li>Fake logos, quotes, ratings or results.</li><li>Marquees, spinning badges, drifting backgrounds.</li><li>Text under 12px, or white at less than fg-3.</li></ul>
+    </div>
+
+    <h3 class="sub-h">OG and social template</h3>
+    <div class="g2" style="align-items:start">
+      <div class="og">
+        <div class="safe"></div>
+        <div class="in">
+          <div style="position:relative">
+            <img class="logo" src="assets/ws-lockup-horizontal-dark.svg" alt="Winning Statics">
+            <h4>New ads, <span>every Monday.</span></h4>
+            <div class="ft"><span class="pill">7-day trial, $0 today</span><span class="url">winningstatics.com</span></div>
+          </div>
+          <div class="ads"><div class="ad x1"><img src="img/ads/a5.webp" alt=""></div><div class="ad x2"><img src="img/ads/s1.webp" alt=""></div><div class="ad x3"><img src="img/ads/a6.webp" alt=""></div></div>
+        </div>
+      </div>
+      <div class="stack-8 ws-small">
+        <p><b style="color:var(--text)">Canvas</b> 1200 x 630 PNG under 300 KB (square 1200 x 1200 and 1200 x 600 variants). Ground ink-1 #141715; a paper variant for blog posts.</p>
+        <p><b style="color:var(--text)">Safe area</b> 64px on all sides (dashed). Nothing important near the bottom 80px, where some apps overlay a title.</p>
+        <p><b style="color:var(--text)">Logo</b> horizontal lockup, 32px tall, top left.</p>
+        <p><b style="color:var(--text)">Headline</b> Geist 550 at 64px, max two lines, quiet second clause in fg-3. Nothing under 28px on the card.</p>
+        <p><b style="color:var(--text)">Visual</b> three real example ads fanned at minus 5, 0 and plus 5 degrees, 10px radius, echoing the Stack Fan. Never a mockup of the UI alone.</p>
+        <p><b style="color:var(--text)">Mint</b> once: the offer chip. URL in mono caps, fg-3.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== BEFORE / AFTER ============================== -->
+<section id="before-after" data-tone="dark" class="doc">
+  <div class="wrap">
+    <div class="shead">
+      <div><p class="ws-label label-dot">11 · Before vs proposed</p>
+      <h2 class="ws-display-2">Three sections, rebuilt in the system. <span class="ws-quiet">Same copy, same content.</span></h2></div>
+      <p class="ws-lead">Before is a screenshot of the newest branch at 1440. Proposed is live HTML using only the tokens and components above. Copy is unchanged except CTA labels.</p>
+    </div>
+
+    <div class="ba">
+      <div class="ba-before"><div class="ba-label"><span class="tag">Before</span><span class="ws-small">Hero, newest branch</span></div><img src="img/audit/L1440-hero.webp" alt="Hero before" loading="lazy"></div>
+      <div><div class="ba-label"><span class="tag tag-mint">Proposed</span><span class="ws-small">Hero on graphite: bigger H1, one mint object, proof row, no glows</span></div>
+        <div class="mock" data-tone="dark">
+          <div class="m-nav"><img src="assets/ws-lockup-horizontal-dark.svg" alt="Winning Statics"><ul><li><a href="#before-after">How it works</a></li><li><a href="#before-after">Weekly report</a></li><li><a href="#before-after">Examples</a></li><li><a href="#before-after">Pricing</a></li><li><a href="#before-after">FAQ</a></li></ul><div class="r"><a class="btn btn-ghost" href="#before-after">Log in</a><a class="btn btn-primary" href="#before-after">Start free trial</a></div></div>
+          <div class="mock-in">
+            <div class="m-hero">
+              <div>
+                <p class="status" style="margin-bottom:24px"><span class="dot"></span>Next drop · Monday 10:00 UTC</p>
+                <h1 class="ws-display-1">New ads every Monday. <span class="ws-quiet">From what's winning in your niche.</span></h1>
+                <p class="ws-lead" style="margin-top:20px;max-width:560px">We track the ads your competitors keep paying to run, then build yours in those formats. Try it free for 7 days: 5 ads, $0 today.</p>
+                <div class="m-form">
+                  <div class="field"><label for="h1s">Your store or product link</label><input id="h1s" class="input" placeholder="yourstore.com"></div>
+                  <div class="field"><label for="h1e">Where to send them</label><input id="h1e" class="input" placeholder="you@yourstore.com"></div>
+                  <a class="btn btn-primary btn-lg" href="#before-after">Get my 5 free ads</a>
+                </div>
+                <p class="ws-caption" style="margin-top:12px">$0 today. Card needed on the next step. Cancel within 7 days and pay nothing. <a href="#before-after">See plans</a> · <a href="#before-after">Only want the report? Start on Free</a></p>
+                <ul class="proof-row">
+                  <li><span class="ws-label">Source</span>The Meta Ad Library, pulled every week</li>
+                  <li><span class="ws-label">Signal</span>Ranked by days live, not likes</li>
+                  <li><span class="ws-label">Output</span>15 ad styles, 4:5, copy written</li>
+                </ul>
+              </div>
+              <div class="fan" aria-hidden="true">
+                <div class="ad a1"><img src="img/ads/a2.webp" alt=""></div>
+                <div class="ad a2"><img src="img/ads/a4.webp" alt=""></div>
+                <div class="ad a3"><img src="img/ads/a6.webp" alt=""><span class="ad-tag">Example ad</span></div>
+                <span class="chipf c1"><span class="dot"></span>Handwritten unboxing <small>87 days live</small></span>
+                <span class="chipf c2">Monday drop delivered <small>28 new ads</small></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba">
+      <div class="ba-before"><div class="ba-label"><span class="tag">Before</span><span class="ws-small">Winning patterns, newest branch</span></div><img src="img/audit/L1440-patterns.webp" alt="Patterns before" loading="lazy"></div>
+      <div><div class="ba-label"><span class="tag tag-mint">Proposed</span><span class="ws-small">Winning patterns on paper: an editorial read, the ad on a white mat</span></div>
+        <div class="mock" data-tone="paper">
+          <div class="mock-in">
+            <div class="shead">
+              <div><p class="ws-label label-dot">Winning patterns</p><h2 class="ws-display-2">See a winning ad that works, <span class="ws-quiet">rebuilt around your product.</span></h2></div>
+              <p class="ws-lead">Every ad we make starts from a pattern with a reason behind it. Here are four, taught the way we teach a new hire.</p>
+            </div>
+            <div class="m-pat">
+              <div>
+                <ol class="plist">
+                  <li class="on"><span class="ix">P/01</span><span class="nm">Us versus them</span><span class="dt">23 live · 118d</span></li>
+                  <li><span class="ix">P/02</span><span class="nm">What is inside</span><span class="dt">17 live · 96d</span></li>
+                  <li><span class="ix">P/03</span><span class="nm">Customer in their words</span><span class="dt">31 live · 143d</span></li>
+                  <li><span class="ix">P/04</span><span class="nm">Handwritten unboxing</span><span class="dt">12 live · 87d</span></li>
+                </ol>
+                <dl class="notes">
+                  <div><dt>Concept</dt><dd>The contrast effect. People judge value by comparison, never in isolation.</dd></div>
+                  <div><dt>Mechanism</dt><dd>Two columns put the old way next to yours. The eye reads the gap before it reads a word.</dd></div>
+                  <div><dt>Evidence</dt><dd>23 live ads use it, with a median run of 118 days. Illustrative; yours are counted from your niche.</dd></div>
+                </dl>
+              </div>
+              <div class="panel" style="background:var(--ws-white)">
+                <div class="panel-bar"><span><b>Pattern 01</b> · Us versus them</span><span>Example ad</span></div>
+                <div class="panel-body">
+                  <div class="mat" style="box-shadow:none"><div class="ad"><img src="img/ads/a2.webp" alt="Us versus them ad for magnesium gummies" loading="lazy"></div></div>
+                  <p class="ws-label" style="margin-top:20px">Same pattern, other products</p>
+                  <div class="same">
+                    <div class="ad"><img src="img/ads/s1.webp" alt="Hot sauce comparison ad" loading="lazy"></div>
+                    <div class="ad"><img src="img/ads/a5.webp" alt="Protein bar ad" loading="lazy"></div>
+                    <div class="ad"><img src="img/ads/s6.webp" alt="Serum grid ad" loading="lazy"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba" style="margin-bottom:0">
+      <div class="ba-before"><div class="ba-label"><span class="tag">Before</span><span class="ws-small">Pricing v3, newest branch</span></div><img src="img/audit/L1440-pricing.webp" alt="Pricing before" loading="lazy"></div>
+      <div><div class="ba-label"><span class="tag tag-mint">Proposed</span><span class="ws-small">Pricing on paper: the recommended plan is the one dark card, terms said once, guarantee as a strip</span></div>
+        <div class="mock" data-tone="paper">
+          <div class="mock-in">
+            <div class="shead">
+              <div><p class="ws-label label-dot">Pricing</p><h2 class="ws-display-2">New ads every Monday. <span class="ws-quiet">Cancel in one click.</span></h2></div>
+              <p class="ws-lead">Every paid plan starts with a 7-day trial: 5 ads, $0 today. Or start on Free and get the weekly competitor report on its own.</p>
+            </div>
+            <div class="m-ctrl">
+              <div class="seg" role="tablist" aria-label="Billing"><button class="on" role="tab" aria-selected="true">Monthly</button><button role="tab" aria-selected="false">Yearly <em>2 months free</em></button></div>
+              <p class="ws-caption">AI ad tools charge $2 to $10 an ad.</p>
+            </div>
+            <div class="plans">
+              <div class="plan free"><div class="pn">Free</div><div><div class="pp">$0</div><p class="per">Card on file, never charged</p></div><div class="quota"><b>3</b>competitors watched, report every Monday</div><ul><li>Weekly competitor report</li><li>Their ads ranked by days live</li><li>The pattern of the week</li><li>1 product, no ads</li></ul><a class="btn btn-secondary btn-block" href="#before-after">Start on Free</a></div>
+              <div class="plan"><div class="pn">Starter</div><div><div class="pp">$29<small>/mo</small></div><p class="per"><b>$1.21 an ad</b> · billed monthly</p></div><div class="quota"><b>24</b>new ads a month, every Monday</div><ul><li>Up to 2 products</li><li>3 competitors watched</li><li>Every ad in 4:5 with Meta copy</li><li>Flawed ads rebuilt free</li></ul><a class="btn btn-secondary btn-block" href="#before-after">Start free trial</a></div>
+              <div class="plan rec"><div class="pn">Growth <span class="tag tag-mint" style="background:var(--ws-mint-950);color:var(--ws-mint-500)">Most picked</span></div><div><div class="pp">$64<small>/mo</small></div><p class="per"><b>$0.53 an ad</b> · billed monthly</p></div><div class="quota"><b>120</b>new ads a month, every Monday</div><ul><li>Up to 8 products</li><li>5 competitors watched</li><li>Pick or block ad styles</li><li>Flawed ads rebuilt free</li></ul><a class="btn btn-primary btn-block" href="#before-after" style="border-color:transparent">Start free trial</a></div>
+              <div class="plan"><div class="pn">Scale</div><div><div class="pp">$119<small>/mo</small></div><p class="per"><b>$0.50 an ad</b> · billed monthly</p></div><div class="quota"><b>240</b>new ads a month, every Monday</div><ul><li>Up to 16 products</li><li>10 competitors watched</li><li>Pick or block ad styles</li><li>Flawed ads rebuilt free</li></ul><a class="btn btn-secondary btn-block" href="#before-after">Start free trial</a></div>
+            </div>
+            <p class="ws-caption" style="margin-top:16px">$0 today, card needed. Cancel within 7 days and pay nothing. Keep every ad, even if you cancel.</p>
+            <div class="risk">
+              <div><b>Brand or product off? Rebuilt free, no limit.</b>Flag it in your dashboard and we check it and rebuild it.</div>
+              <div><b>Charged before any paid ads land? Full refund.</b>Your drop lands every Monday, with the week's niche report.</div>
+            </div>
+            <div class="morerow"><span>Add-ons: extra ads, products, competitors and stores, from your dashboard.</span><a class="link-arrow" href="#before-after">Compare every feature</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== BUILD LIST ============================== -->
+<section id="build" data-tone="paper" class="doc">
+  <div class="wrap">
+    <div class="shead">
+      <div><p class="ws-label label-dot">12 · For the build step</p>
+      <h2 class="ws-display-2">What changes, section by section. <span class="ws-quiet">On staging first.</span></h2></div>
+      <p class="ws-lead">Tokens: <a href="tokens.css">tokens.css</a> and <a href="tailwind-tokens.json">tailwind-tokens.json</a>. Several of these touch sections Replit authored (seal, marquee, glows); they change here because the owner asked for this redesign.</p>
+    </div>
+    <ol class="build">
+      <li><b>Global</b><span>Swap index.css values for tokens.css (shadcn bridge block) in both apps; retire the electric-indigo, iris, verdant and ember names into mint-*; delete AmbientBackdrop's glow and grid layers and every SectionGlow; load Geist 400..700 and Geist Mono 400..500 once; data-tone on every section; 12px floor; six radii; one Button (primary, secondary, ghost × 32, 40, 48) and one SectionHead with a quiet clause; remove all CTA glows.</span></li>
+      <li><b>Nav</b><span>64px solid ink-1 bar with a hairline after scroll (no capsule, no blur); links 14/500; Log in ghost; Start free trial primary 40.</span></li>
+      <li><b>Hero</b><span>H1 64/550 with the second clause in fg-3; remove the three SectionGlows, the gold-star USP row and the niche marquee; microcopy, See plans and Start on Free on one line; add the three-fact proof row; move BuildLine out.</span></li>
+      <li><b>How it works</b><span>One section, not two: keep BuildLine or DropLoop (owner's call; the board recommends BuildLine as the scannable one, with DropLoop's three sources folded in); labels 12px; 880px column.</span></li>
+      <li><b>Winning patterns</b><span>data-tone paper; the ad on a white mat; notes 16px body; mono labels in mint-800.</span></li>
+      <li><b>Weekly report</b><span>Labels 12px; tags on ink-0 at 82%; keep the source line; ad frame component.</span></li>
+      <li><b>Ad check (when live)</b><span>Rebuild as our own panel and table in Geist, not an Ads Manager clone in Meta blue.</span></li>
+      <li><b>Styles explorer</b><span>Left-aligned split head; the tab grid becomes filter chips; 3 or 4 up ad frames with captions; See plans secondary 48.</span></li>
+      <li><b>Ads library</b><span>Keep the mock; 12px floor; mint only on the Download button; CTA Start free trial primary 48.</span></li>
+      <li><b>Compare</b><span>Cells in 14px words, not 11px mono caps; our column on the accent tint; source line kept.</span></li>
+      <li><b>Pricing</b><span>data-tone paper; left head; prices 40/600 not 900; Growth as the dark card, no glow, no floating pill; trial microcopy once above and once below; add-ons, coming-soon tiles and the 5+ stores band collapse into one "Add-ons" row (detail stays in the dashboard and the compare accordion).</span></li>
+      <li><b>Guarantee</b><span>Delete the seal, glow, stars and button; becomes the two-column risk strip on bone inside pricing.</span></li>
+      <li><b>FAQ</b><span>Stays graphite; questions title-3 17/600; remove its CTA.</span></li>
+      <li><b>Final CTA</b><span>CTA band on ink-2 without the radial glow; form and one risk line.</span></li>
+      <li><b>Footer</b><span>ink-0, left aligned, four columns, no CTA button.</span></li>
+      <li><b>Mobile</b><span>Sticky bar shows after the hero form leaves the screen and hides over pricing and the final form; 16px gutters; aim for about 16,000px total.</span></li>
+      <li><b>Dashboard</b><span>Same bridge; sidebar ink-0, main ink-1, cards ink-2; remove blue-tinted surfaces; page titles 24px; labels Geist Mono 11; text colours fg-1..3 only; Button radius 10; support chip secondary; plan page add-ons and styles behind disclosures.</span></li>
+      <li><b>Examples and OG</b><span>Regenerate the example set at 4:5; new OG per the template (graphite, three fanned ads, one mint chip).</span></li>
+    </ol>
+  </div>
+</section>
+
+<footer class="foot" data-tone="dark">
+  <div class="wrap">
+    <img src="assets/ws-lockup-horizontal-dark.svg" alt="Winning Statics" style="height:20px;width:auto">
+    <span>Design system v1 · 9 Oct 2026 · Research and design only. Screenshots: newest branch on localhost, live site, and 20 public sites captured with cookies declined.</span>
+  </div>
+</footer>
+</body>
+</html>

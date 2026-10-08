@@ -1,0 +1,160 @@
+{
+  "$schema_note": "Winning Statics design tokens v1, 9 Oct 2026. Tailwind theme.extend shape. For Tailwind v4 copy these into @theme as --color-*, --font-*, --text-*, --spacing-*, --radius-*, --shadow-*, --ease-*. tokens.css is the CSS twin and the source of truth for role tokens per section tone.",
+  "theme": {
+    "extend": {
+      "colors": {
+        "ink": {
+          "0": "#0E110F",
+          "1": "#141715",
+          "2": "#1B1F1C",
+          "3": "#232825",
+          "4": "#2C322E"
+        },
+        "line": {
+          "1": "#2A302C",
+          "2": "#3A413C",
+          "3": "#6B736E",
+          "l1": "#E3E1D9",
+          "l2": "#CFCDC3",
+          "l3": "#868C87"
+        },
+        "fg": {
+          "1": "#F3F5F3",
+          "2": "#C9CFCB",
+          "3": "#9AA29D",
+          "4": "#7A827D"
+        },
+        "paper": "#F6F5F0",
+        "bone": "#EDECE5",
+        "white": "#FFFFFF",
+        "ink-text": "#141715",
+        "body-l": "#39403B",
+        "muted-l": "#5C645F",
+        "mint": {
+          "50": "#EAF6EE",
+          "100": "#DCF4E6",
+          "200": "#BBECCF",
+          "300": "#8EDCB0",
+          "500": "#71D793",
+          "600": "#41B983",
+          "700": "#2E9965",
+          "800": "#1D7047",
+          "900": "#17603C",
+          "950": "#10261A",
+          "DEFAULT": "#71D793"
+        },
+        "success": { "DEFAULT": "#71D793", "light": "#1D7047", "tint": "rgba(113, 215, 147, 0.12)", "tint-light": "#EAF6EE" },
+        "warning": { "DEFAULT": "#E8B04B", "light": "#8A5A00", "tint": "rgba(232, 176, 75, 0.12)", "tint-light": "#FBF1DC" },
+        "danger": { "DEFAULT": "#F28B82", "light": "#B42318", "tint": "rgba(242, 139, 130, 0.12)", "tint-light": "#FCE8E6" },
+        "info": { "DEFAULT": "#8AB8F5", "light": "#1D5FB4", "tint": "rgba(138, 184, 245, 0.12)", "tint-light": "#E6EFFB" },
+        "star": "#E8B04B",
+        "bg": "var(--bg)",
+        "bg-deep": "var(--bg-deep)",
+        "surface": { "DEFAULT": "var(--surface)", "2": "var(--surface-2)", "3": "var(--surface-3)" },
+        "edge": { "DEFAULT": "var(--line)", "strong": "var(--line-strong)", "control": "var(--line-control)" },
+        "text": { "DEFAULT": "var(--text)", "2": "var(--text-2)", "3": "var(--text-3)", "4": "var(--text-4)" },
+        "accent": { "DEFAULT": "var(--accent)", "text": "var(--accent-text)", "tint": "var(--accent-tint)" }
+      },
+      "fontFamily": {
+        "sans": ["Geist", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+        "mono": ["Geist Mono", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"]
+      },
+      "fontSize": {
+        "display-1": ["64px", { "lineHeight": "1.02", "letterSpacing": "-0.04em", "fontWeight": "550" }],
+        "display-1-m": ["40px", { "lineHeight": "1.06", "letterSpacing": "-0.03em", "fontWeight": "550" }],
+        "display-2": ["44px", { "lineHeight": "1.08", "letterSpacing": "-0.032em", "fontWeight": "550" }],
+        "display-2-m": ["32px", { "lineHeight": "1.1", "letterSpacing": "-0.025em", "fontWeight": "550" }],
+        "title-1": ["28px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+        "title-1-m": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+        "title-2": ["20px", { "lineHeight": "1.3", "letterSpacing": "-0.012em", "fontWeight": "600" }],
+        "title-2-m": ["18px", { "lineHeight": "1.3", "letterSpacing": "-0.012em", "fontWeight": "600" }],
+        "title-3": ["17px", { "lineHeight": "1.4", "letterSpacing": "-0.006em", "fontWeight": "600" }],
+        "lead": ["19px", { "lineHeight": "1.55", "letterSpacing": "-0.005em", "fontWeight": "400" }],
+        "lead-m": ["17px", { "lineHeight": "1.55", "letterSpacing": "-0.005em", "fontWeight": "400" }],
+        "body": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+        "small": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+        "caption": ["13px", { "lineHeight": "1.45", "letterSpacing": "0.002em", "fontWeight": "400" }],
+        "label": ["12px", { "lineHeight": "1.3", "letterSpacing": "0.08em", "fontWeight": "500" }],
+        "data": ["13px", { "lineHeight": "1.4", "fontWeight": "400" }],
+        "stat": ["40px", { "lineHeight": "1", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+        "stat-m": ["32px", { "lineHeight": "1", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+        "app-title": ["24px", { "lineHeight": "1.25", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+        "app-section": ["18px", { "lineHeight": "1.35", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+        "app-card": ["15px", { "lineHeight": "1.4", "fontWeight": "600" }],
+        "app-body": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+        "app-label": ["11px", { "lineHeight": "1.3", "letterSpacing": "0.08em", "fontWeight": "500" }]
+      },
+      "spacing": {
+        "0.5": "4px",
+        "1": "4px",
+        "2": "8px",
+        "3": "12px",
+        "4": "16px",
+        "6": "24px",
+        "8": "32px",
+        "10": "40px",
+        "12": "48px",
+        "16": "64px",
+        "20": "80px",
+        "24": "96px",
+        "32": "128px",
+        "40": "160px",
+        "section": "128px",
+        "section-tight": "96px",
+        "section-m": "80px",
+        "section-tight-m": "64px",
+        "head-gap": "48px",
+        "head-gap-m": "32px",
+        "nav": "64px"
+      },
+      "maxWidth": {
+        "page": "1180px",
+        "content": "880px",
+        "text": "640px"
+      },
+      "borderRadius": {
+        "xs": "4px",
+        "sm": "6px",
+        "md": "10px",
+        "lg": "16px",
+        "xl": "24px",
+        "full": "999px",
+        "ad": "10px"
+      },
+      "boxShadow": {
+        "highlight": "inset 0 1px 0 rgba(255, 255, 255, 0.04)",
+        "float-dark": "0 24px 48px -24px rgba(0, 0, 0, 0.6)",
+        "l1": "0 1px 2px rgba(20, 23, 21, 0.05), 0 0 0 1px rgba(20, 23, 21, 0.02)",
+        "l2": "0 12px 32px -16px rgba(20, 23, 21, 0.22), 0 2px 6px -2px rgba(20, 23, 21, 0.06)",
+        "focus": "0 0 0 2px #141715, 0 0 0 4px #71D793",
+        "focus-light": "0 0 0 2px #F6F5F0, 0 0 0 4px #2E9965"
+      },
+      "transitionTimingFunction": {
+        "standard": "cubic-bezier(0.2, 0, 0, 1)",
+        "enter": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "exit": "cubic-bezier(0.4, 0, 1, 1)"
+      },
+      "transitionDuration": {
+        "fast": "120ms",
+        "base": "200ms",
+        "slow": "320ms",
+        "reveal": "480ms"
+      },
+      "aspectRatio": {
+        "ad": "4 / 5",
+        "square": "1 / 1",
+        "og": "1200 / 630"
+      }
+    }
+  },
+  "rules": {
+    "minTextPx": 12,
+    "minAppLabelPx": 11,
+    "primaryButtonRadius": "md (10px), never full",
+    "glows": "none",
+    "animatedProperties": ["opacity", "transform"],
+    "continuousAnimation": "none on the page; one live-dot opacity pulse allowed inside a status pill",
+    "sectionTones": ["dark", "paper", "bone"],
+    "accentUse": "mint fills only primary actions, live dots, progress, and proof numbers; mint text on paper is mint-800"
+  }
+}
