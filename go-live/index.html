@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Winning Statics Go-Live Runbook</title>
-<meta name="description" content="Winning Statics is LIVE since 8 Oct 2026: the card-required 7-day trial, evidence, rollback for every surface, and what the owner still does. Below it, the 6 to 7 Oct overnight record.">
+<meta name="description" content="Winning Statics is LIVE since 8 Oct 2026: v2 fast onboarding, the card-required 7-day trial, evidence, staging timings, rollback for every surface, and what the owner still does.">
 <meta name="robots" content="noindex,nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -53,14 +53,49 @@ a{color:var(--mint)}
 </head>
 <body>
 <main>
-<div class="eyebrow">Winning Statics · go-live runbook · LIVE 8 Oct 2026 · audit P5 live</div>
+<div class="eyebrow">Winning Statics · go-live runbook · LIVE 8 Oct 2026 · v2 fast onboarding live</div>
 <h1>Go-live runbook</h1>
-<p class="lede">Winning Statics is live. Section P5 is the audit fix release of 8 Oct 2026, section 0 is the go-live of 8 Oct 2026; everything under it is the record of the night of 6 to 7 Oct, kept as it was.</p>
+<p class="lede">Winning Statics is live. Section V2 is the fast onboarding release of 8 Oct 2026 (evening), section P5 the audit fix release of the same day, section 0 the go-live; everything under them is the record of the night of 6 to 7 Oct, kept as it was. Version and deployment ids live in OPERATIONS.md in the repo, not on this page.</p>
 
 <div class="card tldr">
 <p><strong class="ok">LIVE since 8 Oct 2026 (about 19:20Z on 7 Oct).</strong> winningstatics.com sells the card-required 7-day trial: the hero form posts <code>POST /trial/lead</code> and opens <code>/plans</code>, every plan button says "Start 7-day free trial", the checkout is Dodo LIVE with a 7-day trial and a card required. Production API runs main <code>d7aa92f</code> with every go-live switch on (section 0.4), ws-intel runs with a $5 weekly cap, and the app is redeployed against the production API. Nothing was charged and no email went to a non-test address.</p>
 <p><strong>Your two steps:</strong> (a) your own live trial test with your card, then "Start my plan now" ($29 on Starter) and a refund in Dodo; (b) the Brevo plan upgrade on the day you choose, then I raise <code>EMAIL_DAILY_BUDGET</code>. Details in 0.6.</p>
 </div>
+
+<h2>V2. Fast onboarding live, 8 Oct 2026</h2>
+<div class="card tldr">
+<p><strong class="ok">LIVE since about 19:10Z on 8 Oct 2026.</strong> No human review anywhere: the first drop is made the moment the trial starts and every ad appears on the Drops home as it passes the automatic checks. One delivered format, 4:5. One field on the landing (store or product link) with a "which product first?" picker for a homepage. New dashboard: Drops home, ad detail, Plan with products and ads per week, Competitors board. Competitor research runs as one job with a 10 minute cap. Every production smoke passed; GitHub E2E on main passed.</p>
+<p><strong class="amb">Speed targets not met yet.</strong> On staging the dashboard and the research meet their targets; the first ad took 8 minutes and all five took 22 (targets: 3 to 4 and 8 to 10). The cause and the next fix are below.</p>
+</div>
+<div class="wrap"><table>
+<tr><th>Step</th><th>Status</th><th>Evidence</th></tr>
+<tr><td>1. Merge</td><td class="ok">Done</td><td>Backend, research and frontend branches merged with no conflict; the competitor board is read in the research service's shape (the pattern's concept is the title, its family the chip, its examples are "Theirs"); the transition lines of the pricing parity test removed. Backend tests 2,214 and research tests 148 green, both apps typecheck and build, two new boundary e2e specs.</td></tr>
+<tr><td>2. Staging</td><td class="ok">Done</td><td>Research schema applied, research service, API, landing and app deployed; research running with its weekly cap; the old parked research jobs kept parked.</td></tr>
+<tr><td>3. Timed runs</td><td class="amb">Targets partly met</td><td>Two fresh real stores, real time, signed trial webhooks, the dashboard screenshotted every 30 s. Run 1 made no ad: every render failed the text check on the carton's own net weight line, which the reader misread ("16.90z" for 16.9oz). Fixed (with four speed fixes), then run 2 delivered all five.</td></tr>
+<tr><td>4. Production</td><td class="ok">Done</td><td>Rollbacks recorded first. Research schema applied, main fast-forwarded, API deployed with no soak window, research service, landing and app deployed. Switches: first-drop review removed (retired), research running with the $5 weekly cap, the research pipeline on; nothing else changed.</td></tr>
+<tr><td>5. Smoke</td><td class="ok">Pass</td><td>Health and wiring check PASS, cron heartbeat 1 minute, 8 minutes of logs with 0 exceptions, a lead without the bot check refused (403), a one-time pack checkout refused (410), the catalogue route live, home, /plans, /terms and /old/ 200, the hero shows "Your store or product link" and the 4:5 copy, the app loads, E2E on main passed. The first E2E after the deploy failed three new checks that expected the Drops home for the production test account, which is an old one-time pack and opens its library by design; the checks were fixed, not the app.</td></tr>
+</table></div>
+
+<h3>V2 timings on staging (seconds from the trial webhook)</h3>
+<div class="wrap"><table>
+<tr><th>Step</th><th>Target</th><th>Run 1 (before fixes)</th><th>Run 2 (after fixes)</th></tr>
+<tr><td>Dashboard shows the live first drop</td><td>about 60</td><td class="ok">by 50</td><td class="ok">by 43</td></tr>
+<tr><td>Product read and truth pack</td><td></td><td>12 to 121</td><td>15 to 86</td></tr>
+<tr><td>Competitor research</td><td>240 to 300, cap 600</td><td class="ok">144</td><td class="ok">144</td></tr>
+<tr><td>Ad plan</td><td></td><td>201 s</td><td>239 s</td></tr>
+<tr><td>First ad visible</td><td>180 to 240</td><td class="bad">none</td><td class="bad">479</td></tr>
+<tr><td>All 5 ads</td><td>480 to 600</td><td class="bad">none</td><td class="bad">1,315</td></tr>
+<tr><td>Drop-ready email step</td><td></td><td>none</td><td>1,316 (not sent: staging sends no email)</td></tr>
+</table></div>
+<p class="small">Why the ad targets are missed: the ad plan is the longest step (each slot tries its next template only after the last one failed, and weak angles taken from pack text made 4 of 5 first picks fail), and every ad that fails the automatic check costs a new plan, render and check, about 3 to 4 minutes. Two of run 2's five failures were the text reader misreading correct text. Next: plan the slots side by side, keep pack-label lines out of the angles, and widen the misread rules. Test spend for both runs about $2.2; total test spend about $36.7 of the $45 stop.</p>
+
+<h3>V2 rollback, per surface</h3>
+<ul>
+<li><b>API</b> (from <code>backend/</code>): <code>npx wrangler rollback</code> to the P5 version listed in OPERATIONS.md (restores the P5 code and its switches).</li>
+<li><b>Research service</b> (from <code>intel/</code>): <code>npx wrangler rollback</code> to the P5 version in OPERATIONS.md. The research schema is additive and stays; setting the research pipeline to '0' sends onboarding down the old job chain.</li>
+<li><b>Landing</b> and <b>app</b>: Pages rollback to the P5 deployments listed in OPERATIONS.md.</li>
+<li><b>Git</b>: roll back the surfaces, not git.</li>
+</ul>
 
 <h2>P5. Audit fixes live, 8 Oct 2026</h2>
 <div class="card tldr">
