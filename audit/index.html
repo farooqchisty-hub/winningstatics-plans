@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>WS Audit Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050505;--card:#0D0D0D;--card2:#141414;--line:#232323;--ink:#FCFCFC;--mute:#A3A3A3;--dim:#6B6B6B;
+  --mint:#71D793;--mint-soft:rgba(113,215,147,.12);
+  --amber:#F2C265;--amber-soft:rgba(242,194,101,.12);--red:#F08A8A;--red-soft:rgba(240,138,138,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:880px;margin:0 auto;padding:40px 16px 96px}
+h1{font-size:clamp(28px,6vw,42px);line-height:1.1;letter-spacing:-.02em;margin:0 0 12px}
+h2{font-size:21px;letter-spacing:-.01em;margin:48px 0 12px;padding-top:22px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:20px 0 8px}
+p{margin:0 0 12px;color:#E4E4E4}
+.lede{font-size:17px;color:var(--mute)}
+.eyebrow{font:500 12px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mint);margin-bottom:16px}
+code,.mono{font-family:'JetBrains Mono',monospace;font-size:.86em;overflow-wrap:anywhere}
+code{background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+pre{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow-x:auto;font:13px/1.5 'JetBrains Mono',monospace;margin:6px 0 12px}
+ul,ol{padding-left:20px;margin:0 0 12px}
+li{margin:0 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:12px 0}
+.tldr{border-color:rgba(113,215,147,.35);background:linear-gradient(180deg,var(--mint-soft),var(--card) 70%)}
+.warn{border-color:rgba(242,194,101,.35);background:linear-gradient(180deg,var(--amber-soft),var(--card) 70%)}
+.warn h3{color:var(--amber);margin-top:0}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0 14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.wrap{overflow-x:auto}
+.flip{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0}
+.flip h3{margin:0 0 8px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.flip dl{margin:0;display:grid;grid-template-columns:92px 1fr;gap:6px 12px;font-size:14px}
+.flip dt{color:var(--mute);font-weight:600}
+.flip dd{margin:0;color:#E4E4E4;min-width:0}
+@media (max-width:520px){.flip dl{grid-template-columns:1fr}.flip dt{margin-top:6px}}
+.n{font:600 12px/1 'JetBrains Mono',monospace;color:var(--bg);background:var(--mint);border-radius:6px;padding:5px 7px}
+.who{display:inline-block;font:500 11px/1 'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em;padding:4px 7px;border-radius:5px}
+.me{background:var(--mint-soft);color:var(--mint)}
+.owner{background:var(--amber-soft);color:var(--amber)}
+.ok{color:var(--mint)}.bad{color:var(--red)}.amb{color:var(--amber)}
+.small{font-size:14px;color:var(--mute)}
+a{color:var(--mint)}
+</style>
+
+</head><body>
+<main style="max-width:860px;margin:0 auto;padding:32px 16px 80px">
+<div class="eyebrow">Winning Statics &middot; full product audit plan &middot; 8 Oct 2026</div>
+<h1>Audit, month simulation and hardening plan</h1>
+<p class="lede">Use the product like a real customer, simulate a full month on every plan with weeks compressed to 2 minutes, check every ad, break the flows on purpose, then fix what matters and cut what slows the customer down.</p>
+
+<div class="card tldr">
+<h3 style="margin-top:0">In one screen</h3>
+<ul>
+<li><b>Free work starts now</b>: the read-only click test, the consistency check and the attack review run on live and staging.</li>
+<li><b>Paid work waits for your go</b>: the month simulation runs on <b>staging only</b>, with 4 plans, 2 ads per drop and a week every 2 minutes. About <b>$10 to $12</b>, hard stop at $45 total (the pilot cap is $35 and $30.14 is spent).</li>
+<li><b>Fixes</b>: breakages and flow bugs get fixed and shipped as found, each with a rollback. New dashboard screens are proposed with mockups first, and you pick.</li>
+<li><b>Output</b>: one report page with a findings table (severity, evidence, fix, status), every ad sheet and the screenshots.</li>
+</ul>
+</div>
+
+<h2>What a quick look already shows</h2>
+<div class="wrap"><table>
+<tr><th>Area</th><th>Fact</th><th>Why it matters</th></tr>
+<tr><td>Time to first ads</td><td>Store read, then up to 30 min waiting for competitor research, then generation, then <b>your manual review</b>.</td><td>Your review is the longest wait, and it depends on you being awake. Biggest lever on "seamless and fast".</td></tr>
+<tr><td>Dashboard</td><td>Screens are from the one-time pack era: library, product, add-ons, bonuses, billing, account, welcome. There is no drops timeline, no "next Monday" view and no competitor board.</td><td>The landing sells a weekly competitor report and Monday drops that the dashboard does not show.</td></tr>
+<tr><td>API</td><td>CORS answers any origin (strict mode never switched on).</td><td>Part of the attack review.</td></tr>
+</table></div>
+
+<h2>Phases</h2>
+
+<div class="flip"><h3><span class="n">P0</span> Simulation harness <span class="who me">staging only</span> <span class="who me">$0</span></h3><dl>
+<dt>Build</dt><dd>A staging-only time switch, so a week is 2 minutes and a trial is 2 minutes. It refuses to run on production. A per-drop cap of 2 ads for the simulation. A Dodo webhook simulator (signed events for trial start, charge, failed charge, cancel, resume, upgrade). 4 test accounts on staging, one per plan, with real stores.</dd>
+<dt>Why</dt><dd>Lets a whole month run in about 15 minutes per plan without cards, without real Dodo charges and without touching production.</dd>
+<dt>Time</dt><dd>About 1 hour.</dd></dl></div>
+
+<div class="flip"><h3><span class="n">P1</span> Real-user click test <span class="who me">live + staging</span> <span class="who me">$0</span></h3><dl>
+<dt>Flows</dt><dd>
+<ul>
+<li>New visitor on phone and desktop: landing, then "Get my 5 free ads", then /plans, then the checkout page (stop there, no card).</li>
+<li>Arriving from a pricing button.</li>
+<li>A returning store whose trial is used.</li>
+<li>Bad inputs.</li>
+<li>Back and refresh mid-flow.</li>
+<li>Login (password test account).</li>
+<li>Every dashboard screen in every state: trialing, active, cancelled, payment failed, out of ads.</li>
+<li>Every email rendered.</li>
+<li>/old/ and the legal pages.</li>
+</ul></dd>
+<dt>Consistency</dt><dd>One matrix of prices, ads a month, videos, products, bonus, trial terms and timing promises across the landing, /plans, FAQ, Dodo product descriptions, checkout, emails, terms and dashboard. Every mismatch is a finding.</dd>
+<dt>Health</dt><dd>Console errors, failed requests, 404s, dead links, page speed on phone, sideways scroll, broken images.</dd>
+<dt>Time</dt><dd>About 1.5 hours.</dd></dl></div>
+
+<div class="flip"><h3><span class="n">P2</span> One month on every plan <span class="who owner">needs your go</span> <span class="who owner">about $10 to $12</span></h3><dl>
+<dt>Run</dt><dd>4 accounts: Starter, Growth, Scale and Studio. Each goes through:
+<ul>
+<li>a trial drop of 2 ads, approved through the real review queue</li>
+<li>the day-7 charge, with the bonus applied</li>
+<li>4 weekly drops 2 minutes apart, 2 ads each</li>
+</ul></dd>
+<dt>Lifecycle twists</dt><dd>
+<ul>
+<li>Starter cancels inside the trial: no charge, keeps the ads, no more drops.</li>
+<li>Growth cancels mid-month and then resumes.</li>
+<li>Scale's renewal payment fails: drops pause, then recover after payment.</li>
+<li>Studio presses "Start my plan now", then downgrades to Scale.</li>
+</ul></dd>
+<dt>Checked</dt><dd>
+<ul>
+<li>Every ad, by eye, on contact sheets.</li>
+<li>Every email, its timing and its wording.</li>
+<li>Every dashboard state, with screenshots.</li>
+<li>Ledger math: granted vs used vs left.</li>
+<li>Drop timing, the bonus counted once, nothing after cancel, and no double charges or double grants on repeated webhooks.</li>
+</ul></dd>
+<dt>Time</dt><dd>About 2 to 3 hours, mostly waiting on renders.</dd></dl></div>
+
+<div class="flip"><h3><span class="n">P3</span> Abuse, spam and attack review <span class="who me">$0</span></h3><dl>
+<dt>Surfaces</dt><dd>
+<ul>
+<li>/trial/lead and /checkout spam (Turnstile, per-IP and daily caps).</li>
+<li>Card testing through checkout.</li>
+<li>Trial farming: new domain, same card or email.</li>
+<li>Cost attacks that burn image spend (circuit breakers, daily caps).</li>
+<li>Webhook forgery and replay.</li>
+<li>Admin key exposure.</li>
+<li>Database rules: what the public key can read or write.</li>
+<li>Storage listing.</li>
+<li>Store URL reads used to reach internal hosts.</li>
+<li>Prompt injection planted on a store page.</li>
+<li>Email bombing through our emails.</li>
+<li>Open redirects on checkout return.</li>
+<li>Secrets in the frontend bundles.</li>
+<li>Cloudflare rate limits and bot rules on the API and the landing.</li>
+</ul></dd>
+<dt>Method</dt><dd>Read the code and the Cloudflare settings. Light single-request probes on production. Anything heavier than a handful of requests runs on staging only; there is no load test against production.</dd>
+<dt>Time</dt><dd>About 1.5 hours, in parallel with P1.</dd></dl></div>
+
+<div class="flip"><h3><span class="n">P4</span> Cut what slows the customer <span class="who me">proposals</span></h3><dl>
+<dt>Candidates</dt><dd>
+<ul>
+<li>First drop: auto-release ads that pass every check, with your review only for flagged ones.</li>
+<li>Drop the 30 min research wait on the first drop and add the competitor patterns from week 2.</li>
+<li>Skip paid outpaint where plain bands are used anyway.</li>
+<li>Retire dead switches and legacy pack paths the new product never uses.</li>
+<li>Fewer steps between payment and the first ad.</li>
+</ul></dd>
+<dt>Rule</dt><dd>Each one gets: time saved for the customer, cost saved, risk, and a yes/no for you.</dd></dl></div>
+
+<div class="flip"><h3><span class="n">P5</span> Fix and ship <span class="who me">as found</span></h3><dl>
+<dt>Breakages</dt><dd>Fixed, tested and shipped right away, with a rollback each. Copy or consistency mismatches are fixed at the source.</dd>
+<dt>Dashboard</dt><dd>Likely screens: Drops (this week, next Monday countdown, history), Competitor board (the report the landing sells), Plan and usage (ads left, products), Ad detail (3 sizes, Meta copy, download, rebuild), and first-drop progress. Mockups first; you pick; then build.</dd></dl></div>
+
+<div class="flip"><h3><span class="n">P6</span> Report</h3><dl>
+<dt>Page</dt><dd>Findings table, the ad sheets per plan, screenshots per screen and state, attack review results, the P4 proposals for your yes/no, and what shipped.</dd></dl></div>
+
+<h2>Guardrails</h2>
+<div class="card"><ul>
+<li>Anything paid runs on staging. Production gets read-only checks and single-request probes only.</li>
+<li>No cards entered anywhere. No emails to real addresses. No business-wide Dodo settings.</li>
+<li>The time switch only exists on staging and refuses production.</li>
+<li>Every production deploy records its rollback first.</li>
+</ul></div>
+
+<h2>Your call</h2>
+<div class="card warn"><h3>One go needed</h3>
+<p>The month simulation costs about $10 to $12, which takes the test spend to about $42 against a raised stop of $45. Everything else is already running.</p></div>
+</main>
+</body></html>
