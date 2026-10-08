@@ -53,14 +53,47 @@ a{color:var(--mint)}
 </head>
 <body>
 <main>
-<div class="eyebrow">Winning Statics · go-live runbook · LIVE 8 Oct 2026</div>
+<div class="eyebrow">Winning Statics · go-live runbook · LIVE 8 Oct 2026 · audit P5 live</div>
 <h1>Go-live runbook</h1>
-<p class="lede">Winning Statics is live. Section 0 is the go-live of 8 Oct 2026; everything under it is the record of the night of 6 to 7 Oct, kept as it was.</p>
+<p class="lede">Winning Statics is live. Section P5 is the audit fix release of 8 Oct 2026, section 0 is the go-live of 8 Oct 2026; everything under it is the record of the night of 6 to 7 Oct, kept as it was.</p>
 
 <div class="card tldr">
 <p><strong class="ok">LIVE since 8 Oct 2026 (about 19:20Z on 7 Oct).</strong> winningstatics.com sells the card-required 7-day trial: the hero form posts <code>POST /trial/lead</code> and opens <code>/plans</code>, every plan button says "Start 7-day free trial", the checkout is Dodo LIVE with a 7-day trial and a card required. Production API runs main <code>d7aa92f</code> with every go-live switch on (section 0.4), ws-intel runs with a $5 weekly cap, and the app is redeployed against the production API. Nothing was charged and no email went to a non-test address.</p>
 <p><strong>Your two steps:</strong> (a) your own live trial test with your card, then "Start my plan now" ($29 on Starter) and a refund in Dodo; (b) the Brevo plan upgrade on the day you choose, then I raise <code>EMAIL_DAILY_BUDGET</code>. Details in 0.6.</p>
 </div>
+
+<h2>P5. Audit fixes live, 8 Oct 2026</h2>
+<div class="card tldr">
+<p><strong class="ok">LIVE since about 14:20Z on 8 Oct 2026.</strong> The three audit fix branches (engine, billing and security, landing and dashboard) are merged, rehearsed on staging at $0 and live: API <code>038bf0f6</code> (main <code>e9c42f1</code>), ws-intel <code>145ce493</code>, landing <code>b79f4b8b</code> (main <code>9e387da</code>), app <code>b6b9a277</code>. Every smoke passed and the GitHub E2E on main passed against the new app (27 of 27). No card was entered and no email went to a real address.</p>
+</div>
+<div class="wrap"><table>
+<tr><th>Step</th><th>Status</th><th>Evidence</th></tr>
+<tr><td>1. Merge</td><td class="ok">Done</td><td><code>p5-engine</code>, <code>p5-billing</code> and <code>p5-frontend</code> merged into <code>staging/weekly-drops</code> with no conflict (the shared files <code>index.js</code>, <code>drops/engine.js</code>, <code>quota.js</code>, <code>email.js</code> and <code>admin.js</code> keep both changes); <code>origin/main</code> had nothing newer, so no Replit layout or animation change was at stake. Backend tests 2162 pass, 0 fail; intel 138 pass; landing and app typecheck and build clean.</td></tr>
+<tr><td>2. Glue</td><td class="ok">Done</td><td>/plans "trial already used" fallback sends the Turnstile token. "This email has already had its free trial." on the hero and /plans for a trial used by email. A Google sign-in for an email with no account lands on login with "We couldn't find an account for that email. Start your free trial at winningstatics.com/plans." A product page that cannot be read after the retries gets one email in your voice asking for the link or a few photos (behind <code>DROPS_EMAILS</code>). The "plan is all set" email says "being made right now" only when a read product and an open drop make it true (start-now included). E2E specs read the dashboard's tabs per account (pack, or plan with Videos and no Studio photos).</td></tr>
+<tr><td>3. Staging</td><td class="ok">Done</td><td>API <code>3cda0042</code>, ws-intel-staging <code>9e03acdc</code>, landing <code>95b27151</code>, app <code>c55ea6c5</code>. $0 month rehearsal, all four twists (cancel in trial, cancel mid-month then resume, renewal fails then recovers, start-now then downgrade): 52 checks pass, 0 errors. Grace runs 3 simulated days from the failed charge; no drop for a cancelled trial or an unpaid account after the grace; start-now at day 3.5 converted at once with its bonus and conversion drop; emails in order in the 7 Oct voice; no "no eligible template" failure. Simulation switches removed afterwards; staging's secrets and switches matched the before-state exactly.</td></tr>
+<tr><td>4. Ops</td><td class="ok">Done</td><td>Public sign-up closed in Supabase Auth, staging first (existing account still logs in, a new address is refused), then production. The single free rate-limit rule now guards <code>/checkout</code> and <code>/trial/lead</code>: 10 requests in 10 s per IP, blocked 10 s (checked: the 11th preflight in a burst got 429, <code>/health</code> and <code>/me</code> unaffected). <code>/me</code> is left out: one dashboard page load makes 3 to 6 <code>/me</code> calls, so that limit would block normal use. Cost alerts on in production (Turnstile secret was already set). Our Dodo TEST-mode webhook now goes to staging, which got the test keys and Starter; nothing business-wide was touched.</td></tr>
+<tr><td>5. Production</td><td class="ok">Done</td><td><code>deploy-prod.sh --soak-hours=0</code>: every gate passed; <code>/health</code> and check-wiring PASS, cron heartbeat 1 min, 3 minutes of tail with 136 events and 0 exceptions. <code>/trial/lead</code> without Turnstile 403, <code>/checkout {pack:"test"}</code> 410, the /plans fallback without Turnstile 403. winningstatics.com, /plans, /terms, /refund, /privacy and /old/ answer 200, an unknown path 404 with the branded page, the new OG image serves as PNG, app.winningstatics.com loads.</td></tr>
+<tr><td>6. Found on the way</td><td class="ok">Fixed</td><td>The new 404 setup made /plans, /terms, /privacy and /refund redirect to the home page (a rewrite to <code>/index.html</code> passed on Pages' own 308); they now rewrite to <code>/</code>. The OG image moved to a new file name because the zone cache held an HTML fallback under the old one.</td></tr>
+</table></div>
+
+<h3>P5 rollback, per surface</h3>
+<ul>
+<li><b>API</b> (from <code>backend/</code>): <code>npx wrangler rollback fbb36e65-a6b8-40dc-9bb7-c2cb8648a15a</code> (the code before P5 with cost alerts on). Cost alerts alone: <code>npx wrangler secret delete COST_ALERTS_ENABLED</code>.</li>
+<li><b>ws-intel</b> (from <code>intel/</code>): <code>npx wrangler rollback 6c1a0314-6251-409c-b198-a259618f6364</code>.</li>
+<li><b>Landing</b>: Pages rollback of <code>winning-statics</code> to <code>34d84f2c-b10b-4429-9a17-695727317673</code>.</li>
+<li><b>App</b>: Pages rollback of <code>winning-statics-app</code> to <code>efbfbe54-bd85-4e8c-bb4c-1814d7552fdb</code>.</li>
+<li><b>Sign-up</b>: Supabase Management API <code>PATCH /v1/projects/&lt;ref&gt;/config/auth {"disable_signup": false}</code>.</li>
+<li><b>Rate-limit rule</b>: back to every API path, 300 in 10 s per IP per colo, block 10 s.</li>
+<li><b>Dodo TEST webhook</b>: set our endpoint's URL back to <code>https://api.winningstatics.com/webhook</code>, then remove the test Dodo keys and Starter from staging.</li>
+<li><b>Git</b>: main was <code>311aaf8</code> before the fast-forward; roll back the surfaces, not git.</li>
+</ul>
+
+<h3>P5 open items</h3>
+<ul>
+<li>The refused Google sign-in was checked with Supabase's error redirect, not with a real Google account.</li>
+<li>/add-ons for an account with no order keeps polling and shows "Loading..." (the old app showed an error there).</li>
+<li>One unconfirmed test auth user from a sign-up probe (example.com address, no account) can be deleted.</li>
+</ul>
 
 <h2>0. Go-live, 8 Oct 2026: evidence</h2>
 <div class="wrap"><table>
