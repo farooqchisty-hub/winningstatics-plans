@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>WS Launch Readiness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0E110F;--card:#1B1F1C;--card2:#232825;--line:#2C322E;--ink:#F6F5F0;--mute:#A9ADA9;--dim:#757a76;
+  --mint:#71D793;--mint-soft:rgba(113,215,147,.12);
+  --amber:#F2C265;--amber-soft:rgba(242,194,101,.12);--red:#F08A8A;--red-soft:rgba(240,138,138,.12);
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#F6F5F0;--card:#FFFFFF;--card2:#EDECE5;--line:#DAD9D1;--ink:#141715;--mute:#55594F;--dim:#7c8076;
+  --mint:#1E8A4C;--mint-soft:rgba(30,138,76,.10);--amber:#9A6A06;--amber-soft:rgba(154,106,6,.10);--red:#B23A3A;--red-soft:rgba(178,58,58,.08);
+}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:900px;margin:0 auto;padding:40px 16px 96px}
+h1{font-size:clamp(28px,6vw,42px);line-height:1.1;letter-spacing:-.02em;margin:0 0 12px}
+h2{font-size:21px;letter-spacing:-.01em;margin:48px 0 12px;padding-top:22px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:22px 0 8px}
+p{margin:0 0 12px}
+.lede{font-size:17px;color:var(--mute)}
+.eyebrow{font:500 12px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mint);margin-bottom:16px}
+code{font-family:'JetBrains Mono',monospace;font-size:.86em;background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 5px;overflow-wrap:anywhere}
+.verdict{background:var(--mint-soft);border:1px solid var(--mint);border-radius:14px;padding:18px 20px;margin:24px 0}
+.verdict b{color:var(--mint)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:18px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stat .n{font-size:26px;font-weight:700;letter-spacing:-.02em}
+.stat .l{font-size:13px;color:var(--mute)}
+.tbl{width:100%;border-collapse:collapse;font-size:14.5px;margin:8px 0 16px}
+.tbl th,.tbl td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);font-weight:600}
+.wrap{overflow-x:auto}
+.tag{display:inline-block;font:600 11px/1 'JetBrains Mono',monospace;padding:4px 7px;border-radius:6px;white-space:nowrap}
+.p0{background:var(--red-soft);color:var(--red)}
+.p1{background:var(--amber-soft);color:var(--amber)}
+.ok{background:var(--mint-soft);color:var(--mint)}
+ol li,ul li{margin:6px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0}
+.mute{color:var(--mute)}
+</style></head>
+<body><main>
+<div class="eyebrow">Winning Statics Monthly · launch audit · 19 Nov 2026</div>
+<h1>Launch readiness</h1>
+<p class="lede">A six-role audit, real drops on production, a staging battle test with hundreds of simulated customers at once, and every fix shipped. This page says what is proven, what is live, and the short list only you can close.</p>
+
+<div class="verdict"><b>Verdict: ready to launch once you close the first two owner items</b> (top up OpenRouter, confirm Replicate credit). The product, billing and multi-user behaviour are proven. The remaining items are account, legal and settings decisions, not code.</div>
+
+<div class="grid">
+  <div class="stat"><div class="n">3:52</div><div class="l">first ad on a fresh trial, all 5 in 4:53 (was 7:26 and 19:16, 3 of 5)</div></div>
+  <div class="stat"><div class="n">23 s</div><div class="l">100 simultaneous signups, all single and correct trials (p50; was 103 s)</div></div>
+  <div class="stat"><div class="n">1,042 / 1,042</div><div class="l">drop emails sent exactly once across 3 simulated Mondays of 112 to 157 accounts</div></div>
+  <div class="stat"><div class="n">0</div><div class="l">cross-account leaks in 5,460 dashboard responses under load</div></div>
+  <div class="stat"><div class="n">3,181</div><div class="l">offline backend tests, all green (2,875 before)</div></div>
+  <div class="stat"><div class="n">$3.25</div><div class="l">model spend for all real testing, of the $5 budget</div></div>
+</div>
+
+<h2>Owner items (only you can do these)</h2>
+<div class="wrap"><table class="tbl">
+<tr><th>#</th><th>Item</th><th>Why it matters</th></tr>
+<tr><td><span class="tag p0">1</span></td><td>Top up OpenRouter and turn on auto top-up. Ideally give Winning Statics its own key.</td><td>About $2 is left. Drops and clones now fall back to Replicate, but competitor research (ws-intel) has no fallback and stops at $0. An alert now fires hourly under $25.</td></tr>
+<tr><td><span class="tag p0">2</span></td><td>Check Replicate credit on the pushowl org (keep it above $10).</td><td>Replicate is now the fallback for every text and image call. Under $10 Replicate throttles to 60 creates a minute.</td></tr>
+<tr><td><span class="tag p1">3</span></td><td>Legal identity in the terms: company name, address, governing law.</td><td>The terms still have no entity, address or jurisdiction.</td></tr>
+<tr><td><span class="tag p1">4</span></td><td>Say yes or no to processing one external customer's deletion request from 22 Oct.</td><td>The privacy page promises 3 to 5 business days. Deletion cannot be undone, so it waits for your yes. New requests now reach Slack and raise an alert after 48 h.</td></tr>
+<tr><td><span class="tag p1">5</span></td><td>Do one real trial checkout by hand (card at Dodo, then the dashboard).</td><td>Cloudflare Turnstile blocks automated checkout, so this one step could not be clicked by the audit.</td></tr>
+<tr><td><span class="tag p1">6</span></td><td>Plan changes: one Dodo test-mode upgrade and downgrade, then switch on <code>PLAN_CHANGES_ENABLED</code> and <code>SCHEDULED_DOWNGRADES_ENABLED</code>.</td><td>The code now uses Dodo's "charge only the difference, keep the date" mode for upgrades and "no charge, no credit" for downgrades. Until checked, the app hides the buttons and says "Write to us".</td></tr>
+<tr><td>7</td><td>Email capacity: raise <code>EMAIL_DAILY_BUDGET</code> (280 a day today) to your Brevo plan.</td><td>Past about 200 weekly accounts, Monday drop emails and billing emails would be refused for the rest of the day.</td></tr>
+<tr><td>8</td><td>Archive the 4 retired one-time packs in the Dodo dashboard.</td><td>They can still be bought by direct link. The API key is not allowed to archive.</td></tr>
+<tr><td>9</td><td>Supabase: point-in-time recovery (paid add-on), SSL enforcement, and a captcha on login emails.</td><td>Daily backups only today; login emails can be requested every 5 s.</td></tr>
+<tr><td>10</td><td>Pricing ladder decision.</td><td>Scale costs more per ad than Growth (77 vs 61 cents) and the +60 ads add-on undercuts Starter per ad.</td></tr>
+<tr><td>11</td><td>Raise the research weekly cap ($5) once you pass about 80 weekly accounts.</td><td>At $5 a week, research pulls stop at roughly 100 accounts.</td></tr>
+<tr><td>12</td><td>Landing (redesign session): close the mobile menu after a link tap, and update the mobile e2e specs to the new pricing tabs.</td><td>The live redesign was built in its own session; these two small items belong there.</td></tr>
+</table></div>
+
+<h2>How it was tested</h2>
+<div class="wrap"><table class="tbl">
+<tr><th>Role</th><th>What it did</th><th>Result</th></tr>
+<tr><td>AI architect</td><td>Traced planning, generation, QA gates, release, clones, Ask for an ad, provider failure paths and spend breakers in code; ran every offline suite.</td><td>19 findings, all fixed. P0: OpenRouter-only text path with $4 left.</td></tr>
+<tr><td>Billing engineer</td><td>15 simulated months (3 plans x 5 twists) on staging plus out-of-order, duplicate and add-on webhooks, and the billing screens at every state.</td><td>19 findings, all fixed, including a second money bug found in Dodo's docs (upgrades would have billed a full cycle).</td></tr>
+<tr><td>First-time customer</td><td>Real stores on production: landing, trial path to Dodo, two real first drops, clone, Ask for an ad, every dashboard button, backend checked after each action.</td><td>23 findings, all fixed. Re-run after the release: all pass.</td></tr>
+<tr><td>Marketer, designer, PM</td><td>Every link and CTA at desktop and phone, offer consistency across landing, API, Dodo, dashboard and emails, copy rules.</td><td>27 findings. The live site was selling the old offer; fixed and deployed.</td></tr>
+<tr><td>Security engineer</td><td>235 bad-token requests on 47 routes, 108 admin probes, cross-account tests, Supabase row security, webhook signatures, SSRF, uploads, headers.</td><td>No access-control hole. 20 hardening findings fixed (alerts that never reached Slack, HTTP without HSTS, unsubscribe link scanners).</td></tr>
+<tr><td>Frontend engineer</td><td>Inventory of every element, button to endpoint to backend effect, 120+ page loads at 1440 and 390.</td><td>27 findings, all fixed (downloads, phone overflow, stale screens, polling, time zones, plan gating).</td></tr>
+<tr><td>Concurrency engineer</td><td>Every module-level variable checked for tenant leaks; every check-then-act and send-then-mark found and made atomic, each with a reproducing test.</td><td>11 races fixed, including double charges on a double click and two trials from two checkouts.</td></tr>
+<tr><td>Load engineer</td><td>718 synthetic customers on staging at $0: signup storms, duplicate webhooks, double clicks, Mondays at scale with tick storms, a cut webhook.</td><td>16 findings across 4 rounds; every correctness bug fixed and re-measured.</td></tr>
+</table></div>
+
+<h2>Multi-user behaviour, before and after</h2>
+<div class="wrap"><table class="tbl">
+<tr><th>Scenario</th><th>Before</th><th>After</th></tr>
+<tr><td>Two checkouts for one store or email finishing together</td><td>Two trials in 9 of 9 races, both charged on day 7</td><td>One trial; the other subscription is cancelled at Dodo</td></tr>
+<tr><td>Double click on Start my plan now or Upgrade</td><td>Two full charges</td><td>One charge (lease before calling Dodo)</td></tr>
+<tr><td>100 signups at once, time to a working trial</td><td>Webhook 19 s, senders timing out, 2 min retries</td><td>Answered in about 2 s, trial ready in 23 s p50, 26 s max</td></tr>
+<tr><td>Cut webhook delivery</td><td>Stuck for 2 minutes</td><td>Recovered by the delayed queue backstop</td></tr>
+<tr><td>Expired or failed trial cloning</td><td>Unlimited clones (6 on a 1 credit trial)</td><td>402 every time; last credit fired 3 at once gives one clone</td></tr>
+<tr><td>Conversion inside a Monday's planning window</td><td>Bonus drop lost in up to 22% of cases</td><td>52 of 52 released, Mondays exactly 10 / 30 / 60</td></tr>
+<tr><td>Dashboard /drops/current at rest</td><td>3.3 s</td><td>1.05 s (independent reads in parallel)</td></tr>
+<tr><td>Yearly subscribers past the 200th, research at about 250 accounts</td><td>Months 2 to 12 never granted; research planner failing every tick</td><td>Paged reads; 4 queries in total per planning run</td></tr>
+</table></div>
+
+<h2>What is live now</h2>
+<div class="card">
+<ul>
+<li>API <code>winningstatics-api</code> version <code>1d1c5f15</code> (main <code>a15ab36</code>). Rollback target before the audit: <code>6ed681a2</code>.</li>
+<li>Customer app Pages <code>ab996a70</code> (rollback before the audit <code>cc4b99f7</code>), ws-intel (rollback <code>7977dd6c</code>), store reader (rollback <code>0ba6ff59</code>), landing by the redesign session on top of the audit fixes.</li>
+<li>Database migrations 012 to 014 applied to staging and production, each run twice to prove they are idempotent.</li>
+<li>Replicate fallback for every model call, an hourly OpenRouter balance alert, generation cap 5,000 with first drops exempt, renewal reconcile on, signed unsubscribe, webhooks answered fast with a dedicated queue as backstop, Smart Placement on.</li>
+<li>Dodo product names and descriptions match pricing v4 in live and test mode (prices untouched). <code>/old</code> now redirects home.</li>
+</ul>
+</div>
+
+<h2>Known small items left</h2>
+<ul class="mute">
+<li>Under a burst of 50 signups the first drop is released about 2 minutes later than at rest (queue waits for the store read and planning). Correct, just slower.</li>
+<li>A webhook cut at exactly the wrong moment is recovered by the 10 minute sweep rather than by Dodo's retry.</li>
+<li>Meta copy angle labels are cut at 24 characters; the first-drop email names one style for a mixed drop.</li>
+<li>Smart Placement has not moved the Worker yet; the speed gain so far comes from parallel reads.</li>
+</ul>
+<p class="mute">Test accounts created on production (+wsaudit11 to 13 and 21 to 23) are all paused. 718 staging load accounts are paused. No email went to anyone but test addresses, and no card was ever entered.</p>
+</main></body></html>
